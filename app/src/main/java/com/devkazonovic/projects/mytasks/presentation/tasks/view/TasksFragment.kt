@@ -70,6 +70,8 @@ class TasksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.changeCurrentTasksList(mySharedPreferences.getCurrentTasksList())
+
         viewModel.currentTaskList.observe(viewLifecycleOwner, {
             it?.let {
                 binding.textViewTasksList.text = "${it.name}"
@@ -91,7 +93,6 @@ class TasksFragment : Fragment() {
         })
 
 
-        viewModel.changeCurrentTasksList(mySharedPreferences.getCurrentTasksList())
 
 
     }

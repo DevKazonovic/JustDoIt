@@ -10,6 +10,7 @@ import com.devkazonovic.projects.mytasks.domain.model.TaskList
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import org.threeten.bp.OffsetDateTime
 
 class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
 
@@ -26,7 +27,7 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
     }
 
 
-    override fun insert(taskList: TaskListEntity): Completable {
+    override fun insert(taskList: TaskListEntity): Single<Long> {
         return tasksDao.insert(taskList)
     }
 
@@ -64,8 +65,10 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
         return tasksDao.getAllTasksLists().map { it.map { list -> list.mapToDomainModel() } }
     }
 
-    override fun taskComplete(taskID: Long, isCompleted: Int): Completable {
-        return tasksDao.markTaskAsCompleted(taskID, isCompleted)
+    override fun markTaskAsCompleted(
+        task: TaskEntity
+    ): Completable {
+        return tasksDao.update(task)
     }
 
     override fun clearCompletedTasks(): Completable {

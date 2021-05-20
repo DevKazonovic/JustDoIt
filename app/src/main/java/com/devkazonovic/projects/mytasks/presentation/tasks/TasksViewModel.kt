@@ -13,6 +13,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.threeten.bp.OffsetDateTime
 import timber.log.Timber
 
 class TasksViewModel(
@@ -41,13 +42,25 @@ class TasksViewModel(
 
 
     fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
-        tasksRepository.taskComplete(taskID, booleanToInt(isCompleted))
+        tasksRepository.getTask(taskID)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { },
+                { task ->
+                    tasksRepository.markTaskAsCompleted(
+                        task.copy(completedAt = OffsetDateTime.now(),isCompleted = isCompleted)
+                            .mapToEntity()
+
+                    ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                            { Timber.d("Task Updated") },
+                            { error -> Timber.d("$error") }
+                        )
+                 },
                 { error -> Timber.d("$error") }
             )
+
 
     }
 
@@ -103,13 +116,13 @@ class TasksViewModel(
 
 
     fun saveTask(title: String, detail: String) {
-        _currentTasksList.value?.id?.let {
+        _currentTasksList.value?.id?.let {currentTasksListId ->
             tasksRepository.insert(
-
                 Task(
                     title = title,
                     detail = detail,
-                    listID = it
+                    listID = currentTasksListId,
+                    date = OffsetDateTime.now()
                 ).mapToEntity()
             )
                 .subscribeOn(Schedulers.io())

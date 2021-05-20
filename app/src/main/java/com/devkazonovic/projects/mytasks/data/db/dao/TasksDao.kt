@@ -22,8 +22,9 @@ interface TasksDao {
     @Insert
     fun insertAndReturnID(task: TaskEntity): Single<Long>
 
+
     @Insert
-    fun insert(taskList: TaskListEntity): Completable
+    fun insert(taskList: TaskListEntity): Single<Long>
 
     @Delete
     fun delete(taskList: TaskListEntity): Completable
@@ -41,17 +42,17 @@ interface TasksDao {
     @Query("SELECT * FROM task")
     fun getAllTasks(): Single<List<TaskEntity>>
 
-    @Query("SELECT * FROM task WHERE isCompleted = 1 AND listID = :listID")
+    @Query("SELECT * FROM task WHERE isCompleted = 1 AND listID = :listID ORDER BY datetime(completedAt) ASC")
     fun getCompletedTasks(listID: Long): Flowable<List<TaskEntity>>
 
-    @Query("SELECT * FROM task WHERE isCompleted = 0 AND listID = :listID")
+    @Query("SELECT * FROM task WHERE isCompleted = 0 AND listID = :listID ORDER BY datetime(date) DESC")
     fun getUnCompletedTasks(listID: Long): Flowable<List<TaskEntity>>
 
     @Query("SELECT * FROM task_list")
     fun getAllTasksLists(): Flowable<List<TaskListEntity>>
 
     @Query("UPDATE task SET isCompleted = :isCompleted WHERE id = :taskID")
-    fun markTaskAsCompleted(taskID: Long, isCompleted: Int): Completable
+    fun markTaskAsCompleted(taskID: Long, isCompleted: Int, ): Completable
 
     @Query("DELETE FROM task WHERE isCompleted = 1")
     fun clearCompletedTasks(): Completable

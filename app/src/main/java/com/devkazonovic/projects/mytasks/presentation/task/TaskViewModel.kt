@@ -45,18 +45,25 @@ class TaskViewModel(private val tasksRepository: TasksRepository) : ViewModel() 
     }
 
     fun updateTask(newTask: Task) {
-        tasksRepository.update(Task(
-            id = _task.value?.id!!,
-            title = newTask.title,
-            detail = newTask.detail,
-            listID = _taskList.value?.id!!
-        ).mapToEntity())
+        _task.value?.let { task ->
+            tasksRepository.update(Task(
+                id = task.id,
+                title = newTask.title,
+                detail = newTask.detail,
+                listID = _taskList.value?.id!!,
+                date = task.date,
+                completedAt = task.date,
+                isCompleted = task.isCompleted
+            ).mapToEntity())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { Timber.d("Task Updated") },
                 { error -> Timber.d(error) }
             )
+
+        }
+
     }
 
 }

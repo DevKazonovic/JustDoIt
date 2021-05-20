@@ -4,6 +4,7 @@ import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
 import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import org.threeten.bp.OffsetDateTime
 
 fun TaskEntity.mapToDomainModel(): Task {
     return Task(
@@ -11,7 +12,9 @@ fun TaskEntity.mapToDomainModel(): Task {
         title = htmlToString(title),
         detail = htmlToString(detail),
         isCompleted = isCompleted == 1,
-        listID = listID
+        listID = listID ,
+        date = date,
+        completedAt = completedAt
     )
 }
 
@@ -19,8 +22,10 @@ fun Task.mapToEntity(): TaskEntity {
     return TaskEntity(
         title = title,
         detail = detail,
-        booleanToInt(isCompleted),
-        listID = listID
+        isCompleted = booleanToInt(isCompleted),
+        listID = listID,
+        date = date,
+        completedAt = completedAt
     ).also { taskEntity -> taskEntity.id = id }
 }
 
