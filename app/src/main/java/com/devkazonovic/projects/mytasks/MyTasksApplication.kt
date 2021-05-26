@@ -15,10 +15,10 @@ class MyTasksApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-            Stetho.initializeWithDefaults(this);
+            Stetho.initializeWithDefaults(this)
         }
 
     }

@@ -8,7 +8,7 @@ private const val KEY_TASKS_LIST = "Current Task List"
 class MySharedPreferences(context: Context) {
     private val preferences = context.getSharedPreferences(context.packageName, MODE_PRIVATE)
 
-    fun saveCurrentTasksList(taskListID: Long) : Boolean{
+    fun saveCurrentTasksList(taskListID: Long): Boolean {
         return with(preferences.edit()) {
             putLong(KEY_TASKS_LIST, taskListID)
         }.commit()

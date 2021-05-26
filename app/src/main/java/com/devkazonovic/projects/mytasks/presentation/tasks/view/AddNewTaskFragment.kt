@@ -7,26 +7,27 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.devkazonovic.projects.mytasks.MyTasksApplication
 import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
-import com.devkazonovic.projects.mytasks.databinding.AddtaskFragmentBinding
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
+import com.devkazonovic.projects.mytasks.databinding.AddNewtaskFragmentBinding
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class AddTaskFragment : BottomSheetDialogFragment() {
+class AddNewTaskFragment : BottomSheetDialogFragment() {
 
-    private var _binding: AddtaskFragmentBinding? = null
+    private var _binding: AddNewtaskFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: TasksViewModel by viewModels (
-        {requireParentFragment()},
-        { TasksViewModelFactory(
-            TasksRepositoryImpl((requireActivity().application as MyTasksApplication).dao))
+    private val viewModel: TasksViewModel by viewModels(
+        { requireParentFragment() },
+        {
+            TasksViewModelFactory(
+                TasksRepositoryImpl((requireActivity().application as MyTasksApplication).dao)
+            )
         }
     )
 
     companion object {
-        fun newInstance() = AddTaskFragment()
+        fun newInstance() = AddNewTaskFragment()
     }
 
     override fun onCreateView(
@@ -34,11 +35,11 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = AddtaskFragmentBinding.inflate(layoutInflater)
+        _binding = AddNewtaskFragmentBinding.inflate(layoutInflater)
         binding.buttonSave.setOnClickListener {
             viewModel.saveTask(
-                title = binding.textInputLayout.editText?.text.toString(),
-                detail = binding.textInputLayout2.editText?.text.toString()
+                title = binding.editTextTaskDetail.text.toString(),
+                detail = binding.editTextTaskDetail.text.toString()
             )
         }
         return binding.root

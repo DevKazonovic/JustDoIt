@@ -13,13 +13,18 @@ import timber.log.Timber
 
 class TaskViewModel(private val tasksRepository: TasksRepository) : ViewModel() {
 
-    private val _taskID = MutableLiveData<Long>()
-
     private val _task = MutableLiveData<Task>()
     val task: LiveData<Task> get() = _task
 
     private val _taskList = MutableLiveData<TaskList>()
     val taskList: LiveData<TaskList> get() = _taskList
+
+    private val _tasksLists = MutableLiveData<List<TaskList>>()
+    val tasksLists: LiveData<List<TaskList>> get() = _tasksLists
+
+    init {
+        Timber.d("Init")
+    }
 
     fun getTask(taskID: Long) {
         tasksRepository.getTask(taskID)
@@ -28,7 +33,6 @@ class TaskViewModel(private val tasksRepository: TasksRepository) : ViewModel() 
             .subscribe(
                 { task ->
                     _task.postValue(task)
-                    _taskID.postValue(task.id)
                 },
                 { error -> Timber.d(error) }
             )
@@ -39,31 +43,57 @@ class TaskViewModel(private val tasksRepository: TasksRepository) : ViewModel() 
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { list -> _taskList.value = list },
+                { list -> _taskList.postValue(list) },
                 { error -> Timber.d(error) }
             )
     }
 
-    fun updateTask(newTask: Task) {
-        _task.value?.let { task ->
-            tasksRepository.update(Task(
-                id = task.id,
-                title = newTask.title,
-                detail = newTask.detail,
-                listID = _taskList.value?.id!!,
-                date = task.date,
-                completedAt = task.date,
-                isCompleted = task.isCompleted
-            ).mapToEntity())
+    fun getTasksLists() {
+        tasksRepository.getAllTasksLists()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { Timber.d("Task Updated") },
+                { lists -> _tasksLists.postValue(lists) },
                 { error -> Timber.d(error) }
             )
+    }
+
+
+    fun updateTask(newTask: Task) {
+        _task.value?.let { task ->
+            tasksRepository.update(
+                task.copy(
+                    title = newTask.title,
+                    detail = newTask.detail,
+                    isCompleted = newTask.isCompleted,
+                    listID = _taskList.value?.id!!
+                ).mapToEntity()
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { Timber.d("Task Updated") },
+                    { error -> Timber.d(error) }
+                )
 
         }
 
+    }
+
+    fun deleteTask() {
+        _task.value?.let { task ->
+            tasksRepository.delete(task.mapToEntity())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { Timber.d("Task Deleted") },
+                    { error -> Timber.d(error) }
+                )
+        }
+    }
+
+    fun updateCurrentTaskList(newListId: Long) {
+        getTasksList(newListId)
     }
 
 }

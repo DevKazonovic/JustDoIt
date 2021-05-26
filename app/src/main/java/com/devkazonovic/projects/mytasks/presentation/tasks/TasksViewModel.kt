@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
 import com.devkazonovic.projects.mytasks.domain.TasksRepository
-import com.devkazonovic.projects.mytasks.domain.booleanToInt
 import com.devkazonovic.projects.mytasks.domain.mapToEntity
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
@@ -21,11 +20,10 @@ class TasksViewModel(
 ) : ViewModel() {
 
     private val _tasksLists = MutableLiveData<List<TaskList>>()
-
     private val _currentTasksList = MutableLiveData<TaskList>()
+
     private val _tasks = MutableLiveData<List<Task>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
-
 
     private val disposableCrudOperations = CompositeDisposable()
     private val disposableTasksObservables = CompositeDisposable()
@@ -36,87 +34,12 @@ class TasksViewModel(
     }
 
     fun updateTasks() {
-        getTasks()
+        getUnCompletedTasks()
         getCompletedTasks()
     }
 
-
-    fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
-        tasksRepository.getTask(taskID)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { task ->
-                    tasksRepository.markTaskAsCompleted(
-                        task.copy(completedAt = OffsetDateTime.now(),isCompleted = isCompleted)
-                            .mapToEntity()
-
-                    ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { Timber.d("Task Updated") },
-                            { error -> Timber.d("$error") }
-                        )
-                 },
-                { error -> Timber.d("$error") }
-            )
-
-
-    }
-
-    fun getTasksLists() {
-        tasksRepository.getAllTasksLists()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { lists -> _tasksLists.postValue(lists) },
-                { error -> Timber.d(error) }
-            )
-    }
-
-    fun getTasksList(listID: Long) {
-        tasksRepository.getTasksList(listID)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { list -> _currentTasksList.value = list },
-                { error -> Timber.d(error) }
-            )
-    }
-
-    fun changeCurrentTasksList(listID: Long) {
-        getTasksList(listID)
-        disposableTasksObservables.clear()
-    }
-
-    fun updateCurrentTasksListName(newName: String) {
-        tasksRepository.update(
-            TaskList(
-                id = _currentTasksList.value?.id!!,
-                name = newName
-            ).mapToEntity()
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { Timber.d("Task Updated") },
-                { error -> Timber.d(error) }
-            ).addTo(disposableCrudOperations)
-    }
-
-    fun createNewTasksList(name: String) {
-        tasksRepository.insert(TaskListEntity(name = name))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { Timber.d("NewList Created") },
-                { error -> Timber.d(error) }
-            ).addTo(disposableCrudOperations)
-    }
-
-
     fun saveTask(title: String, detail: String) {
-        _currentTasksList.value?.id?.let {currentTasksListId ->
+        _currentTasksList.value?.id?.let { currentTasksListId ->
             tasksRepository.insert(
                 Task(
                     title = title,
@@ -134,7 +57,106 @@ class TasksViewModel(
         }
     }
 
-    fun getTasks() {
+    fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
+        tasksRepository.getTask(taskID)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { task ->
+                    tasksRepository.markTaskAsCompleted(
+                        task.copy(completedAt = OffsetDateTime.now(), isCompleted = isCompleted)
+                            .mapToEntity()
+
+                    ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                            { Timber.d("Task Updated") },
+                            { error -> Timber.d("$error") }
+                        )
+                },
+                { error -> Timber.d("$error") }
+            )
+
+
+    }
+
+    fun deleteAllCompletedTasks() {
+        tasksRepository.clearCompletedTasks()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { Timber.d("Success") },
+                { error -> Timber.d("$error") }
+            )
+
+    }
+
+    fun getLists() {
+        tasksRepository.getAllTasksLists()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { lists -> _tasksLists.postValue(lists) },
+                { error -> Timber.d(error) }
+            )
+    }
+
+    fun createNewList(name: String) {
+        tasksRepository.insert(TaskListEntity(name = name))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { Timber.d("NewList Created") },
+                { error -> Timber.d(error) }
+            ).addTo(disposableCrudOperations)
+    }
+
+    fun updateCurrentList(newListID: Long) {
+        tasksRepository.getTasksList(newListID)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { list -> _currentTasksList.value = list },
+                { error -> Timber.d(error) }
+            )
+        disposableTasksObservables.clear()
+    }
+
+    fun updateCurrentListName(newName: String) {
+        _currentTasksList.value?.let { list ->
+            tasksRepository.update(
+                TaskList(
+                    id = list.id,
+                    name = newName,
+                    isDefault = list.isDefault
+                ).mapToEntity()
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { updateCurrentList(list.id) },
+                    { error -> Timber.d(error) }
+                ).addTo(disposableCrudOperations)
+        }
+    }
+
+    fun deleteCurrentList() {
+        _currentTasksList.value?.let {
+            if (!it.isDefault) {
+                tasksRepository.delete(it.mapToEntity())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        { updateCurrentList(0) },
+                        { error -> Timber.d("$error") }
+                    ).addTo(disposableCrudOperations)
+            } else {
+                Timber.d("You can't delete default list")
+            }
+        }
+    }
+
+    private fun getUnCompletedTasks() {
         _currentTasksList.value?.id?.let { id ->
             Timber.d("--id[${id}]")
             tasksRepository.getUnCompletedTasks(id)
@@ -149,7 +171,7 @@ class TasksViewModel(
         }
     }
 
-    fun getCompletedTasks() {
+    private fun getCompletedTasks() {
         _currentTasksList.value?.id?.let { id ->
             tasksRepository.getCompletedTasks(id)
                 .subscribeOn(Schedulers.io())
@@ -162,7 +184,6 @@ class TasksViewModel(
                 ).addTo(disposableTasksObservables)
         }
     }
-
 
     val tasks: LiveData<List<Task>> get() = _tasks
     val completedTasks: LiveData<List<Task>> get() = _completedTasks

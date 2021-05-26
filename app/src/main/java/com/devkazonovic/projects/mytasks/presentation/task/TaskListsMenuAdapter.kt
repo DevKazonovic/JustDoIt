@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.tasks.adapter
+package com.devkazonovic.projects.mytasks.presentation.task
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,25 +7,25 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksListsDiffCallback
 
-class TasksListsAdapter(
+class TaskListsMenuAdapter(
+    private var _listID: Long? = null,
     diffCallback: TasksListsDiffCallback,
     private val onClick: (list: TaskList) -> Unit
-) : ListAdapter<TaskList, TasksListsAdapter.ListViewHolder>(diffCallback) {
+) : ListAdapter<TaskList, TaskListsMenuAdapter.ListViewHolder>(diffCallback) {
+
 
     class ListViewHolder(
+        private val listID: Long? = null,
         private val binding: CardTaskListBinding,
         private val onClick: (list: TaskList) -> Unit
 
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val mySharedPreferences = MySharedPreferences(binding.root.context)
         fun bind(list: TaskList) {
-            binding.textViewListName.text = "${list.name}"
-            if (mySharedPreferences.getCurrentTasksList() == list.id) {
-                mySharedPreferences.saveCurrentTasksList(list.id)
-
+            binding.textViewListName.text = list.name
+            if (listID == list.id) {
                 binding.cardView.setCardBackgroundColor(
                     ContextCompat.getColor(
                         binding.root.context,
@@ -42,7 +42,7 @@ class TasksListsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
             CardTaskListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListViewHolder(binding) {
+        return ListViewHolder(_listID, binding) {
             onClick(it)
         }
     }

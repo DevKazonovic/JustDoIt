@@ -10,7 +10,6 @@ import com.devkazonovic.projects.mytasks.domain.model.TaskList
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
-import org.threeten.bp.OffsetDateTime
 
 class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
 
@@ -23,7 +22,7 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
     }
 
     override fun delete(task: TaskEntity): Completable {
-        return tasksDao.insert(task)
+        return tasksDao.delete(task)
     }
 
 

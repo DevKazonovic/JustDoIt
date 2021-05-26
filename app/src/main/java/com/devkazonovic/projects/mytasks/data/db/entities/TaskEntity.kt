@@ -11,8 +11,8 @@ data class TaskEntity(
     val detail: String = "",
     val isCompleted: Int = 0,
     val listID: Long = 0,
-    val date : OffsetDateTime? = null,
-    val completedAt : OffsetDateTime? = null
+    val date: OffsetDateTime? = null,
+    val completedAt: OffsetDateTime? = null
 
 ) {
     @PrimaryKey(autoGenerate = true)

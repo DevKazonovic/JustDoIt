@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MyTasks</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_rename_list">Rename List</string>
+    <string name="action_delete_list">Delete List</string>
+    <string name="action_delete_all_completed_tasks">Delete All Completed Tasks</string>
 </resources>

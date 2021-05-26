@@ -8,6 +8,6 @@ data class Task(
     val detail: String = "",
     val isCompleted: Boolean = false,
     val listID: Long = 0,
-    val date : OffsetDateTime? = null,
-    val completedAt : OffsetDateTime? = null
+    val date: OffsetDateTime? = null,
+    val completedAt: OffsetDateTime? = null
 )

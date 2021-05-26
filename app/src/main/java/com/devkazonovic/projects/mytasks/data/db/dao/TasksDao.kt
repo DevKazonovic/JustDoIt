@@ -52,7 +52,7 @@ interface TasksDao {
     fun getAllTasksLists(): Flowable<List<TaskListEntity>>
 
     @Query("UPDATE task SET isCompleted = :isCompleted WHERE id = :taskID")
-    fun markTaskAsCompleted(taskID: Long, isCompleted: Int, ): Completable
+    fun markTaskAsCompleted(taskID: Long, isCompleted: Int): Completable
 
     @Query("DELETE FROM task WHERE isCompleted = 1")
     fun clearCompletedTasks(): Completable

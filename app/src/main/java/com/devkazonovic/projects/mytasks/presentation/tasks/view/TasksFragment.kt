@@ -48,10 +48,10 @@ class TasksFragment : Fragment() {
     ): View {
         _binding = TasksFragmentBinding.inflate(inflater)
         mySharedPreferences = MySharedPreferences(requireContext())
-        viewModel.changeCurrentTasksList(mySharedPreferences.getCurrentTasksList())
+        viewModel.updateCurrentList(mySharedPreferences.getCurrentTasksList())
         initRecyclerView()
         binding.fab.setOnClickListener {
-            AddTaskFragment.newInstance().show(childFragmentManager, "add_task_fragment")
+            AddNewTaskFragment.newInstance().show(childFragmentManager, "add_task_fragment")
         }
         binding.viewShowHideCompletedTasks.setOnClickListener {
             binding.recyclerViewCompletedTasks.isVisible = showCompletedTasks
@@ -70,11 +70,11 @@ class TasksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.changeCurrentTasksList(mySharedPreferences.getCurrentTasksList())
+        viewModel.updateCurrentList(mySharedPreferences.getCurrentTasksList())
 
         viewModel.currentTaskList.observe(viewLifecycleOwner, {
             it?.let {
-                binding.textViewTasksList.text = "${it.name}"
+                binding.textViewTasksList.text = it.name
                 viewModel.updateTasks()
             }
         })
@@ -87,12 +87,9 @@ class TasksFragment : Fragment() {
         })
         viewModel.completedTasks.observe(viewLifecycleOwner, {
             it?.let {
-                binding.textViewCompletedTasks.text = "Completed (${it.size})"
                 showCompletedTasks(it)
             }
         })
-
-
 
 
     }
@@ -136,6 +133,8 @@ class TasksFragment : Fragment() {
     }
 
     private fun showCompletedTasks(tasks: List<Task>) {
+        binding.layoutCompletedTasks.isVisible = tasks.isNotEmpty()
+        binding.textViewCompletedTasks.text = "Completed (${tasks.size})"
         completedTasksAdapter.submitList(tasks)
     }
 
@@ -143,6 +142,17 @@ class TasksFragment : Fragment() {
         binding.bottomAppBar.setNavigationOnClickListener {
             val fragment = TasksListsFragment.newInstance()
             fragment.show(childFragmentManager, "tasks_lists_fragment")
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { menu ->
+            when (menu.itemId) {
+                R.id.action_show_menu -> {
+                    TasksMenuFragment.newInstance()
+                        .show(childFragmentManager, "tasks_menu_fragment")
+                    true
+                }
+                else -> false
+            }
         }
     }
 

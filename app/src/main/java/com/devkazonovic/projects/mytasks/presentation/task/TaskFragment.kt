@@ -11,9 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.devkazonovic.projects.mytasks.MyTasksApplication
+import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.TaskFragmentBinding
 import com.devkazonovic.projects.mytasks.domain.model.Task
+import com.devkazonovic.projects.mytasks.domain.model.TaskList
 
 private const val KEY_TASK_ID = "Task ID"
 
@@ -41,7 +43,8 @@ class TaskFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = TaskFragmentBinding.inflate(layoutInflater)
@@ -50,10 +53,28 @@ class TaskFragment : Fragment() {
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.topAppBar.setupWithNavController(navController, appBarConfiguration)
 
+        binding.topAppBar.setOnMenuItemClickListener { menuitem ->
+            when (menuitem.itemId) {
+                R.id.action_delete -> {
+                    viewModel.deleteTask()
+                    findNavController().navigateUp()
+                    true
+                }
+                else -> false
+            }
+        }
+        binding.dropDownTaskList.setOnClickListener {
+            val fragment = TaskListsMenuFragment.newInstance()
+            fragment.show(childFragmentManager, "movetolist_fragment")
+        }
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTask(taskID!!)
         viewModel.task.observe(viewLifecycleOwner, { task ->
@@ -68,6 +89,12 @@ class TaskFragment : Fragment() {
     private fun display(task: Task) {
         binding.editTextTaskTitle.text = SpannableStringBuilder(task.title)
         binding.editTextTaskDetail.text = SpannableStringBuilder(task.detail)
+        binding.checkboxTaskCompletion.isChecked = task.isCompleted
+         if(task.isCompleted){
+            binding.checkboxTaskCompletion.text = "Mark as UnCompleted"
+        } else {
+            binding.checkboxTaskCompletion.text = "Mark as Completed"
+        }
     }
 
     override fun onPause() {
@@ -76,6 +103,7 @@ class TaskFragment : Fragment() {
             Task(
                 title = binding.editTextTaskTitle.text.toString(),
                 detail = binding.editTextTaskDetail.text.toString(),
+                isCompleted = binding.checkboxTaskCompletion.isChecked
             )
         )
     }

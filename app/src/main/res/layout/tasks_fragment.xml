@@ -138,6 +138,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/tasks_action_bar"
             app:navigationIcon="@drawable/ic_round_menu" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -146,9 +147,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Add New task"
-            app:elevation="18dp"
+            app:elevation="12dp"
             app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/ic_outline_add_circle" />
+            app:srcCompat="@drawable/ic_round_add" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
