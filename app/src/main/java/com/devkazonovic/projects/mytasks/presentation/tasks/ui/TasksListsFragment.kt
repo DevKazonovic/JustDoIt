@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.tasks.view
+package com.devkazonovic.projects.mytasks.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,34 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.devkazonovic.projects.mytasks.MyTasksApplication
-import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.AddNewlistFragmentBinding
 import com.devkazonovic.projects.mytasks.databinding.ListsFragmentBinding
 import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModelFactory
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksListsAdapter
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksListsDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TasksListsFragment : BottomSheetDialogFragment() {
 
     private var _binding: ListsFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: TasksListsAdapter
+    private lateinit var adapter: ListsAdapter
 
-    private val viewModel: TasksViewModel by viewModels(
-        { requireParentFragment() },
-        {
-            TasksViewModelFactory(
-                TasksRepositoryImpl((requireActivity().application as MyTasksApplication).dao)
-            )
-        }
+    @Inject
+    lateinit var sharedPreferences: MySharedPreferences
+
+    private val viewModel by viewModels<TasksViewModel>(
+        { requireParentFragment() }
     )
 
-    private lateinit var mySharedPreferences: MySharedPreferences
 
     companion object {
         fun newInstance() = TasksListsFragment()
@@ -45,7 +41,6 @@ class TasksListsFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = ListsFragmentBinding.inflate(layoutInflater)
-        mySharedPreferences = MySharedPreferences(requireContext())
         initRecyclerView()
         binding.cardViewAddNewList.setOnClickListener {
             createNewList()
@@ -63,11 +58,9 @@ class TasksListsFragment : BottomSheetDialogFragment() {
 
     private fun initRecyclerView() {
         binding.recyclerViewTasksLists.layoutManager = LinearLayoutManager(requireContext())
-        adapter = TasksListsAdapter(TasksListsDiffCallback()) {
-            if (mySharedPreferences.saveCurrentTasksList(it.id)) {
-                viewModel.updateCurrentList(it.id)
-                dismiss()
-            }
+        adapter = ListsAdapter(sharedPreferences) {
+            viewModel.updateCurrentList(it.id)
+            dismiss()
         }
 
         binding.recyclerViewTasksLists.adapter = adapter

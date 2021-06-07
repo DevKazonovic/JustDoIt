@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.task
+package com.devkazonovic.projects.mytasks.presentation.task.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,30 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.devkazonovic.projects.mytasks.MyTasksApplication
-import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.TaskListsMenuFragmentBinding
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksListsDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.task.TaskViewModel
+import com.devkazonovic.projects.mytasks.presentation.task.adapter.TaskListsMenuAdapter
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsDiffCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class TaskListsMenuFragment : BottomSheetDialogFragment() {
 
     private var _binding: TaskListsMenuFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: TaskListsMenuAdapter
 
-    private val viewModel: TaskViewModel by viewModels(
-        { requireParentFragment() },
-        {
-            TaskViewModelFactory(
-                TasksRepositoryImpl((requireActivity().application as MyTasksApplication).dao)
-            )
-        }
+    private val viewModel by viewModels<TaskViewModel>(
+        { requireParentFragment() }
     )
-
-    private lateinit var mySharedPreferences: MySharedPreferences
 
     companion object {
         fun newInstance() = TaskListsMenuFragment()
@@ -41,17 +35,15 @@ class TaskListsMenuFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = TaskListsMenuFragmentBinding.inflate(layoutInflater)
-        mySharedPreferences = MySharedPreferences(requireContext())
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.taskList.observe(viewLifecycleOwner, { list ->
             Timber.d("$list")
-            viewModel.getTasksLists()
-            viewModel.tasksLists.observe(viewLifecycleOwner, { lists ->
+            viewModel.getLists()
+            viewModel.lists.observe(viewLifecycleOwner, { lists ->
                 initRecyclerView(list.id)
                 adapter.submitList(lists)
             })
@@ -60,10 +52,9 @@ class TaskListsMenuFragment : BottomSheetDialogFragment() {
 
     private fun initRecyclerView(longID: Long) {
         binding.recyclerViewTasksLists.layoutManager = LinearLayoutManager(requireContext())
-        adapter = TaskListsMenuAdapter(longID, TasksListsDiffCallback()) { taskList ->
+        adapter = TaskListsMenuAdapter(longID, ListsDiffCallback()) { taskList ->
             viewModel.updateCurrentTaskList(taskList.id)
         }
-
         binding.recyclerViewTasksLists.adapter = adapter
     }
 

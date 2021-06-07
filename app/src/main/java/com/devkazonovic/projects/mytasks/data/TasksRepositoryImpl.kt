@@ -1,17 +1,23 @@
 package com.devkazonovic.projects.mytasks.data
 
-import com.devkazonovic.projects.mytasks.data.db.dao.TasksDao
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
-import com.devkazonovic.projects.mytasks.domain.TasksRepository
-import com.devkazonovic.projects.mytasks.domain.mapToDomainModel
+import com.devkazonovic.projects.mytasks.data.local.TasksDataBase
+import com.devkazonovic.projects.mytasks.data.local.dao.TasksDao
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import com.devkazonovic.projects.mytasks.domain.repository.TasksRepository
+import com.devkazonovic.projects.mytasks.domain.repository.mapToDomainModel
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Inject
 
-class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
+class TasksRepositoryImpl @Inject constructor(
+    dataBase: TasksDataBase
+) : TasksRepository {
+
+    private val tasksDao: TasksDao = dataBase.tasksDao()
 
     override fun insert(task: TaskEntity): Completable {
         return tasksDao.insert(task)
@@ -25,7 +31,6 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
         return tasksDao.delete(task)
     }
 
-
     override fun insert(taskList: TaskListEntity): Single<Long> {
         return tasksDao.insert(taskList)
     }
@@ -37,7 +42,6 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
     override fun delete(taskList: TaskListEntity): Completable {
         return tasksDao.delete(taskList)
     }
-
 
     override fun getTask(taskID: Long): Single<Task> {
         return tasksDao.getTask(taskID).map { it.mapToDomainModel() }
@@ -60,7 +64,7 @@ class TasksRepositoryImpl(private val tasksDao: TasksDao) : TasksRepository {
             .map { it.map { task -> task.mapToDomainModel() } }
     }
 
-    override fun getAllTasksLists(): Flowable<List<TaskList>> {
+    override fun getAllLists(): Flowable<List<TaskList>> {
         return tasksDao.getAllTasksLists().map { it.map { list -> list.mapToDomainModel() } }
     }
 

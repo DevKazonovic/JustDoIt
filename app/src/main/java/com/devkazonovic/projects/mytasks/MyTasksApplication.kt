@@ -1,16 +1,14 @@
 package com.devkazonovic.projects.mytasks
 
 import android.app.Application
-import com.devkazonovic.projects.mytasks.data.db.TasksDataBase
 import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class MyTasksApplication : Application() {
 
-    val dao by lazy {
-        TasksDataBase.getInstance(this).tasksDao()
-    }
 
     override fun onCreate() {
         super.onCreate()

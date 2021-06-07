@@ -2,10 +2,12 @@ package com.devkazonovic.projects.mytasks.domain
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 private const val KEY_TASKS_LIST = "Current Task List"
 
-class MySharedPreferences(context: Context) {
+class MySharedPreferences @Inject constructor(@ApplicationContext context: Context) {
     private val preferences = context.getSharedPreferences(context.packageName, MODE_PRIVATE)
 
     fun saveCurrentTasksList(taskListID: Long): Boolean {

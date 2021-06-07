@@ -1,7 +1,7 @@
-package com.devkazonovic.projects.mytasks.domain
+package com.devkazonovic.projects.mytasks.domain.repository
 
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
 import io.reactivex.rxjava3.core.Completable
@@ -22,7 +22,7 @@ interface TasksRepository {
     fun getAllTasks(): Single<List<Task>>
     fun getCompletedTasks(listID: Long): Flowable<List<Task>>
     fun getUnCompletedTasks(listID: Long): Flowable<List<Task>>
-    fun getAllTasksLists(): Flowable<List<TaskList>>
+    fun getAllLists(): Flowable<List<TaskList>>
 
     fun markTaskAsCompleted(task: TaskEntity): Completable
 

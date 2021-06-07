@@ -10,22 +10,20 @@ import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
 import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
 
-class TasksListsAdapter(
-    diffCallback: TasksListsDiffCallback,
+class ListsAdapter(
+    private val sharedPreferences: MySharedPreferences,
     private val onClick: (list: TaskList) -> Unit
-) : ListAdapter<TaskList, TasksListsAdapter.ListViewHolder>(diffCallback) {
+) : ListAdapter<TaskList, ListsAdapter.ListViewHolder>(ListsDiffCallback()) {
 
     class ListViewHolder(
+        private val sharedPreferences: MySharedPreferences,
         private val binding: CardTaskListBinding,
         private val onClick: (list: TaskList) -> Unit
-
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val mySharedPreferences = MySharedPreferences(binding.root.context)
         fun bind(list: TaskList) {
             binding.textViewListName.text = "${list.name}"
-            if (mySharedPreferences.getCurrentTasksList() == list.id) {
-                mySharedPreferences.saveCurrentTasksList(list.id)
-
+            if (sharedPreferences.getCurrentTasksList() == list.id) {
+                sharedPreferences.saveCurrentTasksList(list.id)
                 binding.cardView.setCardBackgroundColor(
                     ContextCompat.getColor(
                         binding.root.context,
@@ -42,7 +40,7 @@ class TasksListsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
             CardTaskListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListViewHolder(binding) {
+        return ListViewHolder(sharedPreferences, binding) {
             onClick(it)
         }
     }

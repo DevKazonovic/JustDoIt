@@ -11,7 +11,7 @@
         tools:layout="@layout/task_fragment" />
     <fragment
         android:id="@+id/tasks"
-        android:name="com.devkazonovic.projects.mytasks.presentation.tasks.view.TasksFragment"
+        android:name="com.devkazonovic.projects.mytasks.presentation.tasks.ui.TasksFragment"
         tools:layout="@layout/tasks_fragment">
         <action
             android:id="@+id/action_tasks_to_taskDetail"

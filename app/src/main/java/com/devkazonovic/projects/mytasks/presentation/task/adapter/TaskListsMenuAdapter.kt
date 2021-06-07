@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.task
+package com.devkazonovic.projects.mytasks.presentation.task.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksListsDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsDiffCallback
 
 class TaskListsMenuAdapter(
     private var _listID: Long? = null,
-    diffCallback: TasksListsDiffCallback,
+    diffCallback: ListsDiffCallback,
     private val onClick: (list: TaskList) -> Unit
 ) : ListAdapter<TaskList, TaskListsMenuAdapter.ListViewHolder>(diffCallback) {
 

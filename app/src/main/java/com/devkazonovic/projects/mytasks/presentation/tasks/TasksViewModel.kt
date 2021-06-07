@@ -3,20 +3,25 @@ package com.devkazonovic.projects.mytasks.presentation.tasks
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
-import com.devkazonovic.projects.mytasks.domain.TasksRepository
-import com.devkazonovic.projects.mytasks.domain.mapToEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import com.devkazonovic.projects.mytasks.domain.repository.TasksRepository
+import com.devkazonovic.projects.mytasks.domain.repository.mapToEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.threeten.bp.OffsetDateTime
 import timber.log.Timber
+import javax.inject.Inject
 
-class TasksViewModel(
-    private val tasksRepository: TasksRepository
+@HiltViewModel
+class TasksViewModel @Inject constructor(
+    private val tasksRepository: TasksRepository,
+    private val sharedPreferences: MySharedPreferences
 ) : ViewModel() {
 
     private val _tasksLists = MutableLiveData<List<TaskList>>()
@@ -28,14 +33,54 @@ class TasksViewModel(
     private val disposableCrudOperations = CompositeDisposable()
     private val disposableTasksObservables = CompositeDisposable()
 
-
     init {
         Timber.d("Init")
+        updateCurrentList(sharedPreferences.getCurrentTasksList())
     }
 
     fun updateTasks() {
         getUnCompletedTasks()
         getCompletedTasks()
+    }
+
+    private fun getUnCompletedTasks() {
+        _currentTasksList.value?.id?.let { id ->
+            Timber.d("--id[${id}]")
+            tasksRepository.getUnCompletedTasks(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { list ->
+                        _tasks.postValue(list)
+                    },
+                    { error -> Timber.d("$error") }
+                ).addTo(disposableTasksObservables)
+        }
+    }
+
+    private fun getCompletedTasks() {
+        _currentTasksList.value?.id?.let { id ->
+            tasksRepository.getCompletedTasks(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { list ->
+                        _completedTasks.postValue(list)
+                    },
+                    { error -> Timber.d("$error") }
+                ).addTo(disposableTasksObservables)
+        }
+    }
+
+    fun deleteAllCompletedTasks() {
+        tasksRepository.clearCompletedTasks()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { Timber.d("Success") },
+                { error -> Timber.d("$error") }
+            )
+
     }
 
     fun saveTask(title: String, detail: String) {
@@ -80,19 +125,8 @@ class TasksViewModel(
 
     }
 
-    fun deleteAllCompletedTasks() {
-        tasksRepository.clearCompletedTasks()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { Timber.d("Success") },
-                { error -> Timber.d("$error") }
-            )
-
-    }
-
     fun getLists() {
-        tasksRepository.getAllTasksLists()
+        tasksRepository.getAllLists()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -112,14 +146,16 @@ class TasksViewModel(
     }
 
     fun updateCurrentList(newListID: Long) {
-        tasksRepository.getTasksList(newListID)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { list -> _currentTasksList.value = list },
-                { error -> Timber.d(error) }
-            )
-        disposableTasksObservables.clear()
+        if (sharedPreferences.saveCurrentTasksList(newListID)) {
+            tasksRepository.getTasksList(newListID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { list -> _currentTasksList.value = list },
+                    { error -> Timber.d(error) }
+                )
+            disposableTasksObservables.clear()
+        }
     }
 
     fun updateCurrentListName(newName: String) {
@@ -156,34 +192,6 @@ class TasksViewModel(
         }
     }
 
-    private fun getUnCompletedTasks() {
-        _currentTasksList.value?.id?.let { id ->
-            Timber.d("--id[${id}]")
-            tasksRepository.getUnCompletedTasks(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { list ->
-                        _tasks.postValue(list)
-                    },
-                    { error -> Timber.d("$error") }
-                ).addTo(disposableTasksObservables)
-        }
-    }
-
-    private fun getCompletedTasks() {
-        _currentTasksList.value?.id?.let { id ->
-            tasksRepository.getCompletedTasks(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { list ->
-                        _completedTasks.postValue(list)
-                    },
-                    { error -> Timber.d("$error") }
-                ).addTo(disposableTasksObservables)
-        }
-    }
 
     val tasks: LiveData<List<Task>> get() = _tasks
     val completedTasks: LiveData<List<Task>> get() = _completedTasks

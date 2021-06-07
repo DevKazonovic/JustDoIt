@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.tasks.view
+package com.devkazonovic.projects.mytasks.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,35 +11,26 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.devkazonovic.projects.mytasks.MyTasksApplication
 import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.TasksFragmentBinding
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModelFactory
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TaskTouchHelper
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksAdapter
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksDiffCallback
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 private const val KEY_TASK_ID = "Task ID"
 
+@AndroidEntryPoint
 class TasksFragment : Fragment() {
 
     private lateinit var tasksAdapter: TasksAdapter
     private lateinit var completedTasksAdapter: TasksAdapter
     private var _binding: TasksFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: TasksViewModel by viewModels {
-        TasksViewModelFactory(
-            TasksRepositoryImpl(
-                (requireActivity().application as MyTasksApplication).dao
-            )
-        )
-    }
-    private lateinit var mySharedPreferences: MySharedPreferences
+    private val viewModel by viewModels<TasksViewModel>()
     private var showCompletedTasks = true
 
     override fun onCreateView(
@@ -47,8 +38,6 @@ class TasksFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = TasksFragmentBinding.inflate(inflater)
-        mySharedPreferences = MySharedPreferences(requireContext())
-        viewModel.updateCurrentList(mySharedPreferences.getCurrentTasksList())
         initRecyclerView()
         binding.fab.setOnClickListener {
             AddNewTaskFragment.newInstance().show(childFragmentManager, "add_task_fragment")
@@ -69,8 +58,7 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.updateCurrentList(mySharedPreferences.getCurrentTasksList())
+        Timber.d("onViewCreated")
 
         viewModel.currentTaskList.observe(viewLifecycleOwner, {
             it?.let {
@@ -78,7 +66,6 @@ class TasksFragment : Fragment() {
                 viewModel.updateTasks()
             }
         })
-        Timber.d("onViewCreated")
         viewModel.tasks.observe(viewLifecycleOwner, {
             it?.let {
                 showTasks(it)

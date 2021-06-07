@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.tasks.view
+package com.devkazonovic.projects.mytasks.presentation.tasks.ui
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -6,27 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.devkazonovic.projects.mytasks.MyTasksApplication
-import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.AddNewlistFragmentBinding
 import com.devkazonovic.projects.mytasks.databinding.TasksMenuFragmentBinding
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TasksMenuFragment : BottomSheetDialogFragment() {
 
     private var _binding: TasksMenuFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: TasksViewModel by viewModels(
-        { requireParentFragment() },
-        {
-            TasksViewModelFactory(
-                TasksRepositoryImpl((requireActivity().application as MyTasksApplication).dao)
-            )
-        }
+    private val viewModel by viewModels<TasksViewModel>(
+        { requireParentFragment() }
     )
 
     companion object {

@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.task
+package com.devkazonovic.projects.mytasks.presentation.task.ui
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -10,29 +10,24 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.devkazonovic.projects.mytasks.MyTasksApplication
 import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.data.TasksRepositoryImpl
 import com.devkazonovic.projects.mytasks.databinding.TaskFragmentBinding
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import com.devkazonovic.projects.mytasks.presentation.task.TaskViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val KEY_TASK_ID = "Task ID"
 
+@AndroidEntryPoint
 class TaskFragment : Fragment() {
 
     private var taskID: Long? = null
     private var listID: Long? = null
-
     private var _binding: TaskFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory(
-            TasksRepositoryImpl(
-                (requireActivity().application as MyTasksApplication).dao
-            )
-        )
-    }
+
+
+    private val viewModel by viewModels<TaskViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +73,7 @@ class TaskFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTask(taskID!!)
         viewModel.task.observe(viewLifecycleOwner, { task ->
-            viewModel.getTasksList(task.listID)
+            viewModel.getTaskList(task.listID)
             display(task)
         })
         viewModel.taskList.observe(viewLifecycleOwner, { list ->
@@ -90,7 +85,7 @@ class TaskFragment : Fragment() {
         binding.editTextTaskTitle.text = SpannableStringBuilder(task.title)
         binding.editTextTaskDetail.text = SpannableStringBuilder(task.detail)
         binding.checkboxTaskCompletion.isChecked = task.isCompleted
-         if(task.isCompleted){
+        if (task.isCompleted) {
             binding.checkboxTaskCompletion.text = "Mark as UnCompleted"
         } else {
             binding.checkboxTaskCompletion.text = "Mark as Completed"

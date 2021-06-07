@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.data.db.entities
+package com.devkazonovic.projects.mytasks.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

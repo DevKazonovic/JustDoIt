@@ -1,8 +1,8 @@
-package com.devkazonovic.projects.mytasks.data.db.dao
+package com.devkazonovic.projects.mytasks.data.local.dao
 
 import androidx.room.*
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single

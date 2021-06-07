@@ -1,12 +1,11 @@
-package com.devkazonovic.projects.mytasks
+package com.devkazonovic.projects.mytasks.data.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.devkazonovic.projects.mytasks.data.db.TasksDataBase
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +54,7 @@ class MyTasksDataBaseTest {
     fun getCompletedTasks() {
         database.tasksDao().insert(TASK_UNCOMPLETED).blockingAwait()
         database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
-        database.tasksDao().getCompletedTasks()
+        database.tasksDao().getCompletedTasks(0)
             .test()
             .assertValue {
                 it.contains(TASK_COMPLETED) && !it.contains(TASK_UNCOMPLETED)
@@ -68,7 +67,7 @@ class MyTasksDataBaseTest {
             database.tasksDao().markTaskAsCompleted(id, 1).blockingAwait()
         }
         database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
-        database.tasksDao().getCompletedTasks()
+        database.tasksDao().getCompletedTasks(0)
             .test()
             .assertValue {
                 it.contains(TASK_COMPLETED) && it.contains(TASK_UNCOMPLETED_COMPLETED)

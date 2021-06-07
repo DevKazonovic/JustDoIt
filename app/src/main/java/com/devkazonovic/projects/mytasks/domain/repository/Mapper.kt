@@ -1,7 +1,9 @@
-package com.devkazonovic.projects.mytasks.domain
+package com.devkazonovic.projects.mytasks.domain.repository
 
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.db.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.domain.booleanToInt
+import com.devkazonovic.projects.mytasks.domain.htmlToString
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskList
 
