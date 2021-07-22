@@ -32,7 +32,7 @@ class AddNewTaskFragment : BottomSheetDialogFragment() {
         _binding = AddNewtaskFragmentBinding.inflate(layoutInflater)
         binding.buttonSave.setOnClickListener {
             viewModel.saveTask(
-                title = binding.editTextTaskDetail.text.toString(),
+                title = binding.editTextTaskTitle.text.toString(),
                 detail = binding.editTextTaskDetail.text.toString()
             )
         }

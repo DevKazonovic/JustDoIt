@@ -7,23 +7,23 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
-import com.devkazonovic.projects.mytasks.domain.model.TaskList
+import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsDiffCallback
 
 class TaskListsMenuAdapter(
     private var _listID: Long? = null,
     diffCallback: ListsDiffCallback,
-    private val onClick: (list: TaskList) -> Unit
-) : ListAdapter<TaskList, TaskListsMenuAdapter.ListViewHolder>(diffCallback) {
+    private val onClick: (list: Category) -> Unit
+) : ListAdapter<Category, TaskListsMenuAdapter.ListViewHolder>(diffCallback) {
 
 
     class ListViewHolder(
         private val listID: Long? = null,
         private val binding: CardTaskListBinding,
-        private val onClick: (list: TaskList) -> Unit
+        private val onClick: (list: Category) -> Unit
 
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(list: TaskList) {
+        fun bind(list: Category) {
             binding.textViewListName.text = list.name
             if (listID == list.id) {
                 binding.cardView.setCardBackgroundColor(

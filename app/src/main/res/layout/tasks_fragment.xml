@@ -32,97 +32,119 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTasksList">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollViewContainer"
+        <com.devkazonovic.projects.mytasks.help.view.ScrollChildSwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
+            android:layout_height="match_parent">
 
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-
-            <LinearLayout
-                android:id="@+id/layoutMain"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollViewContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingBottom="100dp">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewTasks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/card_task">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="1dp"
-                    android:background="?android:attr/listDivider" />
 
                 <LinearLayout
-                    android:id="@+id/layoutCompletedTasks"
+                    android:id="@+id/layoutMain"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingBottom="100dp">
 
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/viewShowHideCompletedTasks"
+                    <include
+                        android:id="@+id/viewError"
+                        layout="@layout/fragment_basic_error_page"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="0dp">
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                    </include>
+
+                    <LinearLayout
+                        android:id="@+id/viewData"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewTasks"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            tools:itemCount="4"
+                            tools:listitem="@layout/card_task">
 
-                            <TextView
-                                android:id="@+id/textViewCompletedTasks"
-                                android:layout_width="0dp"
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="1dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <LinearLayout
+                            android:id="@+id/layoutCompletedTasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/viewShowHideCompletedTasks"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginBottom="16dp"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/imageViewDropDownIcon"
-                                app:layout_constraintHorizontal_bias="0.6"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="Completed(2)" />
+                                app:cardCornerRadius="0dp">
 
-                            <ImageView
-                                android:id="@+id/imageViewDropDownIcon"
-                                android:layout_width="wrap_content"
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <TextView
+                                        android:id="@+id/textViewCompletedTasks"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="16dp"
+                                        android:layout_marginLeft="16dp"
+                                        android:layout_marginTop="16dp"
+                                        android:layout_marginBottom="16dp"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/imageViewDropDownIcon"
+                                        app:layout_constraintHorizontal_bias="0.6"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        tools:text="Completed(2)" />
+
+                                    <ImageView
+                                        android:id="@+id/imageViewDropDownIcon"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="16dp"
+                                        android:layout_marginRight="16dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_round_arrow_drop_down" />
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerViewCompletedTasks"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:layout_marginRight="16dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_round_arrow_drop_down" />
+                                android:visibility="gone"
+                                tools:listitem="@layout/card_task" />
+                        </LinearLayout>
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewCompletedTasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        tools:listitem="@layout/card_task" />
                 </LinearLayout>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
+        </com.devkazonovic.projects.mytasks.help.view.ScrollChildSwipeRefreshLayout>
 
 
         <com.google.android.material.bottomappbar.BottomAppBar

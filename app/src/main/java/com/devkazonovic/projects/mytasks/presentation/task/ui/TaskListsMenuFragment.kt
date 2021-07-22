@@ -40,9 +40,9 @@ class TaskListsMenuFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.taskList.observe(viewLifecycleOwner, { list ->
+        viewModel.category.observe(viewLifecycleOwner, { list ->
             Timber.d("$list")
-            viewModel.getLists()
+            viewModel.getCategories()
             viewModel.lists.observe(viewLifecycleOwner, { lists ->
                 initRecyclerView(list.id)
                 adapter.submitList(lists)

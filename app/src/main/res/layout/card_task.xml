@@ -43,7 +43,14 @@
                 android:id="@+id/textViewTaskDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 tools:text="Detail" />
+
+            <TextView
+                android:id="@+id/textViewReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="2018/5/3 4:00" />
         </LinearLayout>
     </LinearLayout>
 

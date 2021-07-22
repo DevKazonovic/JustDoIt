@@ -3,31 +3,44 @@ package com.devkazonovic.projects.mytasks.presentation.tasks
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
+import com.devkazonovic.projects.mytasks.R
+import com.devkazonovic.projects.mytasks.data.local.preference.IMainSharedPreference
+import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
+import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.domain.model.TaskList
-import com.devkazonovic.projects.mytasks.domain.repository.TasksRepository
-import com.devkazonovic.projects.mytasks.domain.repository.mapToEntity
+import com.devkazonovic.projects.mytasks.help.holder.Event
+import com.devkazonovic.projects.mytasks.help.holder.InputError
+import com.devkazonovic.projects.mytasks.help.holder.Result
+import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_IO
+import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_MAIN
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.schedulers.Schedulers
 import org.threeten.bp.OffsetDateTime
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
-    private val tasksRepository: TasksRepository,
-    private val sharedPreferences: MySharedPreferences
+    private val tasksRepository: ITasksRepository,
+    private val sharedPreferences: IMainSharedPreference,
+    @Named(SCHEDULER_MAIN) private val mainScheduler: Scheduler,
+    @Named(SCHEDULER_IO) private val ioScheduler: Scheduler
 ) : ViewModel() {
 
-    private val _tasksLists = MutableLiveData<List<TaskList>>()
-    private val _currentTasksList = MutableLiveData<TaskList>()
 
-    private val _tasks = MutableLiveData<List<Task>>()
+    private val _isDownloading = MutableLiveData(false)
+    private val _snackBarEvent = MutableLiveData<Event<Int>>()
+    private val _userInputErrorEvent = MutableLiveData<Event<InputError>>()
+    private val _mainViewErrorEvent = MutableLiveData<Event<Int>>()
+    private val _snackBarErrorEvent = MutableLiveData<Event<Int>>()
+
+
+    private val _categories = MutableLiveData<List<Category>>()
+    private val _currentCategory = MutableLiveData<Category>()
+    private val _unCompletedTasks = MutableLiveData<List<Task>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
 
     private val disposableCrudOperations = CompositeDisposable()
@@ -35,172 +48,225 @@ class TasksViewModel @Inject constructor(
 
     init {
         Timber.d("Init")
-        updateCurrentList(sharedPreferences.getCurrentTasksList())
+        _isDownloading.value = true
+        updateCurrentCategory()
     }
 
-    fun updateTasks() {
+    fun observeTasks() {
         getUnCompletedTasks()
         getCompletedTasks()
+        _isDownloading.value = false
     }
 
     private fun getUnCompletedTasks() {
-        _currentTasksList.value?.id?.let { id ->
-            Timber.d("--id[${id}]")
+        _currentCategory.value?.id?.let { id ->
             tasksRepository.getUnCompletedTasks(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { list ->
-                        _tasks.postValue(list)
-                    },
-                    { error -> Timber.d("$error") }
-                ).addTo(disposableTasksObservables)
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { result ->
+                    handleResult(result,
+                        { _unCompletedTasks.postValue(it) },
+                        {
+                            setMainViewMassage(R.string.unKnownError)
+                        }
+                    )
+                }.addTo(disposableTasksObservables)
         }
     }
 
     private fun getCompletedTasks() {
-        _currentTasksList.value?.id?.let { id ->
+        _currentCategory.value?.id?.let { id ->
             tasksRepository.getCompletedTasks(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { list ->
-                        _completedTasks.postValue(list)
-                    },
-                    { error -> Timber.d("$error") }
-                ).addTo(disposableTasksObservables)
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { result ->
+                    handleResult(result,
+                        { _completedTasks.postValue(it) },
+                        { setMainViewMassage(it) }
+                    )
+                }.addTo(disposableTasksObservables)
         }
     }
 
     fun deleteAllCompletedTasks() {
         tasksRepository.clearCompletedTasks()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
             .subscribe(
-                { Timber.d("Success") },
-                { error -> Timber.d("$error") }
+                { setSnackBarMassage(R.string.completed_tasks_delete_success) },
+                { setSnackBarErrorMassage(R.string.completed_tasks_delete_fail) }
             )
 
     }
 
     fun saveTask(title: String, detail: String) {
-        _currentTasksList.value?.id?.let { currentTasksListId ->
-            tasksRepository.insert(
-                Task(
-                    title = title,
-                    detail = detail,
-                    listID = currentTasksListId,
-                    date = OffsetDateTime.now()
-                ).mapToEntity()
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { Timber.d("Task Saved") },
-                    { error -> Timber.d(error) }
-                ).addTo(disposableCrudOperations)
+        if (title.isEmpty())
+            setUserInputErrorMassage(InputError.TaskTitleInput(R.string.task_save_title_empty))
+        else {
+            _currentCategory.value?.id?.let { currentTasksListId ->
+                tasksRepository.addNewTask(
+                    Task(
+                        title = title,
+                        detail = detail,
+                        listID = currentTasksListId,
+                        date = OffsetDateTime.now()
+                    )
+                )
+                    .subscribeOn(ioScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe(
+                        { setSnackBarMassage(R.string.task_save_success) },
+                        { setSnackBarErrorMassage(R.string.task_save_fail) }
+                    ).addTo(disposableCrudOperations)
+            }
         }
+
     }
 
     fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
-        tasksRepository.getTask(taskID)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { task ->
-                    tasksRepository.markTaskAsCompleted(
-                        task.copy(completedAt = OffsetDateTime.now(), isCompleted = isCompleted)
-                            .mapToEntity()
-
-                    ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { Timber.d("Task Updated") },
-                            { error -> Timber.d("$error") }
-                        )
-                },
-                { error -> Timber.d("$error") }
-            )
-
-
+        if (isCompleted) completeTask(taskID)
+        else unCompleteTask(taskID)
     }
 
-    fun getLists() {
-        tasksRepository.getAllLists()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    private fun completeTask(taskID: Long) {
+        tasksRepository.markTaskAsCompleted(taskID, OffsetDateTime.now())
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
             .subscribe(
-                { lists -> _tasksLists.postValue(lists) },
-                { error -> Timber.d(error) }
+                { setSnackBarMassage(R.string.task_completed) },
+                { setSnackBarErrorMassage(R.string.unKnownError) }
             )
     }
 
-    fun createNewList(name: String) {
-        tasksRepository.insert(TaskListEntity(name = name))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    private fun unCompleteTask(taskID: Long) {
+        tasksRepository.markTaskAsUnCompleted(taskID)
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
             .subscribe(
-                { Timber.d("NewList Created") },
-                { error -> Timber.d(error) }
+                { setSnackBarMassage(R.string.task_active) },
+                { setSnackBarErrorMassage(R.string.unKnownError) }
+            )
+    }
+
+    fun getCategories() {
+        tasksRepository.getCategories()
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
+            .subscribe { result ->
+                handleResult(result,
+                    { _categories.postValue(it) },
+                    { }
+                )
+            }
+    }
+
+    fun createNewCategory(name: String) {
+        tasksRepository.addNewCategory(Category(id = -1, name))
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(
+                { setSnackBarMassage(R.string.category_save_success) },
+                { setSnackBarErrorMassage(R.string.category_save_fail) }
             ).addTo(disposableCrudOperations)
     }
 
-    fun updateCurrentList(newListID: Long) {
+    fun updateCurrentCategory(newListID: Long = 0) {
         if (sharedPreferences.saveCurrentTasksList(newListID)) {
-            tasksRepository.getTasksList(newListID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { list -> _currentTasksList.value = list },
-                    { error -> Timber.d(error) }
-                )
+            tasksRepository.getCategoryById(newListID)
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { result ->
+                    handleResult(result,
+                        {
+                            _currentCategory.value = it
+                            setSnackBarMassage(R.string.category_update_success)
+                        },
+                        { setSnackBarMassage(R.string.category_update_fail) }
+                    )
+                }
             disposableTasksObservables.clear()
         }
     }
 
-    fun updateCurrentListName(newName: String) {
-        _currentTasksList.value?.let { list ->
-            tasksRepository.update(
-                TaskList(
+    fun updateCurrentCategoryName(newName: String) {
+        _currentCategory.value?.let { list ->
+            tasksRepository.updateCategory(
+                Category(
                     id = list.id,
                     name = newName,
                     isDefault = list.isDefault
-                ).mapToEntity()
+                )
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
                 .subscribe(
-                    { updateCurrentList(list.id) },
-                    { error -> Timber.d(error) }
+                    { updateCurrentCategory(list.id) },
+                    { Timber.d(it) }
                 ).addTo(disposableCrudOperations)
         }
     }
 
-    fun deleteCurrentList() {
-        _currentTasksList.value?.let {
-            if (!it.isDefault) {
-                tasksRepository.delete(it.mapToEntity())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+    fun deleteCurrentCategory() {
+        _currentCategory.value?.let { category ->
+            if (!category.isDefault) {
+                tasksRepository.deleteCategory(category)
+                    .subscribeOn(ioScheduler)
+                    .observeOn(mainScheduler)
                     .subscribe(
-                        { updateCurrentList(0) },
-                        { error -> Timber.d("$error") }
+                        {
+                            updateCurrentCategory(0)
+                            setSnackBarMassage(R.string.category_delete_success)
+                        },
+                        { setSnackBarMassage(R.string.category_delete_fail) }
                     ).addTo(disposableCrudOperations)
             } else {
-                Timber.d("You can't delete default list")
+                setSnackBarMassage(R.string.warning_delete_default_list)
             }
         }
     }
 
+    private fun <T> handleResult(
+        result: Result<T>,
+        onSuccess: (data: T) -> Unit,
+        onError: (message: Int) -> Unit
+    ) {
+        when (result) {
+            is Result.Success -> onSuccess(result.value)
+            is Result.Failure -> {
+                Timber.d(result.throwable)
+                onError(R.string.unKnownError)
+            }
+        }
+    }
 
-    val tasks: LiveData<List<Task>> get() = _tasks
-    val completedTasks: LiveData<List<Task>> get() = _completedTasks
-    val currentTaskList: LiveData<TaskList> get() = _currentTasksList
-    val tasksLists: LiveData<List<TaskList>> get() = _tasksLists
+    private fun setUserInputErrorMassage(value: InputError) {
+        _userInputErrorEvent.value = Event(value)
+    }
 
+    private fun setMainViewMassage(value: Int) {
+        _mainViewErrorEvent.value = Event(value)
+    }
+
+    private fun setSnackBarErrorMassage(value: Int) {
+        _snackBarErrorEvent.value = Event(value)
+    }
+
+    private fun setSnackBarMassage(value: Int) {
+        _snackBarEvent.value = Event(value)
+    }
 
     override fun onCleared() {
         super.onCleared()
         Timber.d("onCleared")
     }
+
+    val unCompletedTasks: LiveData<List<Task>> get() = _unCompletedTasks
+    val completedTasks: LiveData<List<Task>> get() = _completedTasks
+    val currentCategory: LiveData<Category> get() = _currentCategory
+    val tasksLists: LiveData<List<Category>> get() = _categories
+    val isDownloading: LiveData<Boolean> get() = _isDownloading
+    val userInputErrorEvent: LiveData<Event<InputError>> get() = _userInputErrorEvent
+    val mainViewErrorEvent: LiveData<Event<Int>> get() = _mainViewErrorEvent
+    val snackBarErrorEvent: LiveData<Event<Int>> get() = _snackBarErrorEvent
+    val snackBarEvent: LiveData<Event<Int>> get() = _snackBarEvent
 }
