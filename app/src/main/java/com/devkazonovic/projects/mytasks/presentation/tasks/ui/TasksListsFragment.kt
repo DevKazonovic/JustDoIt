@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferences
 import com.devkazonovic.projects.mytasks.databinding.AddNewlistFragmentBinding
 import com.devkazonovic.projects.mytasks.databinding.ListsFragmentBinding
-import com.devkazonovic.projects.mytasks.domain.MySharedPreferences
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsAdapter
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.CategoriesAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +21,7 @@ class TasksListsFragment : BottomSheetDialogFragment() {
 
     private var _binding: ListsFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: ListsAdapter
+    private lateinit var adapter: CategoriesAdapter
 
     @Inject
     lateinit var sharedPreferences: MySharedPreferences
@@ -50,7 +50,7 @@ class TasksListsFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getLists()
+        viewModel.getCategories()
         viewModel.tasksLists.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
@@ -58,8 +58,8 @@ class TasksListsFragment : BottomSheetDialogFragment() {
 
     private fun initRecyclerView() {
         binding.recyclerViewTasksLists.layoutManager = LinearLayoutManager(requireContext())
-        adapter = ListsAdapter(sharedPreferences) {
-            viewModel.updateCurrentList(it.id)
+        adapter = CategoriesAdapter(sharedPreferences) {
+            viewModel.updateCurrentCategory(it.id)
             dismiss()
         }
 
@@ -76,7 +76,7 @@ class TasksListsFragment : BottomSheetDialogFragment() {
         builder.apply {
             setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             setPositiveButton("Create") { dialog, which ->
-                viewModel.createNewList(view.editTextListName.text.toString())
+                viewModel.createNewCategory(view.editTextListName.text.toString())
             }
         }.show()
     }

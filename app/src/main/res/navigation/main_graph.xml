@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/taskDetail"
-        android:name="com.devkazonovic.projects.mytasks.presentation.task.TaskFragment"
+        android:name="com.devkazonovic.projects.mytasks.presentation.task.ui.TaskFragment"
         tools:layout="@layout/task_fragment" />
     <fragment
         android:id="@+id/tasks"

@@ -4,4 +4,36 @@
     <string name="action_rename_list">Rename List</string>
     <string name="action_delete_list">Delete List</string>
     <string name="action_delete_all_completed_tasks">Delete All Completed Tasks</string>
+
+
+    <string name="emptyList">Empty List!</string>
+    <string name="warning_delete_default_list">You can\'t delete default list!</string>
+
+    <string name="unKnownError">Unknown Error! Try Again Later!</string>
+
+    <string name="completed_tasks_delete_success">All Completed Tasks Are Deleted!</string>
+    <string name="completed_tasks_delete_fail">Error, Try Again!</string>
+
+    <string name="task_completed">Task Is Completed!</string>
+    <string name="task_active">Task Is Active Again!</string>
+
+    <string name="task_save_success">Task Saved!</string>
+    <string name="task_update_success">Task Updated!</string>
+    <string name="task_delete_success">Task Deleted!</string>
+    <string name="task_save_fail">Error When Saving Task, Try Again</string>
+    <string name="task_update_fail">Error When Updating Task, Try Again</string>
+    <string name="task_delete_fail">Error When Deleting Task, Try Again</string>
+    <string name="task_save_title_empty">Task Title is Required!</string>
+
+
+    <string name="category_save_success">Category Saved!</string>
+    <string name="category_update_success">Category Updated!</string>
+    <string name="category_delete_success">Category Deleted!</string>
+    <string name="category_save_fail">Error When Saving Category, Try Again</string>
+    <string name="category_update_fail">Error When Saving Category, Try Again</string>
+    <string name="category_delete_fail">Error When Saving Category, Try Again!</string>
+    <string name="errorEmptyDateTime"><![CDATA[You need to select date & time]]></string>
+    <string name="date_picker_add_date">Add Date</string>
+    <string name="time_picker_add_time">Add Time</string>
+
 </resources>

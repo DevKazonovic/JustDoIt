@@ -45,7 +45,7 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
 
                 }
                 setPositiveButton("Yes!") { dialog, which ->
-                    viewModel.deleteCurrentList()
+                    viewModel.deleteCurrentCategory()
                     dismiss()
                 }
             }.show()
@@ -77,10 +77,10 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
         builder.setView(view.root)
         builder.apply {
             view.editTextListName.text =
-                SpannableStringBuilder(viewModel.currentTaskList.value?.name)
+                SpannableStringBuilder(viewModel.currentCategory.value?.name)
             setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             setPositiveButton("Update") { dialog, which ->
-                viewModel.updateCurrentListName(view.editTextListName.text.toString())
+                viewModel.updateCurrentCategoryName(view.editTextListName.text.toString())
             }
         }.show()
     }

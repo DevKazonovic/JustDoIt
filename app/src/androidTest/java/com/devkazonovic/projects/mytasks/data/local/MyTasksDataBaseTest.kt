@@ -4,8 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.devkazonovic.projects.mytasks.data.local.entities.TaskEntity
-import com.devkazonovic.projects.mytasks.data.local.entities.TaskListEntity
+import com.devkazonovic.projects.mytasks.data.local.db.TasksDataBase
+import com.devkazonovic.projects.mytasks.data.local.db.dao.CategoryDao
+import com.devkazonovic.projects.mytasks.data.local.db.dao.TaskDao
+import com.devkazonovic.projects.mytasks.data.local.db.entity.CategoryEntity
+import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskEntity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -19,6 +22,9 @@ class MyTasksDataBaseTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: TasksDataBase
+    private lateinit var taskDao: TaskDao
+    private lateinit var categoryDao: CategoryDao
+
 
     @Before
     fun initDb() {
@@ -29,7 +35,11 @@ class MyTasksDataBaseTest {
             .allowMainThreadQueries()
             .build()
 
-        database.tasksDao().insert(DEFAULT_LIST)
+        taskDao = database.taskDao()
+        categoryDao = database.categoryDao()
+
+
+        categoryDao.insert(DEFAULT_LIST)
     }
 
     @After
@@ -40,10 +50,10 @@ class MyTasksDataBaseTest {
 
     @Test
     fun insertAndGetAllTasks() {
-        database.tasksDao().insert(TASK_UNCOMPLETED).blockingAwait()
-        database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
+        database.taskDao().insert(TASK_UNCOMPLETED).blockingAwait()
+        database.taskDao().insert(TASK_COMPLETED).blockingAwait()
 
-        database.tasksDao().getAllTasks()
+        database.taskDao().getAllTasks()
             .test()
             .assertValue {
                 it.contains(TASK_COMPLETED) && it.contains(TASK_UNCOMPLETED)
@@ -52,9 +62,10 @@ class MyTasksDataBaseTest {
 
     @Test
     fun getCompletedTasks() {
-        database.tasksDao().insert(TASK_UNCOMPLETED).blockingAwait()
-        database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
-        database.tasksDao().getCompletedTasks(0)
+        taskDao.insert(TASK_UNCOMPLETED).blockingAwait()
+        taskDao.insert(TASK_COMPLETED).blockingAwait()
+
+        taskDao.getCompletedTasks(0)
             .test()
             .assertValue {
                 it.contains(TASK_COMPLETED) && !it.contains(TASK_UNCOMPLETED)
@@ -63,11 +74,11 @@ class MyTasksDataBaseTest {
 
     @Test
     fun markTaskAsCompleted() {
-        database.tasksDao().insertAndReturnID(TASK_UNCOMPLETED).blockingSubscribe { id ->
-            database.tasksDao().markTaskAsCompleted(id, 1).blockingAwait()
+        taskDao.insertAndReturnId(TASK_UNCOMPLETED).blockingSubscribe { id ->
+            taskDao.markTaskAsCompleted(id, "").blockingAwait()
         }
-        database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
-        database.tasksDao().getCompletedTasks(0)
+        taskDao.insert(TASK_COMPLETED).blockingAwait()
+        taskDao.getCompletedTasks(0)
             .test()
             .assertValue {
                 it.contains(TASK_COMPLETED) && it.contains(TASK_UNCOMPLETED_COMPLETED)
@@ -77,39 +88,39 @@ class MyTasksDataBaseTest {
 
     @Test
     fun updateTask() {
-        database.tasksDao().insertAndReturnID(TASK_UNCOMPLETED)
+        taskDao.insertAndReturnId(TASK_UNCOMPLETED)
             .blockingSubscribe { id ->
-                database.tasksDao().getTask(id).blockingSubscribe {
+                taskDao.getTask(id).blockingSubscribe {
                     TASK_UNCOMPLETED_UPDATE.id = it.id
-                    database.tasksDao().update(TASK_UNCOMPLETED_UPDATE).blockingAwait()
+                    taskDao.update(TASK_UNCOMPLETED_UPDATE).blockingAwait()
                 }
             }
 
-        database.tasksDao().getAllTasks().test()
+        taskDao.getAllTasks().test()
             .assertValue { it.contains(TASK_UNCOMPLETED_UPDATE) }
     }
 
     @Test
     fun deleteTask() {
 
-        database.tasksDao().insertAndReturnID(TASK_UNCOMPLETED)
+        taskDao.insertAndReturnId(TASK_UNCOMPLETED)
             .blockingSubscribe { id ->
-                database.tasksDao().getTask(id).blockingSubscribe {
-                    database.tasksDao().delete(it).blockingAwait()
+                taskDao.getTask(id).blockingSubscribe {
+                    database.taskDao().delete(it).blockingAwait()
                 }
             }
 
-        database.tasksDao().getAllTasks().test()
+        taskDao.getAllTasks().test()
             .assertValue { it.isEmpty() }
     }
 
     @Test
     fun clearAllCompletedTasks() {
-        database.tasksDao().insert(TASK_UNCOMPLETED).blockingAwait()
-        database.tasksDao().insert(TASK_COMPLETED).blockingAwait()
+        taskDao.insert(TASK_UNCOMPLETED).blockingAwait()
+        taskDao.insert(TASK_COMPLETED).blockingAwait()
 
-        database.tasksDao().clearCompletedTasks()
-        database.tasksDao().getAllTasks()
+        taskDao.clearCompletedTasks()
+        taskDao.getAllTasks()
             .test()
             .assertValue {
                 it.contains(TASK_UNCOMPLETED)
@@ -118,7 +129,7 @@ class MyTasksDataBaseTest {
 
 
     companion object {
-        private val DEFAULT_LIST = TaskListEntity("MyList").apply {
+        private val DEFAULT_LIST = CategoryEntity("MyList").apply {
             this.id = 0
         }
 

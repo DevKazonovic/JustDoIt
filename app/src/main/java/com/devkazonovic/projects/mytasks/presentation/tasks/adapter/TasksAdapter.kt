@@ -7,19 +7,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.databinding.CardTaskBinding
 import com.devkazonovic.projects.mytasks.domain.model.Task
+import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import java.util.*
 
 class TasksAdapter(
     private val diffCallback: TasksDiffCallback,
     private val onCheck: (task: Task) -> Unit,
-    private val onClick: (taskID: Long) -> Unit
-
+    private val onClick: (taskID: Long) -> Unit,
+    private val dateTimeHelper: DateTimeHelper
 ) : ListAdapter<Task, TasksAdapter.TaskViewHolder>(diffCallback) {
 
     class TaskViewHolder(
         private val binding: CardTaskBinding,
         private val onCheck: (task: Task) -> Unit,
-        private val onClick: (taskID: Long) -> Unit
+        private val onClick: (taskID: Long) -> Unit,
+        private val dateTimeHelper: DateTimeHelper
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
             if (task.isCompleted) {
@@ -29,13 +31,15 @@ class TasksAdapter(
                     binding.textViewTaskDetail.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
             binding.checkbox.isChecked = task.isCompleted
-            binding.textViewTaskTitle.text = "${task.title}"
-            binding.textViewTaskDetail.text = "${task.detail}"
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                binding.checkbox.isChecked = !isChecked
-                onCheck(task)
+            binding.textViewTaskTitle.text = task.title
+            binding.textViewTaskDetail.text = task.detail
+            task.reminderDate?.let {
+                binding.textViewReminder.text = dateTimeHelper.showDateTime(it)
             }
-
+            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                onCheck(task)
+                binding.checkbox.isChecked = !isChecked
+            }
             binding.viewTask.setOnClickListener {
                 onClick(task.id)
             }
@@ -49,7 +53,7 @@ class TasksAdapter(
             onCheck(it)
         }, {
             onClick(it)
-        })
+        }, dateTimeHelper)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
