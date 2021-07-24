@@ -1,7 +1,7 @@
 package com.devkazonovic.projects.mytasks
 
 import android.app.Application
-import com.devkazonovic.projects.mytasks.service.NotificationHelper
+import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MyTasksApplication : Application() {
 
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var taskNotificationManager: TaskNotificationManager
 
     companion object {
         var myPackageName: String = "DEFAULT_PACKAGE"
@@ -26,6 +26,6 @@ class MyTasksApplication : Application() {
             Stetho.initializeWithDefaults(this)
         }
         myPackageName = packageName
-        notificationHelper.createNotificationChannel()
+        taskNotificationManager.createNotificationChannel()
     }
 }

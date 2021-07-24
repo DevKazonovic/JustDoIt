@@ -7,7 +7,7 @@ import com.devkazonovic.projects.mytasks.help.MyIntent.ACTION_NOTIFICATION_DISMI
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_NOTIFICATION_ID
 import com.devkazonovic.projects.mytasks.help.util.log
 import com.devkazonovic.projects.mytasks.service.AlarmHelper
-import com.devkazonovic.projects.mytasks.service.NotificationHelper
+import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -15,16 +15,16 @@ import javax.inject.Inject
 class NotificationDismissedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var taskNotificationManager: TaskNotificationManager
 
     @Inject
     lateinit var alarmHelper: AlarmHelper
+
     override fun onReceive(context: Context, intent: Intent) {
         log(intent.toString())
         if (intent.action == ACTION_NOTIFICATION_DISMISS) {
             val notificationID = intent.extras?.getInt(EXTRA_NOTIFICATION_ID)!!
-            log("$notificationID")
-            notificationHelper.cancel(notificationID)
+            taskNotificationManager.cancel(notificationID)
         }
     }
 }

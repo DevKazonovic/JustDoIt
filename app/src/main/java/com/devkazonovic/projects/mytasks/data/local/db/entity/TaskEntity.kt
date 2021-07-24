@@ -14,7 +14,7 @@ data class TaskEntity(
     val createdAt: OffsetDateTime? = null,
     val completedAt: OffsetDateTime? = null,
     val reminderDate: Long? = null,
-    val pendingIntentRequestCode: Int? = null
+    val pendingIntentRequestCode: Int? = null,
 
 ) {
     @PrimaryKey(autoGenerate = true)

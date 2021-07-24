@@ -12,7 +12,7 @@ import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_MAIN
 import com.devkazonovic.projects.mytasks.help.util.handleResult
 import com.devkazonovic.projects.mytasks.service.AlarmHelper
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
-import com.devkazonovic.projects.mytasks.service.NotificationHelper
+import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Scheduler
 import javax.inject.Inject
@@ -20,7 +20,7 @@ import javax.inject.Named
 
 @HiltViewModel
 class ReminderViewModel @Inject constructor(
-    private val notificationHelper: NotificationHelper,
+    private val taskNotificationManager: TaskNotificationManager,
     private val dateTimeHelper: DateTimeHelper,
     private val reminderManager: AlarmHelper,
     private val tasksRepository: ITasksRepository,
@@ -109,7 +109,7 @@ class ReminderViewModel @Inject constructor(
 
     private fun setAlarm(dateTimeInMillis: Long) {
         _currentTask.value?.let {
-            notificationHelper.cancel(it.pendingIntentRequestCode!!)
+            taskNotificationManager.cancel(it.pendingIntentRequestCode!!)
             reminderManager.setExactReminder(
                 dateTimeInMillis,
                 it

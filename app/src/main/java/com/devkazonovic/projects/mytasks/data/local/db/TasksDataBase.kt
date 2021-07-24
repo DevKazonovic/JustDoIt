@@ -6,12 +6,15 @@ import androidx.room.TypeConverters
 import com.devkazonovic.projects.mytasks.data.local.db.converter.MyTasksTypeConverters
 import com.devkazonovic.projects.mytasks.data.local.db.dao.CategoryDao
 import com.devkazonovic.projects.mytasks.data.local.db.dao.TaskDao
+import com.devkazonovic.projects.mytasks.data.local.db.dao.TaskNotificationDao
 import com.devkazonovic.projects.mytasks.data.local.db.entity.CategoryEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskEntity
+import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
 
-@Database(entities = [TaskEntity::class, CategoryEntity::class], version = 9)
+@Database(entities = [TaskEntity::class, CategoryEntity::class,TaskNotificationEntity::class], version = 10)
 @TypeConverters(MyTasksTypeConverters::class)
 abstract class TasksDataBase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun taskNotificationDao(): TaskNotificationDao
 }
