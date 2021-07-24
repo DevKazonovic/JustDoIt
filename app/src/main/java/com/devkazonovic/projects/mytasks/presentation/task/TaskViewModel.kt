@@ -12,10 +12,9 @@ import com.devkazonovic.projects.mytasks.help.holder.Event
 import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_IO
 import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_MAIN
 import com.devkazonovic.projects.mytasks.help.util.handleResult
-import com.devkazonovic.projects.mytasks.help.util.log
 import com.devkazonovic.projects.mytasks.service.AlarmHelper
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
-import com.devkazonovic.projects.mytasks.service.NotificationHelper
+import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Scheduler
 import timber.log.Timber
@@ -25,7 +24,7 @@ import javax.inject.Named
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val dateTimeHelper: DateTimeHelper,
-    private val notificationHelper: NotificationHelper,
+    private val taskNotificationManager: TaskNotificationManager,
     private val reminderHelper: AlarmHelper,
     private val tasksRepository: ITasksRepository,
     @Named(SCHEDULER_MAIN) private val mainScheduler: Scheduler,
@@ -91,20 +90,13 @@ class TaskViewModel @Inject constructor(
 
     private fun resetAlarm(task: Task, timeInMillis: Long) {
         task.pendingIntentRequestCode?.let {
-            log("${notificationHelper.notifications}")
-            if (notificationHelper.isNotificationVisible(it)) {
-                updateNotification(task)
-            }
             reminderHelper.setExactReminder(timeInMillis, task)
+            updateNotification(task)
         }
     }
 
-    fun cancelNotification(notificationID: Int) {
-        notificationHelper.cancel(notificationID)
-    }
-
     private fun updateNotification(task: Task) {
-        notificationHelper.update(
+        taskNotificationManager.update(
             task.pendingIntentRequestCode!!,
             task.title,
             task.detail,
@@ -116,7 +108,7 @@ class TaskViewModel @Inject constructor(
         _task.value?.let { task ->
             task.pendingIntentRequestCode?.let {
                 reminderHelper.cancelReminder(it)
-                notificationHelper.cancel(it)
+                taskNotificationManager.cancel(it)
             }
             tasksRepository.updateTaskReminder(task.id, null)
                 .subscribeOn(ioScheduler)
@@ -126,6 +118,10 @@ class TaskViewModel @Inject constructor(
                     { }
                 )
         }
+    }
+
+    fun cancelNotification(notificationID: Int) {
+        taskNotificationManager.cancel(notificationID)
     }
 
     fun getCategory(listID: Long) {

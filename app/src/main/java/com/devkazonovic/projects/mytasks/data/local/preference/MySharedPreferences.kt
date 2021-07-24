@@ -8,8 +8,10 @@ import javax.inject.Inject
 private const val KEY_TASKS_LIST = "Current Task List"
 private const val KEY_REQUEST_CODE = "Current Pending Intent Request Code"
 
-class MySharedPreferences @Inject constructor(@ApplicationContext context: Context) :
-    IMainSharedPreference {
+class MySharedPreferences @Inject constructor(
+    @ApplicationContext context: Context
+) : IMainSharedPreference {
+
     private val preferences =
         context.getSharedPreferences(context.packageName, MODE_PRIVATE)
 
@@ -28,5 +30,7 @@ class MySharedPreferences @Inject constructor(@ApplicationContext context: Conte
     }
 
     override fun getCurrentRequestCode(): Int = preferences.getInt(KEY_REQUEST_CODE, -1)
+
+
 
 }

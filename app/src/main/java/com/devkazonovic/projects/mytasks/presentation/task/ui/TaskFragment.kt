@@ -20,6 +20,7 @@ import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.extension.showSnackBar
 import com.devkazonovic.projects.mytasks.help.holder.DataState
 import com.devkazonovic.projects.mytasks.help.holder.EventObserver
+import com.devkazonovic.projects.mytasks.help.util.log
 import com.devkazonovic.projects.mytasks.presentation.reminder.ReminderFragment
 import com.devkazonovic.projects.mytasks.presentation.task.TaskViewModel
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
@@ -30,8 +31,7 @@ private const val KEY_TASK_ID = "Task ID"
 private const val KEY_NOTIFICATION_ID = "Notification ID"
 
 private var taskID: Long? = null
-private var notificationID: Int? = null
-
+private var notificationID: Int? = -1
 private var reminder: Long? = null
 
 @AndroidEntryPoint
@@ -53,8 +53,8 @@ class TaskFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            taskID = it.getLong(KEY_TASK_ID)
-            notificationID = it.getInt(KEY_NOTIFICATION_ID)
+            taskID = it.getLong(KEY_TASK_ID,-1)
+            notificationID = it.getInt(KEY_NOTIFICATION_ID,-1)
         }
     }
 
@@ -72,8 +72,8 @@ class TaskFragment : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        cancelNotification()
         setToolBar()
-        viewModel.cancelNotification(notificationID!!)
         addListeners()
         observeData()
         observeDataState()
@@ -139,6 +139,16 @@ class TaskFragment : Fragment() {
         binding.viewClearReminder.setOnClickListener {
             viewModel.removeReminder()
         }
+    }
+
+    private fun cancelNotification(){
+        log("Notification : $notificationID")
+        notificationID?.let {
+            if(it!=-1)
+                viewModel.cancelNotification(it)
+        }
+
+
     }
 
     private fun observeData() {

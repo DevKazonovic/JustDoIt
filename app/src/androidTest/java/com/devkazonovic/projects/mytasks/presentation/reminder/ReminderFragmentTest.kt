@@ -19,6 +19,8 @@ import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
 import com.devkazonovic.projects.mytasks.di.RepositoryModule
 import com.devkazonovic.projects.mytasks.domain.mapper.IMappers
 import com.devkazonovic.projects.mytasks.domain.mapper.Mappers
+import com.devkazonovic.projects.mytasks.help.assertViewIsDisplayed
+import com.devkazonovic.projects.mytasks.help.assertViewIsNotDisplayed
 import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_DATE_PICKER_CANCEL_BUTTON_TAG
 import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_DATE_PICKER_CONFIRM_BUTTON_TAG
 import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_TIME_PICKER_CANCEL_BUTTON_TAG
@@ -101,11 +103,11 @@ class AlarmFragmentTest {
         assertViewIsDisplayed(R.id.viewClearDate)
         assertViewIsDisplayed(R.id.viewClearTime)
 
-        Espresso.onView(withId(R.id.textViewDatePicker))
-            .check(matches(ViewMatchers.withText("FRIDAY, JULY 16, 2021\n")))
+        onView(withId(R.id.textViewDatePicker))
+            .check(matches(withText("FRIDAY, JULY 16, 2021\n")))
 
-        Espresso.onView(withId(R.id.textViewTimePicker))
-            .check(matches(ViewMatchers.withText("11:00")))
+        onView(withId(R.id.textViewTimePicker))
+            .check(matches(withText("11:00")))
 
 
     }
@@ -162,7 +164,7 @@ class AlarmFragmentTest {
     }
 
     @Test
-    fun showClearIcons_whenDateIsNotSelected() {
+    fun hideClearIcons_whenDateIsNotSelected() {
         val args = bundleOf(KEY_TASK_ID to 1L)
         launchFragmentInHiltContainer<ReminderFragment>(args, R.style.Theme_MyTasks) {
             this.also { fragment ->
@@ -188,7 +190,7 @@ class AlarmFragmentTest {
     }
 
     @Test
-    fun showClearIcons_whenTimeIsNotSelected() {
+    fun hideClearIcons_whenTimeIsNotSelected() {
         val args = bundleOf(KEY_TASK_ID to 1L)
         launchFragmentInHiltContainer<ReminderFragment>(args, R.style.Theme_MyTasks) {
             this.also { fragment ->
@@ -212,7 +214,6 @@ class AlarmFragmentTest {
         assertViewIsNotDisplayed(R.id.viewClearTime)
     }
 
-
     @Module
     @InstallIn(SingletonComponent::class)
     abstract class RepositoryTestModule {
@@ -225,14 +226,6 @@ class AlarmFragmentTest {
         abstract fun provideMappers(mappers: Mappers): IMappers
     }
 
-    private fun assertViewIsDisplayed(id: Int): ViewInteraction {
-        return onView(withId(id))
-            .check(matches(isDisplayed()))
-    }
 
-    private fun assertViewIsNotDisplayed(id: Int): ViewInteraction {
-        return onView(withId(id))
-            .check(matches(not(isDisplayed())))
-    }
 }
 

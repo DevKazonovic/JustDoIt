@@ -7,4 +7,6 @@ interface IMainSharedPreference {
 
     fun getCurrentRequestCode(): Int
     fun saveRequestCode(requestCode: Int): Boolean
+
+
 }

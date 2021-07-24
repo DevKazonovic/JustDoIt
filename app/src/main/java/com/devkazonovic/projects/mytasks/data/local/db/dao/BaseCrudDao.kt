@@ -2,13 +2,15 @@ package com.devkazonovic.projects.mytasks.data.local.db.dao
 
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 interface BaseCrudDao<T> {
 
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(obj: T): Completable
 
     @Insert
