@@ -4,12 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferences
 import com.devkazonovic.projects.mytasks.data.repository.TasksRepository
+import com.devkazonovic.projects.mytasks.domain.holder.Event
+import com.devkazonovic.projects.mytasks.domain.holder.InputError
+import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.getOrAwaitValue
-import com.devkazonovic.projects.mytasks.help.holder.Event
-import com.devkazonovic.projects.mytasks.help.holder.InputError
-import com.devkazonovic.projects.mytasks.help.holder.Result
 import com.google.common.truth.Truth
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable

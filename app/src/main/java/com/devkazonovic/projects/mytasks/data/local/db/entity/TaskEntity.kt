@@ -14,9 +14,10 @@ data class TaskEntity(
     val createdAt: OffsetDateTime? = null,
     val completedAt: OffsetDateTime? = null,
     val reminderDate: Long? = null,
+    val isAllDay: Int = 1,
     val pendingIntentRequestCode: Int? = null,
 
-) {
+    ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 

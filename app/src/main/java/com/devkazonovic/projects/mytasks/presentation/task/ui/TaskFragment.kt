@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -15,13 +14,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.databinding.TaskFragmentBinding
+import com.devkazonovic.projects.mytasks.databinding.FragmentTaskBinding
+import com.devkazonovic.projects.mytasks.domain.holder.DataState
+import com.devkazonovic.projects.mytasks.domain.holder.EventObserver
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.extension.showSnackBar
-import com.devkazonovic.projects.mytasks.help.holder.DataState
-import com.devkazonovic.projects.mytasks.help.holder.EventObserver
 import com.devkazonovic.projects.mytasks.help.util.log
-import com.devkazonovic.projects.mytasks.presentation.reminder.ReminderFragment
 import com.devkazonovic.projects.mytasks.presentation.task.TaskViewModel
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +35,7 @@ private var reminder: Long? = null
 @AndroidEntryPoint
 class TaskFragment : Fragment() {
 
-    private var _binding: TaskFragmentBinding? = null
+    private var _binding: FragmentTaskBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<TaskViewModel>()
 
@@ -53,8 +51,8 @@ class TaskFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            taskID = it.getLong(KEY_TASK_ID,-1)
-            notificationID = it.getInt(KEY_NOTIFICATION_ID,-1)
+            taskID = it.getLong(KEY_TASK_ID, -1)
+            notificationID = it.getInt(KEY_NOTIFICATION_ID, -1)
         }
     }
 
@@ -63,7 +61,7 @@ class TaskFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = TaskFragmentBinding.inflate(layoutInflater)
+        _binding = FragmentTaskBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -93,8 +91,6 @@ class TaskFragment : Fragment() {
     }
 
     private fun setToolBar() {
-        /*val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)*/
         binding.topAppBar.setupWithNavController(navController, appBarConfiguration)
     }
 
@@ -105,8 +101,7 @@ class TaskFragment : Fragment() {
         ) { _, bundle ->
             reminder = bundle.getLong("bundleKey")
             reminder?.let {
-                if (it != 0L)
-                    binding.textViewAddReminder.text = dateTimeHelper.showDateTime(it)
+                //TODO
             }
         }
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
@@ -119,32 +114,26 @@ class TaskFragment : Fragment() {
             }
         }
         binding.dropDownTaskList.setOnClickListener {
-            val fragment = TaskListsMenuFragment.newInstance()
+            val fragment = TaskCategoriesFragment.newInstance()
             fragment.show(childFragmentManager, "movetolist_fragment")
         }
-        binding.checkboxTaskCompletion.setOnCheckedChangeListener { _, isChecked ->
+        binding.checkboxTaskIsCompleted.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                binding.checkboxTaskCompletion.text = "Mark as UnCompleted"
+                binding.checkboxTaskIsCompleted.text = "Mark as UnCompleted"
             } else {
-                binding.checkboxTaskCompletion.text = "Mark as Completed"
+                binding.checkboxTaskIsCompleted.text = "Mark as Completed"
             }
             updateTaskTextDetail(isChecked)
-            binding.checkboxTaskCompletion.isChecked = isChecked
+            binding.checkboxTaskIsCompleted.isChecked = isChecked
         }
-        binding.viewAddReminder.setOnClickListener {
-            ReminderFragment().apply {
-                arguments = bundleOf(KEY_TASK_ID to taskID)
-            }.show(childFragmentManager, "Add Reminder")
-        }
-        binding.viewClearReminder.setOnClickListener {
-            viewModel.removeReminder()
-        }
+
+
     }
 
-    private fun cancelNotification(){
+    private fun cancelNotification() {
         log("Notification : $notificationID")
         notificationID?.let {
-            if(it!=-1)
+            if (it != -1)
                 viewModel.cancelNotification(it)
         }
 
@@ -192,13 +181,12 @@ class TaskFragment : Fragment() {
         binding.editTextTaskTitle.text = SpannableStringBuilder(task.title)
         binding.editTextTaskDetail.text = SpannableStringBuilder(task.detail)
         updateTaskTextDetail(task.isCompleted)
-        binding.textViewAddReminder.text =
-            task.reminderDate?.let { dateTimeHelper.showDateTime(it) } ?: "Add Date/Time"
-        binding.checkboxTaskCompletion.isChecked = task.isCompleted
+
+        binding.checkboxTaskIsCompleted.isChecked = task.isCompleted
         if (task.isCompleted) {
-            binding.checkboxTaskCompletion.text = "Mark as UnCompleted"
+            binding.checkboxTaskIsCompleted.text = "Mark as UnCompleted"
         } else {
-            binding.checkboxTaskCompletion.text = "Mark as Completed"
+            binding.checkboxTaskIsCompleted.text = "Mark as Completed"
         }
     }
 
@@ -218,7 +206,7 @@ class TaskFragment : Fragment() {
         viewModel.updateTask(
             binding.editTextTaskTitle.text.toString(),
             binding.editTextTaskDetail.text.toString(),
-            binding.checkboxTaskCompletion.isChecked,
+            binding.checkboxTaskIsCompleted.isChecked,
             reminder
         )
     }

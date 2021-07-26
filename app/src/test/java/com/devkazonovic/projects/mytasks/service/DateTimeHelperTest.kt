@@ -8,15 +8,17 @@ import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 
 private const val july_22_2021 = 1626912000000L //(GMT)Thursday, July 22, 2021 0:00:00
-private val time_9_00 = Pair(9,0)
+private val time_9_00 = Pair(9, 0)
 
 private const val july_22_2021_9_00_GMT = 1626944400000L //=> Thursday, July 22, 2021 9:00:00 GMT
-private const val july_22_2021_9_00_GMTplus1 = 1626940800000L //=> Thursday, July 22, 2021 9:00:00 GMT+1
-private const val july_22_2021_9_00_01_GMTplus1 =  1626940801000L //=> Thursday, July 22, 2021 9:00:01 GMT+1
+private const val july_22_2021_9_00_GMTplus1 =
+    1626940800000L //=> Thursday, July 22, 2021 9:00:00 GMT+1
+private const val july_22_2021_9_00_01_GMTplus1 =
+    1626940801000L //=> Thursday, July 22, 2021 9:00:01 GMT+1
 
 private const val july_22_2021_0_00_GMT = 1626912000000L //=> Thursday, July 22, 2021 0:00:00 GMT
-private const val july_22_2021_0_00_GMTplus1 = 1626908400000L //=> Thursday, July 22, 2021 0:00:00 GMT+1
-
+private const val july_22_2021_0_00_GMTplus1 =
+    1626908400000L //=> Thursday, July 22, 2021 0:00:00 GMT+1
 
 
 class DateTimeHelperTest {
@@ -25,24 +27,24 @@ class DateTimeHelperTest {
 
     /** BASE RULE:
      * groupDateTime return TimeStamp
-       * When Converting This TimeStamp to LocalDateTime,
-         we should get Date&Time in User Current Time-Zone & not UTC*/
+     * When Converting This TimeStamp to LocalDateTime,
+    we should get Date&Time in User Current Time-Zone & not UTC*/
     @Test
-    fun groupDateTime_withSampleTime(){
+    fun groupDateTime_withSampleTime() {
         val expected = july_22_2021_9_00_GMTplus1
-        val actual = dateTimeHelper.groupDateTime(july_22_2021,9,0)
+        val actual = dateTimeHelper.groupDateTime(july_22_2021, 9, 0)
         Truth.assertThat(expected).isEqualTo(actual)
     }
 
     @Test
-    fun groupDateTime_withFirstHour_shouldNotMoveToTheNextDay(){
+    fun groupDateTime_withFirstHour_shouldNotMoveToTheNextDay() {
         val expected = july_22_2021_0_00_GMTplus1
-        val actual = dateTimeHelper.groupDateTime(july_22_2021,0,0)
+        val actual = dateTimeHelper.groupDateTime(july_22_2021, 0, 0)
         assertThat(actual).isEqualTo(expected)
     }
 
     @Test
-    fun getDateFromTimeStamp(){
+    fun getDateFromTimeStamp() {
         val expected = july_22_2021
 
         val actual1 = dateTimeHelper.getDateInMillis(july_22_2021_9_00_GMTplus1)
@@ -54,14 +56,14 @@ class DateTimeHelperTest {
     }
 
     @Test
-    fun getTimeFromTimeStamp(){
+    fun getTimeFromTimeStamp() {
         val expected = time_9_00
         val actual1 = dateTimeHelper.getTimeInHourMinute(july_22_2021_9_00_GMTplus1)
         Truth.assertThat(actual1).isEqualTo(expected)
     }
 
     @Test
-    fun isNow(){
+    fun isNow() {
         val now = july_22_2021_9_00_GMTplus1
         val dateTimeHelper = DateTimeHelper(
             Clock.fixed(
@@ -74,7 +76,7 @@ class DateTimeHelperTest {
     }
 
     @Test
-    fun isNotAfter_isBefore_now(){
+    fun isNotAfter_isBefore_now() {
         val now = july_22_2021_9_00_01_GMTplus1
         val dateTimeHelper = DateTimeHelper(
             Clock.fixed(
@@ -91,7 +93,7 @@ class DateTimeHelperTest {
     }
 
     @Test
-    fun isAfter_isNotBefore_now(){
+    fun isAfter_isNotBefore_now() {
         val now = july_22_2021_9_00_GMTplus1
         val dateTimeHelper = DateTimeHelper(
             Clock.fixed(

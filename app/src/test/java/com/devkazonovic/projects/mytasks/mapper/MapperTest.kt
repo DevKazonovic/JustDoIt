@@ -1,7 +1,6 @@
 package com.devkazonovic.projects.mytasks.mapper
 
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
-import com.devkazonovic.projects.mytasks.domain.mapper.Mappers
 import com.devkazonovic.projects.mytasks.domain.mapper.TaskNotificationEntityMapper
 import com.devkazonovic.projects.mytasks.domain.mapper.TaskNotificationMapper
 import com.devkazonovic.projects.mytasks.domain.model.TaskNotification
@@ -16,7 +15,7 @@ class MapperTest {
 
 
     @Test
-    fun mapTaskNotificationToTaskNotificationEntity(){
+    fun mapTaskNotificationToTaskNotificationEntity() {
         //Given
         val taskNotification = TaskNotification(
             0,
@@ -40,7 +39,7 @@ class MapperTest {
 
 
     @Test
-    fun mapTaskNotificationEntityToTaskNotification(){
+    fun mapTaskNotificationEntityToTaskNotification() {
         //Given
         val taskNotificationEntity = TaskNotificationEntity(
             0,

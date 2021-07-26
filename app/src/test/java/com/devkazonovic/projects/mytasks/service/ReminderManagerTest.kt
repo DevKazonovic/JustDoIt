@@ -34,7 +34,7 @@ class ReminderManagerTest {
     lateinit var context: Context
     lateinit var shadowAlarmManager: ShadowAlarmManager
     lateinit var alarmManager: AlarmManager
-    lateinit var reminderManager: AlarmHelper
+    lateinit var reminderManager: TaskAlarmManager
     lateinit var broadcastReceiver: ReminderBroadcastReceiver
     lateinit var shadowBroadcastReceiver: ShadowBroadcastReceiver
 
@@ -49,7 +49,7 @@ class ReminderManagerTest {
         val dateTimeHelper = DateTimeHelper(
             Clock.systemUTC()
         )
-        reminderManager = AlarmHelper(context, alarmManager,dateTimeHelper)
+        reminderManager = TaskAlarmManager(context, alarmManager, dateTimeHelper)
     }
 
     @Test

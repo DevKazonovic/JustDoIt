@@ -1,8 +1,8 @@
 package com.devkazonovic.projects.mytasks.data.repository
 
+import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.help.holder.Result
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single

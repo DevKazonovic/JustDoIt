@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "task_notification")
 data class TaskNotificationEntity(
     @PrimaryKey
-    val id : Int,
-    val state : String
+    val id: Int,
+    val state: String
 )

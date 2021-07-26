@@ -6,20 +6,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
+import com.devkazonovic.projects.mytasks.databinding.CardCategoryBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ListsDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.CategoriesDiffCallback
 
 class TaskListsMenuAdapter(
     private var _listID: Long? = null,
-    diffCallback: ListsDiffCallback,
+    diffCallback: CategoriesDiffCallback,
     private val onClick: (list: Category) -> Unit
 ) : ListAdapter<Category, TaskListsMenuAdapter.ListViewHolder>(diffCallback) {
 
 
     class ListViewHolder(
         private val listID: Long? = null,
-        private val binding: CardTaskListBinding,
+        private val binding: CardCategoryBinding,
         private val onClick: (list: Category) -> Unit
 
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -29,7 +29,7 @@ class TaskListsMenuAdapter(
                 binding.cardView.setCardBackgroundColor(
                     ContextCompat.getColor(
                         binding.root.context,
-                        R.color.teal_200
+                        R.color.brand
                     )
                 )
             }
@@ -41,7 +41,7 @@ class TaskListsMenuAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
-            CardTaskListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            CardCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(_listID, binding) {
             onClick(it)
         }

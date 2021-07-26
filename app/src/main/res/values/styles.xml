@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ActionItem">
+    <style name="Widget.Custom.MenuItem" parent="">
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
         </item>
         <item name="android:drawablePadding">24dp</item>
@@ -9,4 +9,62 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
     </style>
+
+    <style name="Widget.App.MainButton" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button" parent="">
+        <item name="colorPrimary">?attr/colorSecondary</item>
+        <item name="colorOnPrimary">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="Widget.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="materialButtonStyle">@style/Widget.App.MainButton</item>
+
+    </style>
+
+    <style name="Widget.App.TopToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TopToolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TopToolbar" parent="">
+        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.App.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+    <style name="Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="android:textColorHint">?attr/colorOnSurface</item>
+        <item name="materialThemeOverlay">
+            @style/ThemeOverlay.App.TextInputEditText.OutlinedBox.ExposedDropdownMenu
+        </item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputEditText.OutlinedBox" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputEditText.OutlinedBox.ExposedDropdownMenu" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="autoCompleteTextViewStyle">
+            @style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+
 </resources>

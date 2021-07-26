@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class AlarmHelper @Inject constructor(
+class TaskAlarmManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val alarmManager: AlarmManager,
     private val dateTimeHelper: DateTimeHelper,
@@ -75,7 +75,7 @@ class AlarmHelper @Inject constructor(
         )
     }
 
-    fun isAlarmSet(requestCode: Int): Boolean {
+    private fun isAlarmSet(requestCode: Int): Boolean {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,

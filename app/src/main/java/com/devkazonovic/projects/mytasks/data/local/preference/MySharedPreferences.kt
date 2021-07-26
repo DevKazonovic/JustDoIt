@@ -32,5 +32,4 @@ class MySharedPreferences @Inject constructor(
     override fun getCurrentRequestCode(): Int = preferences.getInt(KEY_REQUEST_CODE, -1)
 
 
-
 }
