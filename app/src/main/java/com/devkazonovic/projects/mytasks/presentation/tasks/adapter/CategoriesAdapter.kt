@@ -7,17 +7,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferences
-import com.devkazonovic.projects.mytasks.databinding.CardTaskListBinding
+import com.devkazonovic.projects.mytasks.databinding.CardCategoryBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
 
 class CategoriesAdapter(
     private val sharedPreferences: MySharedPreferences,
     private val onClick: (list: Category) -> Unit
-) : ListAdapter<Category, CategoriesAdapter.ListViewHolder>(ListsDiffCallback()) {
+) : ListAdapter<Category, CategoriesAdapter.ListViewHolder>(CategoriesDiffCallback()) {
 
     class ListViewHolder(
         private val sharedPreferences: MySharedPreferences,
-        private val binding: CardTaskListBinding,
+        private val binding: CardCategoryBinding,
         private val onClick: (list: Category) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(list: Category) {
@@ -27,7 +27,7 @@ class CategoriesAdapter(
                 binding.cardView.setCardBackgroundColor(
                     ContextCompat.getColor(
                         binding.root.context,
-                        R.color.teal_200
+                        R.color.brand
                     )
                 )
             }
@@ -39,7 +39,7 @@ class CategoriesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
-            CardTaskListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            CardCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(sharedPreferences, binding) {
             onClick(it)
         }

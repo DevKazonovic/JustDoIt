@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
+import com.devkazonovic.projects.mytasks.domain.holder.Event
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.help.holder.Event
 import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_IO
 import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_MAIN
 import com.devkazonovic.projects.mytasks.help.util.handleResult
-import com.devkazonovic.projects.mytasks.service.AlarmHelper
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
+import com.devkazonovic.projects.mytasks.service.TaskAlarmManager
 import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Scheduler
@@ -22,7 +22,7 @@ import javax.inject.Named
 class ReminderViewModel @Inject constructor(
     private val taskNotificationManager: TaskNotificationManager,
     private val dateTimeHelper: DateTimeHelper,
-    private val reminderManager: AlarmHelper,
+    private val reminderManager: TaskAlarmManager,
     private val tasksRepository: ITasksRepository,
     @Named(SCHEDULER_MAIN) private val mainScheduler: Scheduler,
     @Named(SCHEDULER_IO) private val ioScheduler: Scheduler

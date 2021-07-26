@@ -3,7 +3,7 @@ package com.devkazonovic.projects.mytasks.help.extension
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import com.devkazonovic.projects.mytasks.help.holder.Event
+import com.devkazonovic.projects.mytasks.domain.holder.Event
 import com.google.android.material.snackbar.Snackbar
 
 fun View.hide() {

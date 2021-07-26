@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.devkazonovic.projects.mytasks.data.repository.TasksRepository
-import com.devkazonovic.projects.mytasks.help.holder.Result
+import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_IO
 import com.devkazonovic.projects.mytasks.help.util.log
-import com.devkazonovic.projects.mytasks.service.AlarmHelper
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
+import com.devkazonovic.projects.mytasks.service.TaskAlarmManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Scheduler
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class BootBroadcastReceiver : BroadcastReceiver() {
     lateinit var tasksRepository: TasksRepository
 
     @Inject
-    lateinit var reminderManager: AlarmHelper
+    lateinit var reminderManager: TaskAlarmManager
 
     @Inject
     @Named(SCHEDULER_IO)

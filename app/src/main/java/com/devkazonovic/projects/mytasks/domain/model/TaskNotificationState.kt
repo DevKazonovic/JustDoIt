@@ -1,5 +1,5 @@
 package com.devkazonovic.projects.mytasks.domain.model
 
 enum class TaskNotificationState {
-    NOT_NOTIFY,SHOWING,CANCELED
+    NOT_NOTIFY, SHOWING, CANCELED
 }

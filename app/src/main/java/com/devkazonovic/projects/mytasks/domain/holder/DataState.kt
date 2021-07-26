@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.help.holder
+package com.devkazonovic.projects.mytasks.domain.holder
 
 sealed class DataState<T> {
     data class ErrorState<T>(val messageID: Int) : DataState<T>()

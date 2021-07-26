@@ -3,7 +3,7 @@ package com.devkazonovic.projects.mytasks.presentation.tasks.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.devkazonovic.projects.mytasks.domain.model.Category
 
-class ListsDiffCallback
+class CategoriesDiffCallback
     : DiffUtil.ItemCallback<Category>() {
 
     override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {

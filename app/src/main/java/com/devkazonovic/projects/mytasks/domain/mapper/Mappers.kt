@@ -25,7 +25,8 @@ class Mappers @Inject constructor(
     override fun categoryMapper(): CategoryMapper = categoryMapper
     override fun taskNotificationEntityMapper(): TaskNotificationEntityMapper =
         taskNotificationEntityMapper
+
     override fun taskNotificationMapper(): TaskNotificationMapper =
-       taskNotificationMapper
+        taskNotificationMapper
 
 }

@@ -61,31 +61,33 @@ class TaskNotificationManager @Inject constructor(
     }
 
 
-    fun showNotification(title: String,
-                         detail: String,
-                         taskID: Long,
-                         notificationID: Int){
+    fun showNotification(
+        title: String,
+        detail: String,
+        taskID: Long,
+        notificationID: Int
+    ) {
         val notification = createAlarmNotification(
             title, detail, taskID, notificationID
         )
         taskNotificationDataSource.insertNotification(
             TaskNotification(notificationID, TaskNotificationState.NOT_NOTIFY)
         ).subscribeOn(ioScheduler).subscribeOn(mainScheduler).subscribe(
-            {notify(notificationID, notification)},{}
+            { notify(notificationID, notification) }, {}
         )
     }
 
-    fun notify(notificationID: Int, notification: Notification) {
-                taskNotificationDataSource.updateNotification(
-                    TaskNotification(notificationID, TaskNotificationState.SHOWING)
-                ).subscribeOn(ioScheduler).observeOn(mainScheduler).subscribe(
-                    {
-                        with(notificationManager) {
-                            notify(notificationID, notification)
-                        }
-                    },
-                    {}
-                )
+    private fun notify(notificationID: Int, notification: Notification) {
+        taskNotificationDataSource.updateNotification(
+            TaskNotification(notificationID, TaskNotificationState.SHOWING)
+        ).subscribeOn(ioScheduler).observeOn(mainScheduler).subscribe(
+            {
+                with(notificationManager) {
+                    notify(notificationID, notification)
+                }
+            },
+            {}
+        )
     }
 
     fun update(notificationID: Int, title: String, detail: String, taskID: Long) {
@@ -118,7 +120,7 @@ class TaskNotificationManager @Inject constructor(
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
                 setShowBadge(true)
-                lockscreenVisibility = Notification.VISIBILITY_PUBLIC;
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
 
             }
             notificationManager.createNotificationChannel(channel)

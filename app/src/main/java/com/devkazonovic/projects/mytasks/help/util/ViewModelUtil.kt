@@ -1,7 +1,7 @@
 package com.devkazonovic.projects.mytasks.help.util
 
 import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.help.holder.Result
+import com.devkazonovic.projects.mytasks.domain.holder.Result
 
 
 fun <T> handleResult(

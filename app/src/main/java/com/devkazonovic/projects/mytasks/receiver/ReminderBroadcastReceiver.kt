@@ -8,7 +8,7 @@ import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_DETAIL
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_ID
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_REQUEST_CODE
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_TITLE
-import com.devkazonovic.projects.mytasks.service.AlarmHelper
+import com.devkazonovic.projects.mytasks.service.TaskAlarmManager
 import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
     lateinit var taskNotificationManager: TaskNotificationManager
 
     @Inject
-    lateinit var alarmHelper: AlarmHelper
+    lateinit var taskAlarmManager: TaskAlarmManager
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
@@ -42,7 +42,7 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
     ) {
 
         taskNotificationManager.showNotification(title, detail, taskID, requestCode)
-        alarmHelper.cancelReminder(requestCode)
+        taskAlarmManager.cancelReminder(requestCode)
 
     }
 }

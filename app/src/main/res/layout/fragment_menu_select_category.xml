@@ -6,14 +6,14 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewTasksLists"
+        android:id="@+id/recyclerViewTasksCategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/cardViewAddNewList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="4"
-        tools:listitem="@layout/card_task_list" />
+        tools:listitem="@layout/card_category" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewAddNewList"
@@ -23,30 +23,16 @@
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="@color/purple_200"
-        app:strokeWidth="1dp">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                app:srcCompat="@drawable/ic_outline_add_circle" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create a New List"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:drawablePadding="6dp"
+            android:padding="16dp"
+            android:text="@string/label_create_a_new_list"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:drawableStartCompat="@drawable/ic_outline_add_circle" />
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

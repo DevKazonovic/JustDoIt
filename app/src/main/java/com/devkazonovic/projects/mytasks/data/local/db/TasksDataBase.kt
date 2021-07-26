@@ -11,7 +11,10 @@ import com.devkazonovic.projects.mytasks.data.local.db.entity.CategoryEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
 
-@Database(entities = [TaskEntity::class, CategoryEntity::class,TaskNotificationEntity::class], version = 10)
+@Database(
+    entities = [TaskEntity::class, CategoryEntity::class, TaskNotificationEntity::class],
+    version = 11
+)
 @TypeConverters(MyTasksTypeConverters::class)
 abstract class TasksDataBase : RoomDatabase() {
     abstract fun taskDao(): TaskDao

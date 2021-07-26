@@ -11,5 +11,6 @@ data class Task(
     val date: OffsetDateTime? = null,
     val completedAt: OffsetDateTime? = null,
     val reminderDate: Long? = null,
+    val isAllDay: Boolean = true,
     val pendingIntentRequestCode: Int? = null
 )

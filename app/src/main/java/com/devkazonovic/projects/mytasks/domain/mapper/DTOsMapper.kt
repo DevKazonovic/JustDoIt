@@ -21,9 +21,11 @@ class TaskEntityMapper @Inject constructor() : Mapper<TaskEntity, Task> {
             date = input.createdAt,
             completedAt = input.completedAt,
             reminderDate = input.reminderDate,
+            isAllDay = input.isAllDay == 1,
             pendingIntentRequestCode = input.pendingIntentRequestCode
         )
 }
+
 class CategoryEntityMapper @Inject constructor() : Mapper<CategoryEntity, Category> {
     override fun map(input: CategoryEntity): Category =
         Category(
@@ -32,9 +34,10 @@ class CategoryEntityMapper @Inject constructor() : Mapper<CategoryEntity, Catego
             isDefault = input.isDefault == 1
         )
 }
-class TaskNotificationEntityMapper @Inject constructor()
-    : Mapper< TaskNotificationEntity,TaskNotification> {
-    override fun map(input: TaskNotificationEntity ):  TaskNotification {
+
+class TaskNotificationEntityMapper @Inject constructor() :
+    Mapper<TaskNotificationEntity, TaskNotification> {
+    override fun map(input: TaskNotificationEntity): TaskNotification {
         return TaskNotification(
             input.id,
             TaskNotificationState.valueOf(input.state)
