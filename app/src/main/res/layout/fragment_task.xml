@@ -16,15 +16,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/task_action_bar" />
+                app:title="@string/label_task"
+                app:menu="@menu/menu_task" />
+
+            <include layout="@layout/view_divider"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -46,18 +50,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/textViewLabelTask"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="@string/label_task"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputTaskTitle"
@@ -100,17 +92,16 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputTaskList"
+                        android:id="@+id/textInputTaskListCategory"
                         style="@style/Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
-                        app:endIconDrawable="@drawable/ic_round_arrow_drop_down"
-
+                        app:endIconDrawable="@drawable/ic_dropdown"
                         app:endIconMode="custom">
 
                         <AutoCompleteTextView
-                            android:id="@+id/dropDownTaskList"
+                            android:id="@+id/dropDownTaskCategory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="false"
@@ -128,7 +119,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/viewContainerTask">
@@ -143,17 +133,18 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
                         android:text="@string/label_due_date"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                        android:textAppearance="@style/TextAppearance.App.Subtitle1" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/viewAddDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
+                        app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="0dp"
                         app:strokeColor="@color/brand"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="2dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -172,8 +163,8 @@
                                 android:drawablePadding="8dp"
                                 android:padding="6dp"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                                app:drawableLeftCompat="@drawable/ic_round_edit_calendar"
-                                app:drawableStartCompat="@drawable/ic_round_edit_calendar"
+                                app:drawableLeftCompat="@drawable/ic_day"
+                                app:drawableStartCompat="@drawable/ic_day"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/viewClearDate"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -189,7 +180,8 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_baseline_clear" />
+                                app:srcCompat="@drawable/ic_remove"
+                                tools:visibility="visible" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </com.google.android.material.card.MaterialCardView>
@@ -199,10 +191,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="0dp"
                         app:strokeColor="@color/brand"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="2dp"
+                        tools:visibility="visible">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -221,8 +216,8 @@
                                 android:drawablePadding="8dp"
                                 android:padding="6dp"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                                app:drawableLeftCompat="@drawable/ic_round_timer"
-                                app:drawableStartCompat="@drawable/ic_round_timer"
+                                app:drawableLeftCompat="@drawable/ic_time"
+                                app:drawableStartCompat="@drawable/ic_time"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/viewClearTime"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -238,10 +233,123 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_baseline_clear" />
+                                app:srcCompat="@drawable/ic_remove"
+                                tools:visibility="visible" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/viewContainerRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/viewContainerDueDate"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textViewLabelRepeat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/label_repeat"
+                            android:textAppearance="@style/TextAppearance.App.Subtitle2" />
+
+                        <TextView
+                            android:id="@+id/textViewRepeatValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:textAppearance="@style/TextAppearance.App.Caption"
+                            android:text="@string/label_no_repeat" />
+
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/viewClearRepeat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            android:padding="6dp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_remove"
+                            tools:visibility="visible" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textInputRepeatNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:visibility="visible">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editTextRepeatNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textInputRepeatType"
+                            style="@style/Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/viewClearRepeat"
+                            app:layout_constraintStart_toEndOf="@+id/textInputRepeatNumber"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/dropDownRepeatType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@null"
+                                android:inputType="none" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 </LinearLayout>
 
@@ -252,23 +360,25 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/viewTaskIsCompleted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/cardview_shadow_end_color"
         app:cardCornerRadius="0dp"
-        app:cardElevation="1dp"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <include layout="@layout/view_divider" />
+
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkboxTaskIsCompleted"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp" />
+            android:layout_margin="8dp" />
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

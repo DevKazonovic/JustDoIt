@@ -1,9 +1,9 @@
 package com.devkazonovic.projects.mytasks.di
 
-import com.devkazonovic.projects.mytasks.data.local.ILocalDataSource
-import com.devkazonovic.projects.mytasks.data.local.LocalDataSource
 import com.devkazonovic.projects.mytasks.data.local.preference.IMainSharedPreference
 import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferences
+import com.devkazonovic.projects.mytasks.data.local.source.ILocalDataSource
+import com.devkazonovic.projects.mytasks.data.local.source.LocalDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

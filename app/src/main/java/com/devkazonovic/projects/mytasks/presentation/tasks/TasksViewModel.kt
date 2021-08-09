@@ -8,50 +8,55 @@ import com.devkazonovic.projects.mytasks.data.local.preference.IMainSharedPrefer
 import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
 import com.devkazonovic.projects.mytasks.domain.IRxScheduler
 import com.devkazonovic.projects.mytasks.domain.holder.Event
-import com.devkazonovic.projects.mytasks.domain.holder.InputError
 import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
+import com.devkazonovic.projects.mytasks.help.util.handleResult
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ActiveTask
+import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
+import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
+    private val dateTimeHelper: DateTimeHelper,
     private val tasksRepository: ITasksRepository,
     private val sharedPreferences: IMainSharedPreference,
-    rxScheduler: IRxScheduler
+    rxScheduler: IRxScheduler,
 ) : ViewModel() {
 
+    /**RxJava Tools*/
     private val mainScheduler = rxScheduler.mainScheduler()
     private val ioScheduler = rxScheduler.ioScheduler()
+    private val disposableGeneral = CompositeDisposable()
+    private val disposableTasksObservables = CompositeDisposable()
 
+    /**Events*/
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
-    private val _userInputErrorEvent = MutableLiveData<Event<InputError>>()
     private val _mainViewErrorEvent = MutableLiveData<Event<Int>>()
     private val _snackBarErrorEvent = MutableLiveData<Event<Int>>()
-
-    /**Inputs*/
-    private val _isCategoryNameEntered = MutableLiveData(false)
-    private val _isTaskTitleEntered = MutableLiveData(false)
 
     /**Categories*/
     private val _categories = MutableLiveData<List<Category>>()
     private val _currentCategory = MutableLiveData<Category>()
 
-
     /**Tasks*/
-    private val _unCompletedTasks = MutableLiveData<List<Task>>()
+    private val _activeTasks = MutableLiveData<List<ActiveTask>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
-
-    private val disposableCrudOperations = CompositeDisposable()
-    private val disposableTasksObservables = CompositeDisposable()
 
     init {
         updateCurrentCategory()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposableTasksObservables.clear()
+        disposableGeneral.clear()
     }
 
     fun observeTasks() {
@@ -62,15 +67,77 @@ class TasksViewModel @Inject constructor(
     private fun getUnCompletedTasks() {
         _currentCategory.value?.id?.let { id ->
             tasksRepository.getUnCompletedTasks(id)
+                .flatMap { input ->
+                    when (input) {
+                        is Result.Success -> {
+                            val result = mapToActiveTasks(input.value)
+                            Flowable.just(Result.Success(result))
+                        }
+
+                        is Result.Failure -> {
+                            Flowable.just(Result.Failure(input.throwable))
+                        }
+                    }
+                }
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
                 .subscribe { result ->
                     handleResult(result,
-                        { _unCompletedTasks.postValue(it) },
+                        { _activeTasks.postValue(it) },
                         { setMainViewMassage(R.string.unKnownError) }
                     )
-                }.addTo(disposableTasksObservables)
+                }
+                .addTo(disposableTasksObservables)
         }
+    }
+
+    private fun mapToActiveTasks(list: List<Task>): List<ActiveTask> {
+        val result = mutableListOf<ActiveTask>()
+        val overDues = mutableListOf<Task>()
+        val actives = mutableListOf<Task>()
+        val noDueDate = mutableListOf<Task>()
+
+        list.forEach { task ->
+            if (task.dueDate == null) {
+                noDueDate.add(task)
+            } else {
+                if (task.isAllDay) {
+                    if (dateTimeHelper.isDateBeforeNow(task.dueDate)) {
+                        overDues.add(task)
+                    } else {
+                        actives.add(task)
+                    }
+                } else {
+                    if (dateTimeHelper.isBeforeNow(task.dueDate)) {
+                        overDues.add(task)
+                    } else {
+                        actives.add(task)
+                    }
+                }
+            }
+        }
+
+        result += if (overDues.isNotEmpty())
+            listOf(ActiveTask.ItemHeader(type = ActiveTask.HeaderType.OVERDUE)) +
+                    overDues.map { ActiveTask.ItemTask(it) }
+                        .sortedBy { itemTask -> Instant.ofEpochMilli(itemTask.task.dueDate!!) }
+        else emptyList()
+
+
+        result += if (actives.isNotEmpty())
+            listOf(ActiveTask.ItemHeader(type = ActiveTask.HeaderType.ACTIVE)) +
+                    actives.map { ActiveTask.ItemTask(it) }
+                        .sortedBy { itemTask -> Instant.ofEpochMilli(itemTask.task.dueDate!!) }
+        else emptyList()
+
+
+        result += if (noDueDate.isNotEmpty())
+            listOf(ActiveTask.ItemHeader(type = ActiveTask.HeaderType.NO_DATE)) + noDueDate.map {
+                ActiveTask.ItemTask(it)
+            }
+        else emptyList()
+
+        return result
     }
 
     private fun getCompletedTasks() {
@@ -83,7 +150,8 @@ class TasksViewModel @Inject constructor(
                         { _completedTasks.postValue(it) },
                         { setMainViewMassage(R.string.unKnownError) }
                     )
-                }.addTo(disposableTasksObservables)
+                }
+                .addTo(disposableTasksObservables)
         }
     }
 
@@ -94,18 +162,16 @@ class TasksViewModel @Inject constructor(
             .subscribe(
                 { setSnackBarMassage(R.string.completed_tasks_delete_success) },
                 { setSnackBarErrorMassage(R.string.completed_tasks_delete_fail) }
-            )
-
+            ).addTo(disposableGeneral)
     }
 
     fun saveTask(title: String, detail: String) {
-
         _currentCategory.value?.id?.let { currentTasksListId ->
             tasksRepository.addNewTask(
                 Task(
                     title = title,
                     detail = detail,
-                    listID = currentTasksListId,
+                    categoryId = currentTasksListId,
                     date = OffsetDateTime.now()
                 )
             )
@@ -114,10 +180,8 @@ class TasksViewModel @Inject constructor(
                 .subscribe(
                     { },
                     { setSnackBarErrorMassage(R.string.task_save_fail) }
-                ).addTo(disposableCrudOperations)
+                ).addTo(disposableGeneral)
         }
-
-
     }
 
     fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
@@ -132,7 +196,7 @@ class TasksViewModel @Inject constructor(
             .subscribe(
                 { },
                 { setSnackBarErrorMassage(R.string.unKnownError) }
-            )
+            ).addTo(disposableGeneral)
     }
 
     private fun unCompleteTask(taskID: Long) {
@@ -142,7 +206,7 @@ class TasksViewModel @Inject constructor(
             .subscribe(
                 { },
                 { setSnackBarErrorMassage(R.string.unKnownError) }
-            )
+            ).addTo(disposableGeneral)
     }
 
     fun getCategories() {
@@ -158,16 +222,17 @@ class TasksViewModel @Inject constructor(
                     }
                 )
             }
+            .addTo(disposableGeneral)
     }
 
     fun createNewCategory(name: String) {
-        tasksRepository.addNewCategory(Category(id = -1, name))
+        tasksRepository.addNewCategory(Category(name = name))
             .subscribeOn(ioScheduler)
             .observeOn(mainScheduler)
             .subscribe(
                 { setSnackBarMassage(R.string.category_save_success) },
                 { setSnackBarErrorMassage(R.string.category_save_fail) }
-            ).addTo(disposableCrudOperations)
+            ).addTo(disposableGeneral)
     }
 
     fun updateCurrentCategory(newListID: Long = 0) {
@@ -186,20 +251,15 @@ class TasksViewModel @Inject constructor(
     }
 
     fun updateCurrentCategoryName(newName: String) {
-
-        _currentCategory.value?.let { list ->
-            tasksRepository.updateCategory(
-                Category(id = list.id, name = newName, isDefault = list.isDefault)
-            )
+        _currentCategory.value?.let { category ->
+            tasksRepository.updateCategory(category.copy(name = newName))
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(
-                    { updateCurrentCategory(list.id) },
+                    { updateCurrentCategory(category.id) },
                     { setSnackBarMassage(R.string.category_update_name_fail) }
-                ).addTo(disposableCrudOperations)
+                ).addTo(disposableGeneral)
         }
-
-
     }
 
     fun deleteCurrentCategory() {
@@ -214,36 +274,9 @@ class TasksViewModel @Inject constructor(
                             setSnackBarMassage(R.string.category_delete_success)
                         },
                         { setSnackBarMassage(R.string.category_delete_fail) }
-                    ).addTo(disposableCrudOperations)
+                    ).addTo(disposableGeneral)
             }
         }
-    }
-
-
-    fun taskInputValidation(title: String) {
-        _isTaskTitleEntered.value = title.isNotEmpty() && title.isNotBlank()
-    }
-
-    fun categoryInputValidation(title: String) {
-        _isCategoryNameEntered.value = title.isNotEmpty() && title.isNotBlank()
-    }
-
-    private fun <T> handleResult(
-        result: Result<T>,
-        onSuccess: (data: T) -> Unit,
-        onError: (message: Int) -> Unit
-    ) {
-        when (result) {
-            is Result.Success -> onSuccess(result.value)
-            is Result.Failure -> {
-                Timber.d(result.throwable)
-                onError(R.string.unKnownError)
-            }
-        }
-    }
-
-    private fun setUserInputErrorMassage(value: InputError) {
-        _userInputErrorEvent.value = Event(value)
     }
 
     private fun setMainViewMassage(value: Int) {
@@ -258,20 +291,11 @@ class TasksViewModel @Inject constructor(
         _snackBarEvent.value = Event(value)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Timber.d("onCleared")
-    }
-
-    val unCompletedTasks: LiveData<List<Task>> get() = _unCompletedTasks
-    val completedTasks: LiveData<List<Task>> get() = _completedTasks
 
     val currentCategory: LiveData<Category> get() = _currentCategory
     val categories: LiveData<List<Category>> get() = _categories
-    val isCategoryNameEntered: LiveData<Boolean> get() = _isCategoryNameEntered
-    val isTaskTitleEntered: LiveData<Boolean> get() = _isTaskTitleEntered
-
-    val userInputErrorEvent: LiveData<Event<InputError>> get() = _userInputErrorEvent
+    val activeTasks: LiveData<List<ActiveTask>> get() = _activeTasks
+    val completedTasks: LiveData<List<Task>> get() = _completedTasks
     val mainViewErrorEvent: LiveData<Event<Int>> get() = _mainViewErrorEvent
     val snackBarErrorEvent: LiveData<Event<Int>> get() = _snackBarErrorEvent
     val snackBarEvent: LiveData<Event<Int>> get() = _snackBarEvent

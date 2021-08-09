@@ -27,7 +27,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 
 
-private val task_active = Task(0, "Task", listID = 0)
+/*private val task_active = Task(0, "Task", listID = 0)
 private val task_completed = Task(0, "Task", listID = 0, isCompleted = true)
 private val DEFAULT_TASK_LIST = Category(0, "MyList", true)
 private val NOT_DEFAULT_LIST = Category(1, "New List", false)
@@ -251,4 +251,4 @@ class TasksViewModelTest {
     }
 
 
-}
+}*/

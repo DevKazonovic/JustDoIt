@@ -14,8 +14,7 @@ import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_ID
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_REQUEST_CODE
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_TIME
 import com.devkazonovic.projects.mytasks.help.MyIntent.EXTRA_EXACT_ALARM_TITLE
-import com.devkazonovic.projects.mytasks.help.util.log
-import com.devkazonovic.projects.mytasks.receiver.ReminderBroadcastReceiver
+import com.devkazonovic.projects.mytasks.receiver.DueDateBroadcastReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,47 +24,50 @@ import javax.inject.Singleton
 class TaskAlarmManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val alarmManager: AlarmManager,
-    private val dateTimeHelper: DateTimeHelper,
+    private val timeHelper: DateTimeHelper,
 ) {
 
-    private val intentForExactAlarm = Intent(context, ReminderBroadcastReceiver::class.java).apply {
+    private val intentForExactAlarm = Intent(
+        context,
+        DueDateBroadcastReceiver::class.java
+    ).apply {
         action = ACTION_SET_EXACT
     }
 
-    fun setExactReminder(timeInMillis: Long, dataToShow: Task) {
-        if (dateTimeHelper.isAfterNow(timeInMillis)) {
-            val pendingRequestCode = dataToShow.pendingIntentRequestCode!!
+    fun setDueDateAlarm(timeInMillis: Long, task: Task) {
+        val time = timeHelper.getTimeInHourMinute(timeInMillis)
+        if (timeHelper.isAfterNow(timeInMillis)) {
+            val pendingRequestCode = task.alarmId!!
             if (isAlarmSet(pendingRequestCode)) {
                 cancelAlarm(pendingRequestCode)
             }
             setAlarm(
                 timeInMillis,
                 getPendingIntent(intentForExactAlarm.apply {
-                    putExtra(EXTRA_EXACT_ALARM_TIME, timeInMillis)
-                    putExtra(EXTRA_EXACT_ALARM_TITLE, dataToShow.title)
-                    putExtra(EXTRA_EXACT_ALARM_DETAIL, dataToShow.detail)
-                    putExtra(EXTRA_EXACT_ALARM_REQUEST_CODE, dataToShow.pendingIntentRequestCode)
-                    putExtra(EXTRA_EXACT_ALARM_ID, dataToShow.id)
+                    putExtra(EXTRA_EXACT_ALARM_TIME, timeHelper.showTime(time.first, time.second))
+                    putExtra(EXTRA_EXACT_ALARM_TITLE, task.title)
+                    putExtra(EXTRA_EXACT_ALARM_DETAIL, task.detail)
+                    putExtra(EXTRA_EXACT_ALARM_REQUEST_CODE, task.alarmId)
+                    putExtra(EXTRA_EXACT_ALARM_ID, task.id)
                 }, pendingRequestCode)
             )
         }
 
     }
 
-    fun cancelReminder(requestCode: Int) {
-        if (isAlarmSet(requestCode)) {
-            cancelAlarm(requestCode)
+    fun cancelDueDateAlarm(alarmId: Int) {
+        if (isAlarmSet(alarmId)) {
+            cancelAlarm(alarmId)
         }
-
-        isAlarmSet(requestCode)
     }
 
-    private fun getPendingIntent(intent: Intent, requestCode: Int) = PendingIntent.getBroadcast(
-        context,
-        requestCode,
-        intent,
-        FLAG_UPDATE_CURRENT
-    )
+    private fun getPendingIntent(intent: Intent, requestCode: Int) =
+        PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            FLAG_UPDATE_CURRENT
+        )
 
     private fun setAlarm(timeInMillis: Long, pendingIntent: PendingIntent) {
         AlarmManagerCompat.setExactAndAllowWhileIdle(
@@ -82,19 +84,12 @@ class TaskAlarmManager @Inject constructor(
             intentForExactAlarm,
             FLAG_NO_CREATE
         )
-        log("isAlarmSet : ${pendingIntent != null}")
         return pendingIntent != null
-
     }
 
     private fun cancelAlarm(requestCode: Int) {
-        val oldPending = getPendingIntent(
-            intentForExactAlarm,
-            requestCode
-        )
-
+        val oldPending = getPendingIntent(intentForExactAlarm, requestCode)
         alarmManager.cancel(oldPending)
-
     }
 
 

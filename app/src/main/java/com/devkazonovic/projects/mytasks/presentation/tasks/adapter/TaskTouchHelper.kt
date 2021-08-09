@@ -4,11 +4,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 class TaskTouchHelper(
-    private val adapter: TasksAdapter
+    private val adapter: CompletedTasksAdapter,
 ) : ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: RecyclerView.ViewHolder,
     ): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
         val swipeFlags = ItemTouchHelper.END
@@ -18,7 +18,7 @@ class TaskTouchHelper(
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
+        target: RecyclerView.ViewHolder,
     ): Boolean {
         adapter.switchItems(viewHolder.adapterPosition, target.adapterPosition)
         return true

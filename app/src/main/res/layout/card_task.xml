@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="2dp">
+    app:cardBackgroundColor="?attr/colorTaskCard"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,15 +44,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textAppearance="@style/TextAppearance.App.Subtitle1"
                 tools:text="Task" />
+
 
             <TextView
                 android:id="@+id/textViewReminder"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="2018/5/3 4:00" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                tools:text="Tuesday, August 4, 2021 22:50" />
+
+
+            <ImageView
+                android:id="@+id/imageViewRepeatIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_repeat"
+                tools:visibility="visible"
+                android:contentDescription="@string/desc_icon_repeat" />
+
+
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

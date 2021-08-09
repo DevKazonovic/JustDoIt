@@ -3,25 +3,24 @@
     <style name="Theme.MyTasks" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="backgroundColor">@color/dark</item>
-
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/brand</item>
         <item name="colorPrimaryVariant">@color/brand</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/brand</item>
         <item name="colorSecondaryVariant">@color/brande_variant</item>
         <item name="colorOnSecondary">@color/white</item>
-
-        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorSurface">@color/dark_extra</item>
         <item name="colorOnSurface">@color/brand</item>
+        <item name="colorDisable">@color/light_gray</item>
+        <item name="colorDivider">@color/dark_extra_gray</item>
+        <item name="colorTaskCard">@color/dark_extra_gray</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/backgroundColor</item>
+
         <!-- Customize your theme here. -->
-
         <item name="toolbarStyle">@style/Widget.App.TopToolbar</item>
-        <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox</item>
-
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox.Light</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
 
     </style>

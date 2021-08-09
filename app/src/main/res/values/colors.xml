@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="surface_light_gray">#FFE1E8ED</color>
-    <color name="surface_light">#FFFFFFFF</color>
-
-    <color name="surface_dark_gray">#FF42484C</color>
-    <color name="surface_dark">#FF293B5F</color>
-
-    <color name="surface_gray">#FFAAB8C2</color>
 
     <color name="brand">#FF1DA1F2</color>
-    <color name="brande_variant">#FF1DA1F2</color>
+    <color name="brande_variant">#FF00B4F2</color>
 
     <color name="light">#FFFFFFFF</color>
+    <color name="light_extra">#FFFBFCFC</color>
+    <color name="light_extra_gray">#FFF7F9F9</color>
+    <color name="light_gray">#FFD0D3D4</color>
+    <color name="gray">#FFC0C0C0</color>
+
     <color name="dark">#FF14171A</color>
+    <color name="dark_extra">#FF191F2B</color>
+    <color name="dark_extra_gray">#FF273746</color>
+    <color name="dark_gray">#FF5D6D7E</color>
+
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
 </resources>

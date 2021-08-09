@@ -7,10 +7,13 @@ data class Task(
     val title: String,
     val detail: String = "",
     val isCompleted: Boolean = false,
-    val listID: Long = 0,
+    val categoryId: Long = 0,
     val date: OffsetDateTime? = null,
     val completedAt: OffsetDateTime? = null,
-    val reminderDate: Long? = null,
+    val dueDate: Long? = null,
     val isAllDay: Boolean = true,
-    val pendingIntentRequestCode: Int? = null
+    val alarmId: Int? = null,
+    val repeatType: RepeatType? = null,
+    val repeatValue: Int? = null,
+    val nextDueDate: Long? = null,
 )

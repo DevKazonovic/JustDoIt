@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.FragmentTasksBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
@@ -29,23 +29,41 @@ class TasksFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentTasksBinding.inflate(inflater)
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setUpToolbar()
         setUpTabs()
         setUpListeners()
         observeData()
         observeErrors()
-        observeUserNotice()
+        observeToasts()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setUpToolbar() {
+
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_categories -> {
+                    findNavController().navigate(R.id.categories)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun setUpTabs() {
@@ -67,31 +85,36 @@ class TasksFragment : Fragment() {
 
     private fun setUpListeners() {
         binding.fab.setOnClickListener {
-            FormNewTaskFragment.newInstance().show(childFragmentManager, "add_task_fragment")
+            BottomFormNewTaskFragment.newInstance()
+                .show(childFragmentManager, BottomFormNewTaskFragment.TAG)
         }
         binding.bottomAppBar.setNavigationOnClickListener {
-            val fragment = MenuSelectCategoryFragment.newInstance()
-            fragment.show(childFragmentManager, "tasks_lists_fragment")
+            TasksSelectCategoryFragment.newInstance()
+                .show(childFragmentManager, TasksSelectCategoryFragment.TAG)
         }
         binding.bottomAppBar.setOnMenuItemClickListener { menu ->
             when (menu.itemId) {
                 R.id.action_show_menu -> {
-                    MenuCategoryFragment.newInstance()
-                        .show(childFragmentManager, "tasks_menu_fragment")
+                    TasksMenuFragment.newInstance()
+                        .show(childFragmentManager, TasksMenuFragment.TAG)
                     true
                 }
                 else -> false
             }
         }
+
+        binding.viewError.buttonActionOnError.setOnClickListener {
+            viewModel.observeTasks()
+        }
     }
 
     private fun observeData() {
-        viewModel.currentCategory.observeWithViewLifecycleOwner {
+        viewModel.currentCategory.observe(viewLifecycleOwner) {
             onCurrentCategoryChange(it)
         }
     }
 
-    private fun observeUserNotice() {
+    private fun observeToasts() {
         binding.fab.setupSnackBar(
             viewLifecycleOwner,
             viewModel.snackBarEvent,
@@ -100,15 +123,12 @@ class TasksFragment : Fragment() {
     }
 
     private fun observeErrors() {
-        viewModel.mainViewErrorEvent.observeWithViewLifecycleOwner {
+        viewModel.mainViewErrorEvent.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { error ->
                 onError(error) {
 
                 }
             }
-        }
-        viewModel.userInputErrorEvent.observeWithViewLifecycleOwner {
-
         }
         binding.fab.setupSnackBar(
             viewLifecycleOwner,
@@ -136,15 +156,4 @@ class TasksFragment : Fragment() {
         }
     }
 
-
-    private fun <T> LiveData<T>.observeWithViewLifecycleOwner(onChange: (T) -> Unit) {
-        this.observe(viewLifecycleOwner, {
-            onChange(it)
-        })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

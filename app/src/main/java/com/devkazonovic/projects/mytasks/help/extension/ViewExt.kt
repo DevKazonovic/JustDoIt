@@ -30,7 +30,7 @@ fun View.showSnackBar(snackBarText: String, timeLength: Int) {
 fun View.setupSnackBar(
     lifecycleOwner: LifecycleOwner,
     snackBarEvent: LiveData<Event<Int>>,
-    timeLength: Int
+    timeLength: Int,
 ) {
 
     snackBarEvent.observe(lifecycleOwner, { event ->

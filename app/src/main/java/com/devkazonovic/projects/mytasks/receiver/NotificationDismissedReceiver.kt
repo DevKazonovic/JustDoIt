@@ -24,7 +24,7 @@ class NotificationDismissedReceiver : BroadcastReceiver() {
         log(intent.toString())
         if (intent.action == ACTION_NOTIFICATION_DISMISS) {
             val notificationID = intent.extras?.getInt(EXTRA_NOTIFICATION_ID)!!
-            taskNotificationManager.cancel(notificationID)
+            taskNotificationManager.cancelDueDateNotification(notificationID)
         }
     }
 }

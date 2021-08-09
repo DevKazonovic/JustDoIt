@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".presentation.tasks.ui.TasksFragment">
 
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
@@ -18,7 +17,6 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
-            style="@style/Widget.MaterialComponents.AppBarLayout.Surface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -33,23 +31,51 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/top_app_bar"
-                app:titleTextColor="@color/brand" />
+                app:menu="@menu/menu_main"
+                app:titleTextColor="@color/brand"
+                tools:title="Test" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?attr/colorDivider" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="4dp">
+                android:layout_margin="16dp"
+                app:cardCornerRadius="26dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorDivider"
+                app:strokeWidth="1dp">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    app:tabGravity="center"
+                    app:tabMode="fixed"
+                    app:tabIndicator="@drawable/tab_indicator"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabIndicatorGravity="bottom"
+                    app:tabSelectedTextColor="?attr/colorPrimary"
+                    app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:tabTextColor="?attr/colorDisable">
+
+                      <com.google.android.material.tabs.TabItem
+                                            android:text="@string/label_active"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+                                        <com.google.android.material.tabs.TabItem
+                                            android:text="@string/label_tab_completed"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
 
                 </com.google.android.material.tabs.TabLayout>
             </com.google.android.material.card.MaterialCardView>
+
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
@@ -92,25 +118,24 @@
             app:elevation="6dp"
             app:fabAlignmentMode="center"
             app:fabAnimationMode="slide"
-            app:fabCradleMargin="12dp"
+            app:fabCradleMargin="6dp"
             app:fabCradleRoundedCornerRadius="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/tasks_action_bar"
-            app:navigationIcon="@drawable/ic_round_menu" />
+            app:menu="@menu/menu_tasks"
+            app:navigationIcon="@drawable/ic_category" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/content_desc_add_new_task"
+            android:contentDescription="@string/desc_add_new_task"
             app:elevation="6dp"
             app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/ic_round_add" />
+            app:srcCompat="@drawable/ic_fab_add" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

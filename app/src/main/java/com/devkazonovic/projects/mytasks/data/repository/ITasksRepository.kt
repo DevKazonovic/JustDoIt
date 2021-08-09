@@ -20,8 +20,12 @@ interface ITasksRepository {
     fun updateTask(task: Task): Completable
     fun deleteTask(task: Task): Completable
     fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable
+    fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable
+
     fun getTask(taskID: Long): Single<Result<Task>>
     fun getAllTasks(): Single<Result<List<Task>>>
+    fun getCategoryTasks(listID: Long): Flowable<Result<List<Task>>>
+
     fun getCompletedTasks(listID: Long): Flowable<Result<List<Task>>>
     fun getUnCompletedTasks(listID: Long): Flowable<Result<List<Task>>>
     fun markTaskAsCompleted(taskId: Long, completedAt: OffsetDateTime): Completable

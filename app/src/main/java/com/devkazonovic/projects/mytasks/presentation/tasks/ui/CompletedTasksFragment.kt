@@ -15,8 +15,8 @@ import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.extension.hide
 import com.devkazonovic.projects.mytasks.help.extension.show
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksAdapter
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.CompletedTasksAdapter
+import com.devkazonovic.projects.mytasks.presentation.tasks.diff.TasksDiffCallback
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,19 +28,19 @@ class CompletedTasksFragment : Fragment() {
 
     private val viewModel by viewModels<TasksViewModel>({ requireParentFragment() })
 
-    @Inject
-    lateinit var dateTimeHelper: DateTimeHelper
-
     private var _binding: FragmentTasksCompletedBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var completedTasksAdapter: TasksAdapter
+    private lateinit var completedTasksAdapter: CompletedTasksAdapter
+
+    @Inject
+    lateinit var dateTimeHelper: DateTimeHelper
 
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentTasksCompletedBinding.inflate(inflater)
         setUpRecyclerView()
@@ -55,9 +55,14 @@ class CompletedTasksFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setUpRecyclerView() {
         binding.recyclerViewTasks.layoutManager = LinearLayoutManager(requireContext())
-        completedTasksAdapter = TasksAdapter(
+        completedTasksAdapter = CompletedTasksAdapter(
             TasksDiffCallback(),
             { viewModel.markTaskAsCompleted(it.id, false) },
             {
@@ -82,8 +87,4 @@ class CompletedTasksFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

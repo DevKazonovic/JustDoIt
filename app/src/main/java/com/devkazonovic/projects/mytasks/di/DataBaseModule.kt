@@ -21,7 +21,7 @@ object DataBaseModule {
     @Provides
     fun provideTaskDataBase(
         @ApplicationContext context: Context,
-        sharedPreferences: IMainSharedPreference
+        sharedPreferences: IMainSharedPreference,
     ): TasksDataBase {
         return Room.databaseBuilder(
             context,
@@ -32,7 +32,7 @@ object DataBaseModule {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
                     Timber.d("OnCreate DB")
-                    db.execSQL("INSERT INTO task_list (id,name,isDefault) VALUES(0,'My List',1)")
+                    db.execSQL("INSERT INTO category (id,name,isDefault) VALUES(0,'My List',1)")
                     sharedPreferences.saveCurrentTasksList(0)
                 }
             }

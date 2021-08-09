@@ -1,6 +1,7 @@
 package com.devkazonovic.projects.mytasks.domain.mapper
 
 import com.devkazonovic.projects.mytasks.data.local.db.entity.CategoryEntity
+import com.devkazonovic.projects.mytasks.data.local.db.entity.Repeat
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
 import com.devkazonovic.projects.mytasks.domain.model.Category
@@ -15,12 +16,13 @@ class TaskMapper @Inject constructor() : Mapper<Task, TaskEntity> {
             title = input.title,
             detail = input.detail,
             isCompleted = booleanToInt(input.isCompleted),
-            listID = input.listID,
+            categoryId = input.categoryId,
             createdAt = input.date,
             completedAt = input.completedAt,
-            reminderDate = input.reminderDate,
+            dueDateInMillis = input.dueDate,
             isAllDay = booleanToInt(input.isAllDay),
-            pendingIntentRequestCode = input.pendingIntentRequestCode
+            alarmId = input.alarmId,
+            repeat = Repeat(input.repeatType?.name, input.repeatValue, input.nextDueDate)
         ).also { taskEntity ->
             taskEntity.id = input.id
         }

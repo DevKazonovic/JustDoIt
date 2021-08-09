@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
@@ -18,5 +19,8 @@ interface TaskNotificationDao : BaseCrudDao<TaskNotificationEntity> {
     fun deleteById(id: Int): Completable
 
     @Query("SELECT * FROM task_notification WHERE id = :id")
-    fun findTaskNotificationById(id: Int): Single<TaskNotificationEntity>
+    fun getTaskNotificationById(id: Int): Single<TaskNotificationEntity>
+
+    @Query("SELECT * FROM task_notification")
+    fun getAllTaskNotification(): Flowable<List<TaskNotificationEntity>>
 }

@@ -2,45 +2,80 @@ package com.devkazonovic.projects.mytasks.presentation.task
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
+import com.devkazonovic.projects.mytasks.domain.RxScheduler
 import com.devkazonovic.projects.mytasks.domain.holder.DataState
 import com.devkazonovic.projects.mytasks.domain.holder.Event
 import com.devkazonovic.projects.mytasks.domain.model.Category
+import com.devkazonovic.projects.mytasks.domain.model.Repeat
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_IO
-import com.devkazonovic.projects.mytasks.help.util.SCHEDULER_MAIN
 import com.devkazonovic.projects.mytasks.help.util.handleResult
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import com.devkazonovic.projects.mytasks.service.TaskAlarmManager
 import com.devkazonovic.projects.mytasks.service.TaskNotificationManager
+import com.devkazonovic.projects.mytasks.service.TaskRepeatAlarmManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val dateTimeHelper: DateTimeHelper,
-    private val taskNotificationManager: TaskNotificationManager,
-    private val reminderManagerTask: TaskAlarmManager,
     private val tasksRepository: ITasksRepository,
-    @Named(SCHEDULER_MAIN) private val mainScheduler: Scheduler,
-    @Named(SCHEDULER_IO) private val ioScheduler: Scheduler
+    private val taskAlarmManager: TaskAlarmManager,
+    private val taskRepeatAlarmManager: TaskRepeatAlarmManager,
+    private val taskNotificationManager: TaskNotificationManager,
+    private val dateTimeHelper: DateTimeHelper,
+    rxScheduler: RxScheduler,
 ) : ViewModel() {
 
-    private val _navigateBack = MutableLiveData<Event<Boolean>>()
-    val navigateBack: LiveData<Event<Boolean>> get() = _navigateBack
+    /**RxJava Tools*/
+    private val mainScheduler: Scheduler = rxScheduler.mainScheduler()
+    private val ioScheduler: Scheduler = rxScheduler.ioScheduler()
+    private val disposableGeneral = CompositeDisposable()
 
-    private val _dataState = MutableLiveData<Event<DataState<Int>>>()
-    private val _task = MutableLiveData<Task>()
-    private val _category = MutableLiveData<Category>()
+    /**LiveData*/
+    private val _currentTask = MutableLiveData<Task>()
+    private val _currentCategory = MutableLiveData<Category>()
+    private val _currentTaskDueDateInMillis = MutableLiveData<Long?>()
+    private val _nextTaskDueDateInMillis = MutableLiveData<Long?>()
+
     private val _categories = MutableLiveData<List<Category>>()
+
+    private val _date = MutableLiveData<Long?>()
+    val dateStr = Transformations.switchMap(_date) { dateInMillis ->
+        dateInMillis?.let {
+            MutableLiveData<String>().apply { this.value = dateTimeHelper.showDate(it) }
+        } ?: MutableLiveData<String>().apply { this.value = null }
+    }
+    private val _time = MutableLiveData<Pair<Int, Int>?>()
+    val timeStr = Transformations.switchMap(_time) { pair ->
+        pair?.let {
+            MutableLiveData<String>().apply {
+                this.value = dateTimeHelper.showTime(it.first, it.second)
+            }
+        } ?: MutableLiveData<String>().apply { this.value = null }
+
+    }
+    private val _repeat = MutableLiveData<Repeat?>()
+    val repeat: LiveData<Repeat?> get() = _repeat
+
+    private val _navigateBack = MutableLiveData<Event<Boolean>>()
+    private val _dataState = MutableLiveData<Event<DataState<Int>>>()
+
 
     init {
         Timber.d("Init")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposableGeneral.clear()
     }
 
     fun start(taskID: Long) {
@@ -50,90 +85,63 @@ class TaskViewModel @Inject constructor(
             .subscribe { result ->
                 handleResult(
                     result,
-                    { task -> _task.postValue(task) },
-                    { showSnackbarErrorMessage(R.string.unKnownError) }
+                    { task -> setCurrentTaskData(task) },
+                    { showSnackBarErrorMessage(R.string.unKnownError) }
                 )
             }
+            .addTo(disposableGeneral)
     }
 
     fun deleteTask() {
-        _task.value?.let { task ->
+        _currentTask.value?.let { task ->
             tasksRepository.deleteTask(task)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(
                     { _navigateBack.value = Event(true) },
-                    { showSnackbarErrorMessage(R.string.task_delete_fail) }
-                )
+                    { showSnackBarErrorMessage(R.string.task_delete_fail) }
+                ).addTo(disposableGeneral)
+
         }
     }
 
-    fun updateTask(title: String, detail: String, isCompleted: Boolean, reminderDate: Long?) {
-        _task.value?.let { task ->
+    fun updateTask(title: String, detail: String, isCompleted: Boolean, repeat: Repeat?) {
+        _currentTask.value?.let { task ->
+            val dueDateInMillis = calcDueDate()
             val newTask = task.copy(
                 title = title,
                 detail = detail,
                 isCompleted = isCompleted,
-                reminderDate = reminderDate,
-                listID = _category.value?.id!!,
+                dueDate = dueDateInMillis,
+                isAllDay = isAllDay(),
+                categoryId = _currentCategory.value?.id!!,
+                repeatType = repeat?.type,
+                repeatValue = repeat?.number,
+                nextDueDate = calcNextDueDate(repeat, dueDateInMillis)
             )
-            newTask.reminderDate?.let { resetAlarm(newTask, it) }
+            dueDateInMillis?.let { setAlarm(it) }
+            updateNotification(newTask)
             tasksRepository.updateTask(newTask)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(
-                    { showSnackbarToastMessage(R.string.task_update_success) },
-                    { showSnackbarErrorMessage(R.string.task_update_fail) }
-                )
+                    {},
+                    { showSnackBarErrorMessage(R.string.task_update_fail) }
+                ).addTo(disposableGeneral)
         }
     }
 
-    private fun resetAlarm(task: Task, timeInMillis: Long) {
-        task.pendingIntentRequestCode?.let {
-            reminderManagerTask.setExactReminder(timeInMillis, task)
-            updateNotification(task)
-        }
-    }
-
-    private fun updateNotification(task: Task) {
-        taskNotificationManager.update(
-            task.pendingIntentRequestCode!!,
-            task.title,
-            task.detail,
-            task.id
-        )
-    }
-
-    fun removeReminder() {
-        _task.value?.let { task ->
-            task.pendingIntentRequestCode?.let {
-                reminderManagerTask.cancelReminder(it)
-                taskNotificationManager.cancel(it)
-            }
-            tasksRepository.updateTaskReminder(task.id, null)
-                .subscribeOn(ioScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(
-                    { start(_task.value?.id!!) },
-                    { }
-                )
-        }
-    }
-
-    fun cancelNotification(notificationID: Int) {
-        taskNotificationManager.cancel(notificationID)
-    }
-
-    fun getCategory(listID: Long) {
+    fun setCurrentTaskCategory(listID: Long) {
         tasksRepository.getCategoryById(listID)
             .subscribeOn(ioScheduler)
             .observeOn(mainScheduler)
             .subscribe { result ->
                 handleResult(result,
-                    { category -> _category.postValue(category) },
-                    { showSnackbarErrorMessage(R.string.unKnownError) }
+                    { category -> _currentCategory.postValue(category) },
+                    { showSnackBarErrorMessage(R.string.unKnownError) }
                 )
             }
+            .addTo(disposableGeneral)
     }
 
     fun getCategories() {
@@ -143,26 +151,111 @@ class TaskViewModel @Inject constructor(
             .subscribe { result ->
                 handleResult(result,
                     { categories -> _categories.postValue(categories) },
-                    { showSnackbarErrorMessage(R.string.unKnownError) }
+                    { showSnackBarErrorMessage(R.string.unKnownError) }
                 )
             }
+            .addTo(disposableGeneral)
     }
 
-    fun updateCurrentTaskList(newListId: Long) {
-        getCategory(newListId)
+    fun setDate(utc: Long?) {
+        _date.value = utc
     }
 
-    val task: LiveData<Task> get() = _task
-    val category: LiveData<Category> get() = _category
-    val lists: LiveData<List<Category>> get() = _categories
+    fun setTime(pair: Pair<Int, Int>?) {
+        _time.value = pair
+    }
+
+    fun cancelNotification(notificationID: Int) {
+        taskNotificationManager.cancelDueDateNotification(notificationID)
+    }
+
+    private fun setCurrentTaskDueDate(task: Task) {
+        _currentTaskDueDateInMillis.value = task.dueDate
+        if (task.dueDate == null) {
+            _date.value = null
+        } else {
+            _date.value = dateTimeHelper.getDateInMillis(task.dueDate)
+            if (task.isAllDay) {
+                _time.value = null
+            } else {
+                _time.value = dateTimeHelper.getTimeInHourMinute(task.dueDate)
+            }
+            if (task.repeatType != null) {
+                _repeat.value = Repeat(task.repeatType, task.repeatValue)
+            } else {
+                _repeat.value = null
+            }
+        }
+    }
+
+    private fun setCurrentTaskData(task: Task) {
+        _currentTask.postValue(task)
+        setCurrentTaskCategory(task.categoryId)
+        setCurrentTaskDueDate(task)
+    }
+
+    private fun calcDueDate(): Long? {
+        return if (_date.value != null) {
+            if (_time.value == null) {
+                dateTimeHelper.groupDateTime(_date.value!!, 8, 0)
+            } else {
+                dateTimeHelper.groupDateTime(_date.value!!,
+                    _time.value?.first!!,
+                    _time.value?.second!!)
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun calcNextDueDate(repeat: Repeat?, dueDateInMillis: Long?): Long? {
+        return if (dueDateInMillis != null && repeat != null && repeat.type != null && repeat.number != null) {
+            taskRepeatAlarmManager.addRepeatValue(
+                repeat.type,
+                repeat.number,
+                dateTimeHelper.fromLongToLocalDate(dueDateInMillis),
+                dateTimeHelper.getTimeInHourMinute(dueDateInMillis)
+            )
+        } else null
+    }
+
+    private fun isAllDay(): Boolean {
+        return _time.value == null || _date.value == null
+    }
+
+    private fun setAlarm(dateTimeInMillis: Long) {
+        _currentTask.value?.let { task ->
+            val notificationId = task.alarmId
+            val dueDate = task.dueDate
+            if (notificationId != null && dueDate != null) {
+                taskNotificationManager.cancelDueDateNotification(notificationId)
+                taskAlarmManager.setDueDateAlarm(dateTimeInMillis, task)
+            }
+        }
+    }
+
+    private fun updateNotification(task: Task) {
+        task.dueDate?.let { dueDateInMillis ->
+            taskNotificationManager.updateDueDateNotification(
+                task.alarmId!!,
+                task.id,
+                task.title,
+                task.detail,
+                dateTimeHelper.showTime(dateTimeHelper.getTimeInHourMinute(dueDateInMillis))
+            )
+        }
+    }
+
+    private fun showSnackBarErrorMessage(message: Int) {
+        _dataState.value = Event(DataState.ErrorState(message))
+    }
+
+
+    val currentTask: LiveData<Task> get() = _currentTask
+    val currentTaskCategory: LiveData<Category> get() = _currentCategory
+    val categories: LiveData<List<Category>> get() = _categories
+    val date: LiveData<Long?> get() = _date
+    val time: LiveData<Pair<Int, Int>?> get() = _time
     val dataState: LiveData<Event<DataState<Int>>> get() = _dataState
-
-
-    private fun showSnackbarErrorMessage(message: Int) {
-        _dataState.value = Event(DataState.ErrorState(message))
-    }
-
-    private fun showSnackbarToastMessage(message: Int) {
-        _dataState.value = Event(DataState.ErrorState(message))
-    }
+    val navigateBack: LiveData<Event<Boolean>> get() = _navigateBack
 }

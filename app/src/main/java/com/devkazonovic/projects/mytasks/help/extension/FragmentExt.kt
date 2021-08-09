@@ -6,7 +6,7 @@ import com.devkazonovic.projects.mytasks.help.view.ScrollChildSwipeRefreshLayout
 
 fun Fragment.setupRefreshLayout(
     refreshLayout: ScrollChildSwipeRefreshLayout,
-    scrollUpChild: View? = null
+    scrollUpChild: View? = null,
 ) {
 
     // Set the scrolling view in the custom SwipeRefreshLayout.
