@@ -8,7 +8,7 @@ import javax.inject.Named
 
 class RxScheduler @Inject constructor(
     @Named(SCHEDULER_MAIN) private val mainScheduler: Scheduler,
-    @Named(SCHEDULER_IO) private val ioScheduler: Scheduler
+    @Named(SCHEDULER_IO) private val ioScheduler: Scheduler,
 ) : IRxScheduler {
     override fun mainScheduler() = mainScheduler
 

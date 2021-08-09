@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 class TasksViewPagerAdapter(
     activity: FragmentActivity,
     manager: FragmentManager,
-    private val fragments: Array<Fragment>
+    private val fragments: Array<Fragment>,
 ) : FragmentStateAdapter(manager, activity.lifecycle) {
 
 

@@ -13,7 +13,7 @@ class FakeTasksRepositoryTaskTest @Inject constructor() : ITasksRepository {
 
     private val tasks: MutableList<Task> = mutableListOf(
         Task(1, "Title1", "Detail"),
-        Task(2, "Title1", "Detail", reminderDate = 1626429600000),
+        Task(2, "Title1", "Detail", dueDate = 1626429600000),
     )
 
     private val categories: MutableList<Category> = mutableListOf(
@@ -63,10 +63,14 @@ class FakeTasksRepositoryTaskTest @Inject constructor() : ITasksRepository {
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable {
         val index = tasks.findIndex(taskID)
         return tasks.findTask(taskID)?.let {
-            tasks[index] = it.copy(reminderDate = reminderDate)
+            tasks[index] = it.copy(dueDate = reminderDate)
             Completable.complete()
         } ?: Completable.error(Exception("Task Not Found"))
 
+    }
+
+    override fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable {
+        TODO("Not yet implemented")
     }
 
     override fun getTask(taskID: Long): Single<Result<Task>> {

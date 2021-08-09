@@ -32,11 +32,11 @@ class BootBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            reSetAlarms()
+            resetAlarms()
         }
     }
 
-    private fun reSetAlarms() {
+    private fun resetAlarms() {
         tasksRepository
             .getAllTasks()
             .subscribeOn(ioScheduler)
@@ -45,9 +45,14 @@ class BootBroadcastReceiver : BroadcastReceiver() {
                     is Result.Success -> {
                         log("${result.value}")
                         result.value.forEach { task ->
-                            task.reminderDate?.let {
-                                if (dateTimeHelper.isAfterNow(it))
-                                    reminderManager.setExactReminder(it, task)
+                            task.dueDate?.let { firstDueDate ->
+                                if (dateTimeHelper.isAfterNow(firstDueDate))
+                                    reminderManager.setDueDateAlarm(firstDueDate, task)
+                                else {
+                                    task.nextDueDate?.let { nextDueDate ->
+                                        reminderManager.setDueDateAlarm(nextDueDate, task)
+                                    }
+                                }
                             }
                         }
                     }

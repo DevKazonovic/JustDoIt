@@ -3,10 +3,7 @@ package com.devkazonovic.projects.mytasks.domain.mapper
 import com.devkazonovic.projects.mytasks.data.local.db.entity.CategoryEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskEntity
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
-import com.devkazonovic.projects.mytasks.domain.model.Category
-import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.domain.model.TaskNotification
-import com.devkazonovic.projects.mytasks.domain.model.TaskNotificationState
+import com.devkazonovic.projects.mytasks.domain.model.*
 import com.devkazonovic.projects.mytasks.help.util.htmlToString
 import javax.inject.Inject
 
@@ -17,12 +14,15 @@ class TaskEntityMapper @Inject constructor() : Mapper<TaskEntity, Task> {
             title = htmlToString(input.title),
             detail = htmlToString(input.detail),
             isCompleted = input.isCompleted == 1,
-            listID = input.listID,
+            categoryId = input.categoryId,
             date = input.createdAt,
             completedAt = input.completedAt,
-            reminderDate = input.reminderDate,
+            dueDate = input.dueDateInMillis,
             isAllDay = input.isAllDay == 1,
-            pendingIntentRequestCode = input.pendingIntentRequestCode
+            alarmId = input.alarmId,
+            repeatType = input.repeat?.repeatType?.let { RepeatType.valueOf(it) },
+            repeatValue = input.repeat?.repeatValue,
+            nextDueDate = input.repeat?.nextDueDate
         )
 }
 

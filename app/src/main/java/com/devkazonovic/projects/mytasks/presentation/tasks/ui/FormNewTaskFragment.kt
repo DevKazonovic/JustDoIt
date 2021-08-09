@@ -1,61 +1,63 @@
 package com.devkazonovic.projects.mytasks.presentation.tasks.ui
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.devkazonovic.projects.mytasks.databinding.FragmentFormTaskBinding
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.devkazonovic.projects.mytasks.presentation.tasks.ValidationViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.rxbinding4.widget.textChanges
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 
 @AndroidEntryPoint
-class FormNewTaskFragment : BottomSheetDialogFragment() {
+class FormNewTaskFragment : DialogFragment() {
+
+    private val viewModel by viewModels<TasksViewModel>({ requireParentFragment() })
+    private val validationVM by viewModels<ValidationViewModel>()
 
     private var _binding: FragmentFormTaskBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<TasksViewModel>(
-        { requireParentFragment() }
-    )
+    private val disposable = CompositeDisposable()
 
-    companion object {
-        fun newInstance() = FormNewTaskFragment()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = MaterialAlertDialogBuilder(requireContext())
         _binding = FragmentFormTaskBinding.inflate(layoutInflater)
-        return binding.root
-    }
+        builder.setView(binding.root)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.isTaskTitleEntered.observe(viewLifecycleOwner) {
+        validationVM.isTaskTitleEntered.observe(this) {
             it?.let { binding.buttonSave.isEnabled = it }
         }
 
-        val editTextTaskTitleDisposable =
-            binding.editTextTaskTitle.textChanges().skipInitialValue().subscribe {
-                viewModel.taskInputValidation(StringBuilder(it).toString())
-            }
+        binding.editTextTaskTitle.textChanges().skipInitialValue().subscribe {
+            validationVM.taskInputValidation(StringBuilder(it).toString())
+        }.addTo(disposable)
+
         binding.buttonSave.setOnClickListener {
             viewModel.saveTask(
                 title = binding.editTextTaskTitle.text.toString(),
                 detail = binding.editTextTaskDetail.text.toString()
             )
-            editTextTaskTitleDisposable.dispose()
             dismiss()
         }
+
+        return builder.create()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDismiss(dialog: DialogInterface) {
         _binding = null
+        disposable.clear()
+        validationVM.reset()
+        super.onDismiss(dialog)
+    }
+
+    companion object {
+        fun newInstance() = FormNewTaskFragment()
+        const val TAG = "Form To Adding New Task"
     }
 }

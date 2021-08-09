@@ -1,6 +1,6 @@
 package com.devkazonovic.projects.mytasks.data.repository
 
-import com.devkazonovic.projects.mytasks.data.local.ILocalDataSource
+import com.devkazonovic.projects.mytasks.data.local.source.ILocalDataSource
 import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.domain.mapper.IMappers
 import com.devkazonovic.projects.mytasks.domain.model.Category
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class TasksRepository @Inject constructor(
     private val localDataSource: ILocalDataSource,
-    private val mappers: IMappers
+    private val mappers: IMappers,
 ) : ITasksRepository {
     override fun addNewCategory(category: Category): Single<Result<Long>> =
         localDataSource
@@ -57,6 +57,10 @@ class TasksRepository @Inject constructor(
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable =
         localDataSource.updateTaskReminder(taskID, reminderDate)
 
+    override fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable {
+        return localDataSource.updateTaskNextAlarm(taskID, repeatNextDueDate)
+    }
+
     override fun getTask(taskID: Long): Single<Result<Task>> =
         localDataSource.getTask(taskID)
             .map { mappers.taskEntityMapper().map(it) }
@@ -65,6 +69,13 @@ class TasksRepository @Inject constructor(
 
     override fun getAllTasks(): Single<Result<List<Task>>> =
         localDataSource.getAllTasks()
+            .map { list ->
+                list.map { mappers.taskEntityMapper().map(it) }
+            }
+            .toResult()
+
+    override fun getCategoryTasks(listID: Long): Flowable<Result<List<Task>>> =
+        localDataSource.getCategoryTasks(listID)
             .map { list ->
                 list.map { mappers.taskEntityMapper().map(it) }
             }

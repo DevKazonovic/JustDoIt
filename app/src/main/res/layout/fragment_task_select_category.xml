@@ -30,6 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="4"
-        tools:listitem="@layout/card_category" />
+        tools:listitem="@layout/card_sample_category" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

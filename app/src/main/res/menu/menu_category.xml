@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_category_edit"
+        android:title="@string/label_edit"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_category_delete"
+        android:title="@string/label_delete"
+        app:showAsAction="never" />
+</menu>

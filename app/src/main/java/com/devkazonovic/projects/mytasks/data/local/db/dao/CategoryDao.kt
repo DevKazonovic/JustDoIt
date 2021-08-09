@@ -10,11 +10,11 @@ import io.reactivex.rxjava3.core.Single
 interface CategoryDao : BaseCrudDao<CategoryEntity> {
 
 
-    @Query("SELECT * FROM task_list WHERE id = :listID")
+    @Query("SELECT * FROM category WHERE id = :listID")
     fun getCategoryById(listID: Long): Single<CategoryEntity>
 
 
-    @Query("SELECT * FROM task_list")
+    @Query("SELECT * FROM category")
     fun getCategories(): Flowable<List<CategoryEntity>>
 
 }

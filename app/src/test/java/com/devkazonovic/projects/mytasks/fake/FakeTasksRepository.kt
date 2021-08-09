@@ -13,7 +13,7 @@ class FakeTasksRepository(
     private val tasks: MutableList<Task> = mutableListOf(),
     private val lists: MutableList<Category> = mutableListOf(
         Category(0, "MyList", true)
-    )
+    ),
 ) : ITasksRepository {
 
 
@@ -55,6 +55,10 @@ class FakeTasksRepository(
     }
 
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable {
         TODO("Not yet implemented")
     }
 

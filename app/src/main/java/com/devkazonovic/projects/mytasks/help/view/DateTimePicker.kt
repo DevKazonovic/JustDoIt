@@ -13,7 +13,7 @@ private val constraintsBuilder = CalendarConstraints.Builder()
 
 fun createDatePicker(
     todayInUtcMilliseconds: Long,
-    onPositiveClick: (date: Long) -> Unit
+    onPositiveClick: (date: Long) -> Unit,
 ): MaterialDatePicker<Long> {
     return MaterialDatePicker.Builder.datePicker()
         .setTitleText("Select date")
@@ -31,7 +31,7 @@ fun createTimePicker(
     hour: Int,
     minute: Int,
     context: Context,
-    onPositiveClick: (hour: Int, minute: Int) -> Unit
+    onPositiveClick: (hour: Int, minute: Int) -> Unit,
 ): MaterialTimePicker {
     val isSystem24Hour = is24HourFormat(context)
     val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H

@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class TaskNotificationEntity(
     @PrimaryKey
     val id: Int,
-    val state: String
+    val state: String,
 )

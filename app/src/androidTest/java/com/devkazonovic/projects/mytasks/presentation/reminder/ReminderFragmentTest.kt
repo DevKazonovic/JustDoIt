@@ -37,6 +37,7 @@ import org.junit.Test
 import javax.inject.Singleton
 
 
+/*
 private const val KEY_TASK_ID = "Task ID"
 
 @UninstallModules(RepositoryModule::class)
@@ -225,3 +226,4 @@ class AlarmFragmentTest {
 
 }
 
+*/

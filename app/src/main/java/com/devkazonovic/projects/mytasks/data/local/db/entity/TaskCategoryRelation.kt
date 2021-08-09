@@ -5,6 +5,6 @@ import androidx.room.Relation
 
 data class TaskCategoryRelation(
     @Embedded val list: CategoryEntity,
-    @Relation(parentColumn = "id", entityColumn = "listID")
-    val tasks: List<TaskEntity>
+    @Relation(parentColumn = "id", entityColumn = "categoryId")
+    val tasks: List<TaskEntity>,
 )

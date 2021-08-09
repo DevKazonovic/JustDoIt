@@ -12,13 +12,19 @@
         android:gravity="center"
         tools:text="TextView" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewTasks"
+    <com.devkazonovic.projects.mytasks.help.view.NestedScrollableHost
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingBottom="92dp"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/card_task" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewTasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingBottom="92dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/card_task" />
+
+    </com.devkazonovic.projects.mytasks.help.view.NestedScrollableHost>
 </FrameLayout>

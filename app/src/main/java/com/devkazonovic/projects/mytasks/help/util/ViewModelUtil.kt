@@ -3,14 +3,16 @@ package com.devkazonovic.projects.mytasks.help.util
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.domain.holder.Result
 
-
 fun <T> handleResult(
     result: Result<T>,
     onSuccess: (data: T) -> Unit,
-    onError: (message: Int) -> Unit
+    onError: (message: Int) -> Unit,
 ) {
     when (result) {
         is Result.Success -> onSuccess(result.value)
-        is Result.Failure -> onError(R.string.unKnownError)
+        is Result.Failure -> {
+            log(result.throwable.message.toString())
+            onError(R.string.unKnownError)
+        }
     }
 }

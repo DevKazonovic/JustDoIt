@@ -17,4 +17,8 @@
             android:id="@+id/action_tasks_to_taskDetail"
             app:destination="@id/taskDetail" />
     </fragment>
+    <fragment
+        android:id="@+id/categories"
+        android:name="com.devkazonovic.projects.mytasks.presentation.categories.FragmentCategories"
+        android:label="Categories" />
 </navigation>

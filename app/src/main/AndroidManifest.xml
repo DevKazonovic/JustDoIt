@@ -23,7 +23,7 @@
         </activity>
 
         <receiver
-            android:name=".receiver.ReminderBroadcastReceiver"
+            android:name=".receiver.DueDateBroadcastReceiver"
             android:exported="false" />
         <receiver
             android:name=".receiver.NotificationDismissedReceiver"
@@ -36,6 +36,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 

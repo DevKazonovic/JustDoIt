@@ -9,7 +9,7 @@ private const val KEY_TASKS_LIST = "Current Task List"
 private const val KEY_REQUEST_CODE = "Current Pending Intent Request Code"
 
 class MySharedPreferences @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) : IMainSharedPreference {
 
     private val preferences =
