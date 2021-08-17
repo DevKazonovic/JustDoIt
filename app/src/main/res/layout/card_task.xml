@@ -5,9 +5,12 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="4dp"
     app:cardBackgroundColor="?attr/colorTaskCard"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:textAppearance="@style/TextAppearance.App.Subtitle1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 tools:text="Task" />
 
 
@@ -64,10 +67,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="4dp"
+                android:contentDescription="@string/desc_icon_repeat"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_repeat"
-                tools:visibility="visible"
-                android:contentDescription="@string/desc_icon_repeat" />
+                app:srcCompat="@drawable/ic_repeat_small"
+                tools:visibility="visible" />
 
 
         </LinearLayout>

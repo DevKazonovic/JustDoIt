@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,19 +13,74 @@
         android:gravity="center"
         tools:text="TextView" />
 
-    <com.devkazonovic.projects.mytasks.help.view.NestedScrollableHost
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewTasks"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingBottom="92dp"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/card_task" />
+        <LinearLayout
+            android:id="@+id/viewTasksSort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </com.devkazonovic.projects.mytasks.help.view.NestedScrollableHost>
+            <TextView
+                android:id="@+id/viewSort"
+                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:padding="8dp"
+                app:drawableStartCompat="@drawable/ic_sort"
+                app:drawableTint="?attr/colorDisable"
+                tools:text="@string/label_sort_default" />
+
+            <include layout="@layout/view_divider_horizantel" />
+
+            <ImageView
+                android:id="@+id/viewSortDirection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:contentDescription="@string/desc_categories_sort_order"
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_arrow_down"
+                app:tint="?attr/colorDisable" />
+
+        </LinearLayout>
+
+        <com.devkazonovic.projects.mytasks.presentation.common.view.NestedScrollableHost
+            android:id="@+id/nestedScrollableHost"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewTasksSort">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTasks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="92dp"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/card_task" />
+
+        </com.devkazonovic.projects.mytasks.presentation.common.view.NestedScrollableHost>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

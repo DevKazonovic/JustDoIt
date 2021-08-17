@@ -13,7 +13,7 @@ import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEn
 
 @Database(
     entities = [TaskEntity::class, CategoryEntity::class, TaskNotificationEntity::class],
-    version = 14
+    version = 15
 )
 @TypeConverters(MyTasksTypeConverters::class)
 abstract class TasksDataBase : RoomDatabase() {

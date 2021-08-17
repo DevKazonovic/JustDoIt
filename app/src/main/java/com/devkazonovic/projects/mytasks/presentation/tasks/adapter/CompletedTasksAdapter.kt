@@ -1,14 +1,15 @@
 package com.devkazonovic.projects.mytasks.presentation.tasks.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.databinding.CardTaskBinding
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.help.extension.hide
-import com.devkazonovic.projects.mytasks.help.extension.show
-import com.devkazonovic.projects.mytasks.presentation.tasks.diff.TasksDiffCallback
+import com.devkazonovic.projects.mytasks.help.extension.disable
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.TasksDiffCallback
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import java.util.*
 
@@ -25,18 +26,16 @@ class CompletedTasksAdapter(
         private val onClick: (taskID: Long) -> Unit,
         private val dateTimeHelper: DateTimeHelper,
     ) : RecyclerView.ViewHolder(binding.root) {
+        private val context: Context = binding.root.context
+
         fun bind(task: Task) {
             binding.checkbox.isChecked = task.isCompleted
             binding.textViewTaskTitle.text = task.title
-            task.dueDate?.let {
-                binding.textViewReminder.show()
-                if (task.isAllDay) {
-                    binding.textViewReminder.text = dateTimeHelper.showDate(it)
-                } else {
-                    binding.textViewReminder.text = dateTimeHelper.showDateTime(it)
-                }
-            } ?: run { binding.textViewReminder.hide() }
-
+            binding.textViewReminder.text = ""
+            binding.imageViewRepeatIcon.isVisible =
+                task.repeatType != null && task.repeatValue != null
+            binding.imageViewRepeatIcon.disable()
+            binding.textViewTaskTitle.disable()
             binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
                 onCheck(task)
                 binding.checkbox.isChecked = !isChecked

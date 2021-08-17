@@ -2,13 +2,13 @@ package com.devkazonovic.projects.mytasks.presentation.task.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.CardSampleCategoryBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
-import com.devkazonovic.projects.mytasks.presentation.tasks.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.mytasks.help.util.getThemeColor
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.CategoriesDiffCallback
 
 class TaskCategoriesAdapter(
     private var _listID: Long? = null,
@@ -24,14 +24,13 @@ class TaskCategoriesAdapter(
 
         ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(list: Category) {
+            val context = binding.root.context
             binding.textViewCategoryName.text = list.name
             if (listID == list.id) {
-                binding.cardView.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        R.color.brand
-                    )
-                )
+                binding.cardView.setCardBackgroundColor(getThemeColor(context,
+                    R.attr.colorPrimaryVariant))
+            } else {
+                binding.cardView.setCardBackgroundColor(getThemeColor(context, R.attr.colorSurface))
             }
             binding.root.setOnClickListener {
                 onClick(list)

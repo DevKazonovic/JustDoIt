@@ -11,17 +11,26 @@
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorSurface">@color/dark_extra</item>
         <item name="colorOnSurface">@color/brand</item>
-        <item name="colorDisable">@color/light_gray</item>
+
+        <item name="colorDisable">@color/dark_extra_gray</item>
         <item name="colorDivider">@color/dark_extra_gray</item>
         <item name="colorTaskCard">@color/dark_extra_gray</item>
+        <item name="colorInputFill">@color/dark_extra_gray</item>
+        <item name="colorLabel">@color/dark_extra_gray</item>
 
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/backgroundColor</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSurface</item>
 
         <!-- Customize your theme here. -->
         <item name="toolbarStyle">@style/Widget.App.TopToolbar</item>
-        <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox.Light</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
 
+        <item name="textAppearanceHeadline6">@style/TextAppearance.App.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.App.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.App.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
     </style>
 </resources>

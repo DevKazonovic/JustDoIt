@@ -2,7 +2,7 @@ package com.devkazonovic.projects.mytasks.help.extension
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.devkazonovic.projects.mytasks.help.view.ScrollChildSwipeRefreshLayout
+import com.devkazonovic.projects.mytasks.presentation.common.view.ScrollChildSwipeRefreshLayout
 
 fun Fragment.setupRefreshLayout(
     refreshLayout: ScrollChildSwipeRefreshLayout,

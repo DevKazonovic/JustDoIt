@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.tasks.ui.TasksFragment">
+    tools:context=".presentation.tasks.TasksFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
@@ -32,48 +32,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:menu="@menu/menu_main"
-                app:titleTextColor="@color/brand"
+                app:titleTextAppearance="@style/TextAppearance.App.Subtitle1"
                 tools:title="Test" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/colorDivider" />
+            <include layout="@layout/view_divider_vertical" />
 
-            <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="26dp"
-                app:cardElevation="0dp"
-                app:strokeColor="?attr/colorDivider"
-                app:strokeWidth="1dp">
+                android:paddingBottom="8dp"
+                app:tabGravity="center"
+                app:tabIndicator="@drawable/tab_indicator"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorGravity="bottom"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="?attr/colorPrimary"
+                app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:tabTextColor="?attr/colorDisable">
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    app:tabGravity="center"
-                    app:tabMode="fixed"
-                    app:tabIndicator="@drawable/tab_indicator"
-                    app:tabIndicatorFullWidth="false"
-                    app:tabIndicatorGravity="bottom"
-                    app:tabSelectedTextColor="?attr/colorPrimary"
-                    app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:tabTextColor="?attr/colorDisable">
+                    android:text="@string/label_active" />
 
-                      <com.google.android.material.tabs.TabItem
-                                            android:text="@string/label_active"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"/>
-                                        <com.google.android.material.tabs.TabItem
-                                            android:text="@string/label_tab_completed"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_tab_completed" />
 
-                </com.google.android.material.tabs.TabLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.tabs.TabLayout>
+
+            <include layout="@layout/view_divider_vertical" />
 
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -100,7 +90,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewpager"

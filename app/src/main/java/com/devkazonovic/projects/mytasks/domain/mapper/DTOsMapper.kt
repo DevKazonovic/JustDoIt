@@ -31,7 +31,8 @@ class CategoryEntityMapper @Inject constructor() : Mapper<CategoryEntity, Catego
         Category(
             id = input.id,
             name = htmlToString(input.name),
-            isDefault = input.isDefault == 1
+            isDefault = input.isDefault == 1,
+            createdAt = input.createdAt
         )
 }
 

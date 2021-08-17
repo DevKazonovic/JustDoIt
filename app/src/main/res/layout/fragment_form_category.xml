@@ -5,7 +5,8 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/textInputCategoryName"
+        style="@style/Widget.App.TextInputLayout.Fill.Rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -13,20 +14,27 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        app:boxBackgroundColor="@color/light_blue"
+        app:counterEnabled="true"
+        app:counterMaxLength="50"
+        app:errorEnabled="true"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextListName"
+            android:id="@+id/editTextCategoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_category_name"
-            android:inputType="textWebEditText" />
+            android:hint="@string/hint_input_new_category"
+            android:inputType="textWebEditText"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonSave"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -37,5 +45,5 @@
         android:text="@string/label_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputCategoryName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

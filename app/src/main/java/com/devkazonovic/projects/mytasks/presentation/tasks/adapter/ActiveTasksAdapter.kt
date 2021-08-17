@@ -11,7 +11,8 @@ import com.devkazonovic.projects.mytasks.databinding.CardTaskBinding
 import com.devkazonovic.projects.mytasks.databinding.CardTasksHeaderBinding
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.util.getThemeColor
-import com.devkazonovic.projects.mytasks.presentation.tasks.diff.ActiveTasksDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.ActiveTasksDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 
 private const val ITEM_VIEW_TYPE_HEADER = 0

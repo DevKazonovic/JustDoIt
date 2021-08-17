@@ -10,7 +10,7 @@ import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferenc
 import com.devkazonovic.projects.mytasks.databinding.CardSampleCategoryBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.help.util.getThemeColor
-import com.devkazonovic.projects.mytasks.presentation.tasks.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.CategoriesDiffCallback
 
 class SampleCategoriesAdapter(
     private val sharedPreferences: MySharedPreferences,
@@ -27,7 +27,8 @@ class SampleCategoriesAdapter(
             binding.textViewCategoryName.text = list.name
             if (sharedPreferences.getCurrentTasksList() == list.id) {
                 sharedPreferences.saveCurrentTasksList(list.id)
-                binding.cardView.setCardBackgroundColor(getThemeColor(context, R.attr.colorPrimaryVariant))
+                binding.cardView.setCardBackgroundColor(getThemeColor(context,
+                    R.attr.colorPrimaryVariant))
             } else {
                 binding.cardView.setCardBackgroundColor(getThemeColor(context, R.attr.colorSurface))
             }

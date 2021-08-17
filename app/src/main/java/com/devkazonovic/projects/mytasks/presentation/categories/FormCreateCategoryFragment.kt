@@ -37,12 +37,12 @@ class FormCreateCategoryFragment : DialogFragment() {
             it?.let { binding.buttonSave.isEnabled = it }
         }
 
-        binding.editTextListName.textChanges().skipInitialValue().subscribe {
+        binding.editTextCategoryName.textChanges().skipInitialValue().subscribe {
             validationVM.categoryInputValidation(StringBuilder(it).toString())
         }.addTo(disposable)
 
         binding.buttonSave.setOnClickListener {
-            viewModel.createCategory(binding.editTextListName.text.toString())
+            viewModel.createCategory(binding.editTextCategoryName.text.toString())
             dismiss()
         }
 

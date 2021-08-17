@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.threeten.bp.Instant
 import timber.log.Timber
 import javax.inject.Singleton
 
@@ -32,7 +33,8 @@ object DataBaseModule {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
                     Timber.d("OnCreate DB")
-                    db.execSQL("INSERT INTO category (id,name,isDefault) VALUES(0,'My List',1)")
+                    db.execSQL("INSERT INTO category (id,name,isDefault,createdAt) VALUES(0,'My List',1,?)",
+                        arrayOf(Instant.now().toEpochMilli()))
                     sharedPreferences.saveCurrentTasksList(0)
                 }
             }

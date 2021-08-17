@@ -8,6 +8,7 @@ import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.domain.model.TaskNotification
 import com.devkazonovic.projects.mytasks.help.util.booleanToInt
+import org.threeten.bp.Instant
 import javax.inject.Inject
 
 class TaskMapper @Inject constructor() : Mapper<Task, TaskEntity> {
@@ -32,7 +33,8 @@ class CategoryMapper @Inject constructor() : Mapper<Category, CategoryEntity> {
     override fun map(input: Category): CategoryEntity =
         CategoryEntity(
             name = input.name,
-            isDefault = booleanToInt(input.isDefault)
+            isDefault = booleanToInt(input.isDefault),
+            createdAt = input.createdAt ?: Instant.now().toEpochMilli()
         ).also { category -> if (input.id != -1L) category.id = input.id }
 }
 

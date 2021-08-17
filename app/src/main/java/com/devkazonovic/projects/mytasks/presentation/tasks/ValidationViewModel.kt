@@ -11,13 +11,17 @@ class ValidationViewModel @Inject constructor() : ViewModel() {
 
     private val _isCategoryNameEntered = MutableLiveData(false)
     private val _isTaskTitleEntered = MutableLiveData(false)
+    private val _isCategoryLengthMax = MutableLiveData(false)
 
     fun taskInputValidation(title: String) {
         _isTaskTitleEntered.value = title.isNotEmpty() && title.isNotBlank()
     }
 
     fun categoryInputValidation(title: String) {
-        _isCategoryNameEntered.value = title.isNotEmpty() && title.isNotBlank()
+        _isCategoryNameEntered.value =
+            title.isNotEmpty() && title.isNotBlank() && title.length <= 50
+        _isCategoryLengthMax.value = title.length > 50
+
     }
 
     fun reset() {
@@ -26,4 +30,6 @@ class ValidationViewModel @Inject constructor() : ViewModel() {
 
     val isCategoryNameEntered: LiveData<Boolean> get() = _isCategoryNameEntered
     val isTaskTitleEntered: LiveData<Boolean> get() = _isTaskTitleEntered
+    val isCategoryLengthMax: LiveData<Boolean> get() = _isCategoryLengthMax
+
 }

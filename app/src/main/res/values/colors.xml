@@ -2,19 +2,22 @@
 <resources>
 
     <color name="brand">#FF1DA1F2</color>
-    <color name="brande_variant">#FF00B4F2</color>
+    <color name="brande_variant">#FF87CEFA</color>
 
-    <color name="light">#FFFFFFFF</color>
+    <color name="light">#FFFDFEFE</color>
     <color name="light_extra">#FFFBFCFC</color>
-    <color name="light_extra_gray">#FFF7F9F9</color>
-    <color name="light_gray">#FFD0D3D4</color>
-    <color name="gray">#FFC0C0C0</color>
+    <color name="light_blue">#FFEBF5FB</color>
+    <color name="light_gray">#FFEBEDEF</color>
+    <color name="gray">#FF999999</color>
+    <color name="gray_200">#FFDDDDDD</color>
 
     <color name="dark">#FF14171A</color>
-    <color name="dark_extra">#FF191F2B</color>
-    <color name="dark_extra_gray">#FF273746</color>
-    <color name="dark_gray">#FF5D6D7E</color>
+    <color name="dark_extra">#FF1B2631</color>
+    <color name="dark_extra_gray">#FF212F3C</color>
 
+    <color name="dark_trans">#1A000000</color>
+
+    <color name="light_red">#FFDC143C</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

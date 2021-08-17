@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -18,18 +17,13 @@ import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.FragmentTaskBinding
 import com.devkazonovic.projects.mytasks.domain.holder.DataState
 import com.devkazonovic.projects.mytasks.domain.holder.EventObserver
-import com.devkazonovic.projects.mytasks.domain.model.Repeat
 import com.devkazonovic.projects.mytasks.domain.model.RepeatType
 import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.help.extension.hide
-import com.devkazonovic.projects.mytasks.help.extension.show
-import com.devkazonovic.projects.mytasks.help.extension.showSnackBar
+import com.devkazonovic.projects.mytasks.help.extension.*
 import com.devkazonovic.projects.mytasks.help.util.log
-import com.devkazonovic.projects.mytasks.help.view.ViewTag
-import com.devkazonovic.projects.mytasks.help.view.createDatePicker
-import com.devkazonovic.projects.mytasks.help.view.createTimePicker
-import com.devkazonovic.projects.mytasks.presentation.common.InputFilterMinMax
-import com.devkazonovic.projects.mytasks.presentation.common.MaterialSpinnerAdapter
+import com.devkazonovic.projects.mytasks.presentation.common.util.ViewTag
+import com.devkazonovic.projects.mytasks.presentation.common.view.createDatePicker
+import com.devkazonovic.projects.mytasks.presentation.common.view.createTimePicker
 import com.devkazonovic.projects.mytasks.presentation.task.TaskViewModel
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -81,14 +75,15 @@ class TaskFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         cancelNotification()
-
         setUpToolBar()
-        setUpTaskData()
+        setUpTask()
+        setUpTaskCategory()
+        setUpTaskCheckBox()
         setUpTaskDueDate()
+        observeEvents()
 
-        observeStateEvents()
-        observeNavigationEvents()
         viewModel.start(taskID!!)
     }
 
@@ -121,48 +116,66 @@ class TaskFragment : Fragment() {
         }
     }
 
-    private fun setUpTaskData() {
-        binding.dropDownTaskCategory.setOnClickListener {
-            TaskSelectCategoryFragment.newInstance()
-                .show(childFragmentManager, TaskSelectCategoryFragment.TAG)
-        }
+    private fun setUpTask() {
+        viewModel.currentTask.observe(viewLifecycleOwner, { task ->
+            task?.let { showTask(it) }
+        })
+    }
+
+    private fun setUpTaskCheckBox() {
         binding.checkboxTaskIsCompleted.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 binding.checkboxTaskIsCompleted.text = getString(R.string.label_task_uncompleted)
+                onTaskCompleted()
             } else {
                 binding.checkboxTaskIsCompleted.text = getString(R.string.label_task_completed)
+                onTaskActive()
             }
-            updateTaskTextDetail(isChecked)
             binding.checkboxTaskIsCompleted.isChecked = isChecked
         }
-        viewModel.currentTask.observe(viewLifecycleOwner, { task ->
-            task?.let { displayTask(it) }
-        })
+    }
+
+    private fun setUpTaskCategory() {
+        binding.textViewTaskCategory.setOnClickListener {
+            CategoriesDialogFragment.newInstance()
+                .show(childFragmentManager, CategoriesDialogFragment.TAG)
+        }
+
+        binding.imageViewDropDown.setOnClickListener {
+            CategoriesDialogFragment.newInstance()
+                .show(childFragmentManager, CategoriesDialogFragment.TAG)
+        }
+
         viewModel.currentTaskCategory.observe(viewLifecycleOwner, { list ->
-            binding.dropDownTaskCategory.text = SpannableStringBuilder(list.name)
+            binding.textViewTaskCategory.text = list.name
         })
     }
 
     private fun setUpTaskDueDate() {
-        setUpRepeatInput()
-        setUpDateTimeInput()
+        dueDateInputListeners()
         viewModel.dateStr.observe(viewLifecycleOwner, {
             if (it != null) {
-                binding.textViewDatePicker.text = it
-                binding.viewContainerRepeat.show()
-                binding.viewAddTime.show()
-                binding.viewClearDate.show()
-                binding.textViewTimePicker.text = getString(R.string.label_all_day)
 
+                binding.viewAddTime.enable()
+                binding.textViewTimePicker.enable()
+                binding.viewAddRepeat.enable()
+                binding.textViewRepeat.enable()
+                binding.viewClearTime.enable()
+                binding.viewClearRepeat.enable()
+                binding.viewClearDate.show()
+                binding.textViewDatePicker.text = it
+                binding.textViewTimePicker.text = getString(R.string.label_all_day)
             } else {
                 binding.textViewDatePicker.text = getString(R.string.label_add_date)
-                binding.dropDownRepeatType.text = SpannableStringBuilder(
-                    getString(R.string.label_no_repeat)
-                )
-                binding.editTextRepeatNumber.text = SpannableStringBuilder("")
+                binding.viewAddTime.disable()
+                binding.textViewTimePicker.disable()
+                binding.viewAddRepeat.disable()
+                binding.textViewRepeat.disable()
+                binding.viewClearTime.disable()
+                binding.viewClearRepeat.disable()
                 binding.viewClearDate.hide()
-                binding.viewAddTime.hide()
-                binding.viewContainerRepeat.hide()
+
+
             }
         })
         viewModel.timeStr.observe(viewLifecycleOwner, {
@@ -170,28 +183,29 @@ class TaskFragment : Fragment() {
                 binding.textViewTimePicker.text = it
                 binding.viewClearTime.show()
             } else {
-                binding.textViewTimePicker.text = getString(R.string.label_all_day)
+                if (viewModel.dateStr.value != null) {
+                    binding.textViewTimePicker.text = getString(R.string.label_all_day)
+                } else {
+                    binding.textViewTimePicker.text = getString(R.string.label_add_time)
+                }
                 binding.viewClearTime.hide()
             }
         })
         viewModel.repeat.observe(viewLifecycleOwner) { repeat ->
-            if (repeat == null) {
-                binding.dropDownRepeatType.text =
-                    SpannableStringBuilder(getString(R.string.label_repeat_value_param))
-                binding.viewClearRepeat.hide()
-                binding.textViewRepeatValue.hide()
+            if (repeat != null) {
+                binding.textViewRepeat.text = if (repeat.type == null && repeat.number == null) {
+                    getString(R.string.label_no_repeat)
+                } else {
+                    showRepeatValue(repeat.type!!, repeat.number!!)
+                }
             } else {
-                binding.dropDownRepeatType.text =
-                    SpannableStringBuilder(repeat.type?.name)
-                binding.editTextRepeatNumber.text =
-                    SpannableStringBuilder(repeat.number.toString())
-
+                binding.textViewRepeat.text = getString(R.string.label_no_repeat)
             }
         }
     }
 
-    private fun setUpDateTimeInput() {
-        binding.viewAddDate.setOnClickListener {
+    private fun dueDateInputListeners() {
+        binding.textViewDatePicker.setOnClickListener {
             createDatePicker(
                 viewModel.date.value ?: MaterialDatePicker.todayInUtcMilliseconds()
             ) { dateInMillis ->
@@ -199,7 +213,7 @@ class TaskFragment : Fragment() {
                 viewModel.setDate(dateInMillis)
             }.show(childFragmentManager, ViewTag.TAG_DATE_PICKER_DIALOGUE)
         }
-        binding.viewAddTime.setOnClickListener {
+        binding.textViewTimePicker.setOnClickListener {
             createTimePicker(
                 viewModel.time.value?.first ?: LocalTime.now().hour,
                 viewModel.time.value?.second ?: LocalTime.now().minute,
@@ -209,73 +223,26 @@ class TaskFragment : Fragment() {
                 viewModel.setTime(Pair(hour, minute))
             }.show(childFragmentManager, ViewTag.TAG_TIME_PICKER_DIALOGUE)
         }
+        binding.textViewRepeat.setOnClickListener {
+            RepeatDialogFragment.newInstance().show(childFragmentManager, RepeatDialogFragment.TAG)
+        }
         binding.viewClearDate.setOnClickListener {
             viewModel.setDate(null)
-
+            viewModel.setTime(null)
+            viewModel.setRepeat(null)
         }
         binding.viewClearTime.setOnClickListener {
             viewModel.setTime(null)
         }
-    }
-
-    private fun setUpRepeatInput() {
-        val items = arrayOf(
-            getString(R.string.label_no_repeat),
-            RepeatType.DAY.name,
-            RepeatType.WEEK.name,
-            RepeatType.MONTH.name,
-            RepeatType.YEAR.name
-
-        )
-        val adapter = MaterialSpinnerAdapter(
-            requireContext(),
-            android.R.layout.simple_selectable_list_item,
-            items
-        )
-        binding.dropDownRepeatType.setAdapter(adapter)
-        binding.editTextRepeatNumber.filters = arrayOf(InputFilterMinMax(1, 99))
-        binding.dropDownRepeatType.setOnItemClickListener { parent, view, position, id ->
-            val str = parent.getItemAtPosition(position) as String
-            if (str != getString(R.string.label_no_repeat)) {
-                val text = binding.editTextRepeatNumber.text
-                binding.editTextRepeatNumber.text = SpannableStringBuilder("1")
-                val value = if (text.isNullOrEmpty()) 1 else text.toString().toInt()
-                val item = RepeatType.valueOf(str)
-                binding.textInputRepeatNumber.show()
-                binding.viewClearRepeat.show()
-                binding.textViewRepeatValue.text = showRepeatValue(item, value)
-            } else {
-                binding.textViewRepeatValue.text = getString(R.string.label_no_repeat)
-                binding.editTextRepeatNumber.text = SpannableStringBuilder("")
-                binding.textInputRepeatNumber.hide()
-                binding.viewClearRepeat.hide()
-            }
-        }
-        binding.editTextRepeatNumber.doOnTextChanged { text, start, before, count ->
-            if (binding.dropDownRepeatType.text.toString() != getString(R.string.label_no_repeat)) {
-                val value = if (text.isNullOrEmpty()) 1 else text.toString().toInt()
-                val item = RepeatType.valueOf(binding.dropDownRepeatType.text.toString())
-                binding.textViewRepeatValue.text = showRepeatValue(item, value)
-            }
-        }
-        binding.editTextRepeatNumber.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                binding.editTextRepeatNumber.text = SpannableStringBuilder("1")
-            }
-        }
         binding.viewClearRepeat.setOnClickListener {
-            binding.dropDownRepeatType.text =
+            binding.textViewRepeat.text =
                 SpannableStringBuilder(getString(R.string.label_no_repeat))
-            binding.textViewRepeatValue.text = ""
-            binding.textInputRepeatNumber.hide()
             binding.viewClearRepeat.hide()
         }
     }
 
     private fun showRepeatValue(type: RepeatType, value: Int): String {
-        val number = if (value == 1) {
-            ""
-        } else value.toString()
+        val number = if (value == 1) "" else value.toString()
         return getString(R.string.label_repeat_value_param, when (type) {
             RepeatType.DAY -> resources.getQuantityString(R.plurals.day, value, number)
             RepeatType.WEEK -> resources.getQuantityString(R.plurals.week, value, number)
@@ -284,65 +251,101 @@ class TaskFragment : Fragment() {
         })
     }
 
-    private fun displayTask(task: Task) {
+    private fun showTask(task: Task) {
         binding.editTextTaskTitle.text = SpannableStringBuilder(task.title)
         binding.editTextTaskDetail.text = SpannableStringBuilder(task.detail)
-        updateTaskTextDetail(task.isCompleted)
 
-        binding.checkboxTaskIsCompleted.isChecked = task.isCompleted
         if (task.isCompleted) {
             binding.checkboxTaskIsCompleted.text = getString(R.string.label_mark_uncompleted)
+            onTaskCompleted()
         } else {
             binding.checkboxTaskIsCompleted.text = getString(R.string.label_mark_completed)
+            onTaskActive()
         }
-
-        task.repeatType?.let {
-            binding.textInputRepeatNumber.show()
-            binding.viewClearRepeat.show()
-            binding.dropDownRepeatType.text = SpannableStringBuilder(it.name)
-            binding.editTextRepeatNumber.text = SpannableStringBuilder(task.repeatValue.toString())
-        } ?: run {
-            binding.dropDownRepeatType.text =
-                SpannableStringBuilder(getString(R.string.label_no_repeat))
-        }
-
+        binding.checkboxTaskIsCompleted.isChecked = task.isCompleted
     }
 
-    private fun updateTaskTextDetail(isCompleted: Boolean) {
-        if (isCompleted) {
-            binding.editTextTaskTitle.paintFlags =
-                binding.editTextTaskTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.editTextTaskDetail.paintFlags =
-                binding.editTextTaskDetail.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    private fun onTaskCompleted() {
+        val taskTitleViews = arrayOf(
+            binding.editTextTaskTitle,
+            binding.editTextTaskDetail
+        )
+        val taskCategoryViews = arrayOf(
+            binding.viewTaskCategory,
+            binding.imageViewDropDown,
+            binding.textViewTaskCategory,
+        )
+        val taskDateViews = arrayOf(
+            binding.viewAddDate,
+            binding.viewClearDate,
+            binding.textViewDatePicker,
+        )
+        val taskTimeViews = arrayOf(
+            binding.viewAddTime,
+            binding.viewClearTime,
+            binding.textViewTimePicker,
+        )
+        val taskRepeatViews = arrayOf(
+            binding.viewAddRepeat,
+            binding.viewClearRepeat,
+            binding.textViewRepeat,
+        )
+        taskTitleViews.forEach { text ->
+            text.paintFlags = binding.editTextTaskTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+        taskTitleViews.disable()
+        taskCategoryViews.disable()
+        taskDateViews.disable()
+        taskTimeViews.disable()
+        taskRepeatViews.disable()
+    }
+
+    private fun onTaskActive() {
+        val taskTitleViews = arrayOf(
+            binding.editTextTaskTitle,
+            binding.editTextTaskDetail
+        )
+        val taskCategoryViews = arrayOf(
+            binding.viewTaskCategory,
+            binding.imageViewDropDown,
+            binding.textViewTaskCategory,
+        )
+        val taskDateViews = arrayOf(
+            binding.viewAddDate,
+            binding.viewClearDate,
+            binding.textViewDatePicker,
+        )
+        val taskTimeViews = arrayOf(
+            binding.viewAddTime,
+            binding.viewClearTime,
+            binding.textViewTimePicker,
+        )
+        val taskRepeatViews = arrayOf(
+            binding.viewAddRepeat,
+            binding.viewClearRepeat,
+            binding.textViewRepeat,
+        )
+        taskTitleViews.forEach { text ->
+            text.paintFlags = Paint.ANTI_ALIAS_FLAG
+        }
+        taskTitleViews.enable()
+        taskCategoryViews.enable()
+        taskDateViews.enable()
+        if (viewModel.date.value != null) {
+            taskTimeViews.enable()
+            taskRepeatViews.enable()
         } else {
-            binding.editTextTaskTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
-            binding.editTextTaskDetail.paintFlags = Paint.ANTI_ALIAS_FLAG
+            taskTimeViews.disable()
+            taskRepeatViews.disable()
         }
     }
 
     private fun updateTask() {
-        if (binding.dropDownRepeatType.text.toString() == getString(R.string.label_no_repeat)) {
-            viewModel.updateTask(
-                binding.editTextTaskTitle.text.toString(),
-                binding.editTextTaskDetail.text.toString(),
-                binding.checkboxTaskIsCompleted.isChecked,
-                Repeat(null, null)
-            )
-        } else {
-            val repeatValue = binding.editTextRepeatNumber.text?.toString()
-            val repeatType = RepeatType.valueOf(binding.dropDownRepeatType.text.toString())
-            viewModel.updateTask(
-                binding.editTextTaskTitle.text.toString(),
-                binding.editTextTaskDetail.text.toString(),
-                binding.checkboxTaskIsCompleted.isChecked,
-                Repeat(
-                    repeatType,
-                    if (repeatValue.isNullOrEmpty()) 1 else repeatValue.toInt()
-                )
-            )
-        }
-
-
+        viewModel.updateTask(
+            binding.editTextTaskTitle.text.toString(),
+            binding.editTextTaskDetail.text.toString(),
+            binding.checkboxTaskIsCompleted.isChecked,
+        )
     }
 
     private fun cancelNotification() {
@@ -351,7 +354,7 @@ class TaskFragment : Fragment() {
         }
     }
 
-    private fun observeStateEvents() {
+    private fun observeEvents() {
         viewModel.dataState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is DataState.ErrorState -> {
@@ -366,14 +369,12 @@ class TaskFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun observeNavigationEvents() {
         viewModel.navigateBack.observe(viewLifecycleOwner, {
             it?.let {
                 findNavController().navigateUp()
             }
         })
     }
+
 
 }

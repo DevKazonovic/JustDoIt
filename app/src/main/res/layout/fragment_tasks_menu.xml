@@ -1,132 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/view_bg_rounded_top_corners_12"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/itemRenameCategory"
+        style="@style/Widget.App.MenuItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageViewRenameCategoryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/desc_rename_category"
+            app:srcCompat="@drawable/ic_edit" />
 
         <LinearLayout
-            android:id="@+id/itemActionRenameCategory"
-            style="@style/Widget.App.MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageViewActionRenameCategoryIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_edit" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/textViewRenameCategoryTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:orientation="vertical">
+                android:text="@string/label_action_rename_list"
+                android:textAppearance="@style/TextAppearance.App.Subtitle2" />
 
-                <TextView
-                    android:id="@+id/textViewActionRenameCategoryTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_action_rename_list"
-                    android:textAppearance="@style/TextAppearance.App.Subtitle2" />
-
-                <TextView
-                    android:id="@+id/textViewActionRenameCategoryDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.App.Caption"
-                    android:visibility="gone"
-                    tools:text="detail" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/itemActionDeleteCategory"
-            style="@style/Widget.App.MenuItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageViewActionDeleteCategoryIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_delete" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/textViewRenameCategoryDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textViewActionDeleteCategoryTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_action_delete_list"
-                    android:textAppearance="@style/TextAppearance.App.Subtitle2" />
-
-                <TextView
-                    android:id="@+id/textViewActionDeleteCategoryDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.App.Caption"
-                    android:visibility="gone"
-                    tools:text="detail"
-                    tools:visibility="visible" />
-            </LinearLayout>
-
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:visibility="gone"
+                tools:text="detail" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/itemActionDeleteCompletedTasks"
-            style="@style/Widget.App.MenuItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageViewActionDeleteCompletedTasksIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_clear_all" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textViewActionDeleteCompletedTasksTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_action_delete_all_completed_tasks"
-                    android:textAppearance="@style/TextAppearance.App.Subtitle2" />
-
-                <TextView
-                    android:id="@+id/textViewActionDeleteCompletedTasksDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.App.Caption"
-                    android:visibility="gone"
-                    tools:text="detail" />
-            </LinearLayout>
-
-        </LinearLayout>
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <LinearLayout
+        android:id="@+id/itemDeleteCategory"
+        style="@style/Widget.App.MenuItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/imageViewDeleteCategoryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            app:drawableStartCompat="@drawable/ic_delete" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewDeleteCategoryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_action_delete_list"
+                android:textAppearance="@style/TextAppearance.App.Subtitle2" />
+
+            <TextView
+                android:id="@+id/textViewDeleteCategoryDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:visibility="gone"
+                tools:text="detail"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/itemDeleteCompletedTasks"
+        style="@style/Widget.App.MenuItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageViewDeleteCompletedTasksIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/desc_delete_completed_tasks"
+            app:srcCompat="@drawable/ic_clear_all"
+            app:tint="@color/color_state_icon" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewDeleteCompletedTasksTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/label_action_delete_all_completed_tasks"
+                android:textAppearance="@style/TextAppearance.App.Subtitle2" />
+
+            <TextView
+                android:id="@+id/textViewDeleteCompletedTasksDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:visibility="gone"
+                tools:text="detail" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
