@@ -11,7 +11,7 @@ import com.devkazonovic.projects.mytasks.databinding.CardCategoryBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.help.extension.hide
 import com.devkazonovic.projects.mytasks.help.extension.show
-import com.devkazonovic.projects.mytasks.presentation.tasks.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.CategoriesDiffCallback
 
 class CategoriesAdapter(
     private val onClick: (view: View, category: Category) -> Unit,

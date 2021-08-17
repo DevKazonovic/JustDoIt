@@ -42,18 +42,15 @@ class TaskViewModel @Inject constructor(
     /**LiveData*/
     private val _currentTask = MutableLiveData<Task>()
     private val _currentCategory = MutableLiveData<Category>()
-    private val _currentTaskDueDateInMillis = MutableLiveData<Long?>()
-    private val _nextTaskDueDateInMillis = MutableLiveData<Long?>()
-
     private val _categories = MutableLiveData<List<Category>>()
-
     private val _date = MutableLiveData<Long?>()
+    private val _time = MutableLiveData<Pair<Int, Int>?>()
+    private val _repeat = MutableLiveData<Repeat?>()
     val dateStr = Transformations.switchMap(_date) { dateInMillis ->
         dateInMillis?.let {
             MutableLiveData<String>().apply { this.value = dateTimeHelper.showDate(it) }
         } ?: MutableLiveData<String>().apply { this.value = null }
     }
-    private val _time = MutableLiveData<Pair<Int, Int>?>()
     val timeStr = Transformations.switchMap(_time) { pair ->
         pair?.let {
             MutableLiveData<String>().apply {
@@ -62,12 +59,9 @@ class TaskViewModel @Inject constructor(
         } ?: MutableLiveData<String>().apply { this.value = null }
 
     }
-    private val _repeat = MutableLiveData<Repeat?>()
-    val repeat: LiveData<Repeat?> get() = _repeat
 
     private val _navigateBack = MutableLiveData<Event<Boolean>>()
     private val _dataState = MutableLiveData<Event<DataState<Int>>>()
-
 
     init {
         Timber.d("Init")
@@ -85,11 +79,17 @@ class TaskViewModel @Inject constructor(
             .subscribe { result ->
                 handleResult(
                     result,
-                    { task -> setCurrentTaskData(task) },
+                    { task -> initLiveData(task) },
                     { showSnackBarErrorMessage(R.string.unKnownError) }
                 )
             }
             .addTo(disposableGeneral)
+    }
+
+    private fun initLiveData(task: Task) {
+        _currentTask.postValue(task)
+        updateTaskCategory(task.categoryId)
+        initTaskDueDateLiveData(task)
     }
 
     fun deleteTask() {
@@ -105,7 +105,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun updateTask(title: String, detail: String, isCompleted: Boolean, repeat: Repeat?) {
+    fun updateTask(title: String, detail: String, isCompleted: Boolean) {
         _currentTask.value?.let { task ->
             val dueDateInMillis = calcDueDate()
             val newTask = task.copy(
@@ -115,9 +115,9 @@ class TaskViewModel @Inject constructor(
                 dueDate = dueDateInMillis,
                 isAllDay = isAllDay(),
                 categoryId = _currentCategory.value?.id!!,
-                repeatType = repeat?.type,
-                repeatValue = repeat?.number,
-                nextDueDate = calcNextDueDate(repeat, dueDateInMillis)
+                repeatType = _repeat.value?.type,
+                repeatValue = _repeat.value?.number,
+                nextDueDate = calcNextDueDate(_repeat.value, dueDateInMillis)
             )
             dueDateInMillis?.let { setAlarm(it) }
             updateNotification(newTask)
@@ -131,7 +131,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun setCurrentTaskCategory(listID: Long) {
+    fun updateTaskCategory(listID: Long) {
         tasksRepository.getCategoryById(listID)
             .subscribeOn(ioScheduler)
             .observeOn(mainScheduler)
@@ -165,12 +165,15 @@ class TaskViewModel @Inject constructor(
         _time.value = pair
     }
 
+    fun setRepeat(repeat: Repeat?) {
+        _repeat.value = repeat
+    }
+
     fun cancelNotification(notificationID: Int) {
         taskNotificationManager.cancelDueDateNotification(notificationID)
     }
 
-    private fun setCurrentTaskDueDate(task: Task) {
-        _currentTaskDueDateInMillis.value = task.dueDate
+    private fun initTaskDueDateLiveData(task: Task) {
         if (task.dueDate == null) {
             _date.value = null
         } else {
@@ -186,12 +189,6 @@ class TaskViewModel @Inject constructor(
                 _repeat.value = null
             }
         }
-    }
-
-    private fun setCurrentTaskData(task: Task) {
-        _currentTask.postValue(task)
-        setCurrentTaskCategory(task.categoryId)
-        setCurrentTaskDueDate(task)
     }
 
     private fun calcDueDate(): Long? {
@@ -256,6 +253,8 @@ class TaskViewModel @Inject constructor(
     val categories: LiveData<List<Category>> get() = _categories
     val date: LiveData<Long?> get() = _date
     val time: LiveData<Pair<Int, Int>?> get() = _time
+    val repeat: LiveData<Repeat?> get() = _repeat
+
     val dataState: LiveData<Event<DataState<Int>>> get() = _dataState
     val navigateBack: LiveData<Event<Boolean>> get() = _navigateBack
 }

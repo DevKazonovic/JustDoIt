@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.FragmentCategoriesBinding
 import com.devkazonovic.projects.mytasks.domain.model.Category
+import com.devkazonovic.projects.mytasks.presentation.common.model.SortDirection
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,7 +54,30 @@ class FragmentCategories : Fragment() {
             categories?.let { adapter.submitList(it) }
         }
 
+        viewModel.sort.observe(viewLifecycleOwner) {
+            binding.viewSort.text = when (it) {
+                CategorySort.DEFAULT -> getString(R.string.label_sort_default)
+                CategorySort.NAME -> getString(R.string.label_sort_name)
+            }
+        }
+
+        viewModel.order.observe(viewLifecycleOwner) {
+            when (it) {
+                SortDirection.ASC -> {
+                    binding.viewSortDirection.setImageResource(R.drawable.ic_arrow_up)
+                }
+                SortDirection.DESC -> {
+                    binding.viewSortDirection.setImageResource(R.drawable.ic_arrow_down)
+                }
+            }
+        }
+
         viewModel.getCategories()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveSortValues()
     }
 
     override fun onDestroyView() {
@@ -61,17 +85,36 @@ class FragmentCategories : Fragment() {
         _binding = null
     }
 
-
     private fun setUpToolBar() {
         binding.topAppBar.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun setUpListeners() {
-        binding.cardViewAddNewList.setOnClickListener {
+        binding.viewAddNewCategory.setOnClickListener {
             FormCreateCategoryFragment.newInstance().show(
                 childFragmentManager,
                 FormCreateCategoryFragment.TAG
             )
+        }
+        binding.viewSort.setOnClickListener {
+            val enums = CategorySort.values()
+            val enumsNames = enums.map {
+                when (it) {
+                    CategorySort.DEFAULT -> getString(R.string.label_sort_default)
+                    CategorySort.NAME -> getString(R.string.label_sort_name)
+                }
+            }.toTypedArray()
+            val checkedItem = enums.indexOf(viewModel.sort.value)
+
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.label_sort_title))
+                .setSingleChoiceItems(enumsNames, checkedItem) { dialog, which ->
+                    viewModel.setSort(enums[which])
+                }
+                .show()
+        }
+        binding.viewSortDirection.setOnClickListener {
+            viewModel.switchOrder()
         }
     }
 

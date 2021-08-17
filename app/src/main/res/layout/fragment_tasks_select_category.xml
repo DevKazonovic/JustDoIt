@@ -1,43 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="4dp"
-    app:cardCornerRadius="0dp"
-    app:cardPreventCornerOverlap="false">
+    android:background="@drawable/view_bg_rounded_top_corners_12"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/viewCreateNewCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/label_create_a_new_list"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_add" />
+
+    <include layout="@layout/view_divider_vertical" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTasksCategories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:itemCount="4"
+        tools:listitem="@layout/card_sample_category" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardViewAddNewList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="0dp">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="6dp"
-                android:padding="16dp"
-                android:text="@string/label_create_a_new_list"
-                android:textAppearance="@style/TextAppearance.App.Subtitle2"
-                app:drawableStartCompat="@drawable/ic_add" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewTasksCategories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="4"
-            tools:listitem="@layout/card_sample_category" />
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

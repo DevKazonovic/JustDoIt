@@ -1,41 +1,5 @@
 package com.devkazonovic.projects.mytasks.presentation.reminder
 
-import androidx.core.os.bundleOf
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.data.repository.FakeTasksRepositoryTaskTest
-import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
-import com.devkazonovic.projects.mytasks.di.RepositoryModule
-import com.devkazonovic.projects.mytasks.domain.mapper.IMappers
-import com.devkazonovic.projects.mytasks.domain.mapper.Mappers
-import com.devkazonovic.projects.mytasks.help.assertViewIsDisplayed
-import com.devkazonovic.projects.mytasks.help.assertViewIsNotDisplayed
-import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_DATE_PICKER_CANCEL_BUTTON_TAG
-import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_DATE_PICKER_CONFIRM_BUTTON_TAG
-import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_TIME_PICKER_CANCEL_BUTTON_TAG
-import com.devkazonovic.projects.mytasks.help.view.ViewTag.TAG_TIME_PICKER_CONFIRM_BUTTON_TAG
-import com.devkazonovic.projects.mytasks.launchFragmentInHiltContainer
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import dagger.hilt.components.SingletonComponent
-import org.hamcrest.Matchers.equalToIgnoringCase
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import javax.inject.Singleton
-
 
 /*
 private const val KEY_TASK_ID = "Task ID"

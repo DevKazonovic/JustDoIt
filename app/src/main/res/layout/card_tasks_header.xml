@@ -16,7 +16,8 @@
         android:paddingTop="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="0dp"
-        android:textAppearance="@style/TextAppearance.App.Subtitle2"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textStyle="bold"
         tools:text="Header" />
 
 </com.google.android.material.card.MaterialCardView>

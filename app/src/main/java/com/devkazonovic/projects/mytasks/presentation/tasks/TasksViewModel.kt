@@ -12,7 +12,9 @@ import com.devkazonovic.projects.mytasks.domain.holder.Result
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.util.handleResult
-import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.ActiveTask
+import com.devkazonovic.projects.mytasks.presentation.common.model.SortDirection
+import com.devkazonovic.projects.mytasks.presentation.tasks.model.ActiveTask
+import com.devkazonovic.projects.mytasks.presentation.tasks.model.TasksSort
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Flowable
@@ -26,7 +28,7 @@ import javax.inject.Inject
 class TasksViewModel @Inject constructor(
     private val dateTimeHelper: DateTimeHelper,
     private val tasksRepository: ITasksRepository,
-    private val sharedPreferences: IMainSharedPreference,
+    private val sharedPreference: IMainSharedPreference,
     rxScheduler: IRxScheduler,
 ) : ViewModel() {
 
@@ -36,20 +38,24 @@ class TasksViewModel @Inject constructor(
     private val disposableGeneral = CompositeDisposable()
     private val disposableTasksObservables = CompositeDisposable()
 
-    /**Events*/
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     private val _mainViewErrorEvent = MutableLiveData<Event<Int>>()
     private val _snackBarErrorEvent = MutableLiveData<Event<Int>>()
-
-    /**Categories*/
     private val _categories = MutableLiveData<List<Category>>()
     private val _currentCategory = MutableLiveData<Category>()
-
-    /**Tasks*/
+    private val _sort = MutableLiveData<TasksSort>()
+    private val _order = MutableLiveData<SortDirection>()
     private val _activeTasks = MutableLiveData<List<ActiveTask>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
 
     init {
+        _sort.value = sharedPreference.getTasksSort()?.let {
+            TasksSort.valueOf(it)
+        } ?: TasksSort.DEFAULT
+
+        _order.value = sharedPreference.getTasksSortOrder()?.let {
+            SortDirection.valueOf(it)
+        } ?: SortDirection.ASC
         updateCurrentCategory()
     }
 
@@ -60,17 +66,59 @@ class TasksViewModel @Inject constructor(
     }
 
     fun observeTasks() {
-        getUnCompletedTasks()
+        getActiveTasks()
         getCompletedTasks()
     }
 
-    private fun getUnCompletedTasks() {
+    fun setSort(sort: TasksSort) {
+        _sort.value = sort
+        updateCurrentCategory()
+    }
+
+    fun switchOrder() {
+        when (_order.value) {
+            SortDirection.ASC -> {
+                _order.value = SortDirection.DESC
+            }
+            SortDirection.DESC -> {
+                _order.value = SortDirection.ASC
+            }
+        }
+        updateCurrentCategory()
+    }
+
+    fun saveSortValues() {
+        sharedPreference.saveTasksSort(_sort.value?.name ?: TasksSort.DEFAULT.name)
+        sharedPreference.saveTasksSortOrder(_order.value?.name ?: SortDirection.ASC.name)
+    }
+
+    private fun getCompletedTasks() {
+        _currentCategory.value?.id?.let { id ->
+            tasksRepository.getCompletedTasks(id)
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { result ->
+                    handleResult(result,
+                        { _completedTasks.postValue(it) },
+                        { setMainViewMassage(R.string.unKnownError) }
+                    )
+                }
+                .addTo(disposableTasksObservables)
+        }
+    }
+
+    private fun getActiveTasks() {
         _currentCategory.value?.id?.let { id ->
             tasksRepository.getUnCompletedTasks(id)
                 .flatMap { input ->
                     when (input) {
                         is Result.Success -> {
-                            val result = mapToActiveTasks(input.value)
+                            val result = when (_sort.value) {
+                                TasksSort.DEFAULT -> defaultSort(input.value)
+                                TasksSort.DATE -> sortTasksBy(input.value) { it.task.dueDate }
+                                TasksSort.NAME -> sortTasksBy(input.value) { it.task.title }
+                                else -> input.value.map { ActiveTask.ItemTask(it) }
+                            }
                             Flowable.just(Result.Success(result))
                         }
 
@@ -91,7 +139,7 @@ class TasksViewModel @Inject constructor(
         }
     }
 
-    private fun mapToActiveTasks(list: List<Task>): List<ActiveTask> {
+    private fun defaultSort(list: List<Task>): List<ActiveTask> {
         val result = mutableListOf<ActiveTask>()
         val overDues = mutableListOf<Task>()
         val actives = mutableListOf<Task>()
@@ -140,19 +188,35 @@ class TasksViewModel @Inject constructor(
         return result
     }
 
-    private fun getCompletedTasks() {
-        _currentCategory.value?.id?.let { id ->
-            tasksRepository.getCompletedTasks(id)
-                .subscribeOn(ioScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { result ->
-                    handleResult(result,
-                        { _completedTasks.postValue(it) },
-                        { setMainViewMassage(R.string.unKnownError) }
-                    )
-                }
-                .addTo(disposableTasksObservables)
+    private inline fun <R : Comparable<R>> sortTasksBy(
+        list: List<Task>,
+        crossinline selector: (ActiveTask.ItemTask) -> R?,
+    ): List<ActiveTask> {
+        val result = list.map { ActiveTask.ItemTask(it) }.toMutableList()
+        when (_order.value) {
+            SortDirection.ASC -> {
+                result.sortBy(selector)
+            }
+
+            SortDirection.DESC -> {
+                result.sortByDescending(selector)
+            }
         }
+        return result
+    }
+
+    private fun nameSort(list: List<Task>): List<ActiveTask> {
+        val result = list.map { ActiveTask.ItemTask(it) }.toMutableList()
+        when (_order.value) {
+            SortDirection.ASC -> {
+                result.sortBy { it.task.title }
+            }
+
+            SortDirection.DESC -> {
+                result.sortByDescending { it.task.title }
+            }
+        }
+        return result
     }
 
     fun deleteAllCompletedTasks() {
@@ -236,7 +300,7 @@ class TasksViewModel @Inject constructor(
     }
 
     fun updateCurrentCategory(newListID: Long = 0) {
-        if (sharedPreferences.saveCurrentTasksList(newListID)) {
+        if (sharedPreference.saveCurrentTasksList(newListID)) {
             tasksRepository.getCategoryById(newListID)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
@@ -291,11 +355,12 @@ class TasksViewModel @Inject constructor(
         _snackBarEvent.value = Event(value)
     }
 
-
     val currentCategory: LiveData<Category> get() = _currentCategory
     val categories: LiveData<List<Category>> get() = _categories
     val activeTasks: LiveData<List<ActiveTask>> get() = _activeTasks
     val completedTasks: LiveData<List<Task>> get() = _completedTasks
+    val sort: LiveData<TasksSort> get() = _sort
+    val order: LiveData<SortDirection> get() = _order
     val mainViewErrorEvent: LiveData<Event<Int>> get() = _mainViewErrorEvent
     val snackBarErrorEvent: LiveData<Event<Int>> get() = _snackBarErrorEvent
     val snackBarEvent: LiveData<Event<Int>> get() = _snackBarEvent

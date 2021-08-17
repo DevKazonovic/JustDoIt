@@ -25,338 +25,394 @@
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/label_task"
                 app:menu="@menu/menu_task" />
 
-            <include layout="@layout/view_divider"/>
+            <include layout="@layout/view_divider_vertical" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="ifContentScrolls"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/viewTaskData"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:overScrollMode="ifContentScrolls">
 
-                <LinearLayout
-                    android:id="@+id/viewContainerTask"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_height="wrap_content">
+
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputTaskTitle"
+                        style="@style/Widget.App.TextInputLayout.Transparent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
                         android:enabled="true"
-                        app:hintEnabled="false">
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextAppearance.App.Subtitle1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editTextTaskTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_task_title"
-                            android:inputType="textWebEditText" />
+                            android:inputType="textMultiLine"
+                            android:textAppearance="@style/TextAppearance.App.Headline6" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputTaskDetail"
+                        style="@style/Widget.App.TextInputLayout.Transparent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:enabled="true">
+                        android:hint="@string/hint_task_detail"
+                        android:paddingBottom="16dp"
+                        app:hintEnabled="false"
+                        app:layout_constraintBottom_toTopOf="@+id/viewContainerDueDate"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textInputTaskTitle">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editTextTaskDetail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_task_detail"
-                            android:inputType="textMultiLine" />
+                            android:inputType="textMultiLine"
+                            android:textAppearance="@style/TextAppearance.App.Subtitle2" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <include
+                        android:id="@+id/include"
+                        layout="@layout/view_divider_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
+
+                    <LinearLayout
+                        android:id="@+id/viewContainerDueDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include">
+
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/viewTaskCategory"
+                            style="@style/Widget.App.Card.Input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="8dp">
+
+                                    <TextView
+                                        android:id="@+id/textViewTaskCategory"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="8dp"
+                                        android:layout_marginLeft="8dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginEnd="16dp"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:drawablePadding="8dp"
+                                        android:padding="6dp"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                                        app:drawableLeftCompat="@drawable/ic_category"
+                                        app:drawableStartCompat="@drawable/ic_category"
+                                        app:drawableTint="@color/color_state_icon"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/imageViewDropDown"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        tools:text="My List" />
+
+                                    <ImageView
+                                        android:id="@+id/imageViewDropDown"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:padding="6dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_dropdown" />
+
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <include
+                                    layout="@layout/view_divider_vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                        <!--<com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputTaskListCategory"
-                        style="@style/Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.App.TextInputLayout.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
                         app:endIconDrawable="@drawable/ic_dropdown"
                         app:endIconMode="custom">
 
-                        <AutoCompleteTextView
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/dropDownTaskCategory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:hint="@null"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                             android:inputType="none"
+                            android:textStyle="bold"
                             tools:text="MyList" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>-->
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/viewContainerDueDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/viewContainerTask">
-
-                    <TextView
-                        android:id="@+id/textViewLabelDueDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="@string/label_due_date"
-                        android:textAppearance="@style/TextAppearance.App.Subtitle1" />
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/viewAddDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/brand"
-                        app:strokeWidth="2dp">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/viewAddDate"
+                            style="@style/Widget.App.Card.Input"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:focusable="true">
 
-                            <TextView
-                                android:id="@+id/textViewDatePicker"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginEnd="32dp"
-                                android:layout_marginRight="32dp"
-                                android:layout_marginBottom="8dp"
-                                android:drawablePadding="8dp"
-                                android:padding="6dp"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                                app:drawableLeftCompat="@drawable/ic_day"
-                                app:drawableStartCompat="@drawable/ic_day"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/viewClearDate"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="Add Date" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/viewClearDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="6dp"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_remove"
-                                tools:visibility="visible" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="8dp">
 
-                    </com.google.android.material.card.MaterialCardView>
+                                    <TextView
+                                        android:id="@+id/textViewDatePicker"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="16dp"
+                                        android:layout_marginRight="16dp"
+                                        android:drawablePadding="8dp"
+                                        android:focusable="false"
+                                        android:hint="@string/label_add_date"
+                                        android:paddingStart="16dp"
+                                        android:paddingLeft="16dp"
+                                        android:paddingTop="16dp"
+                                        android:paddingEnd="0dp"
+                                        android:paddingRight="0dp"
+                                        android:paddingBottom="16dp"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                                        app:drawableLeftCompat="@drawable/ic_day"
+                                        app:drawableStartCompat="@drawable/ic_day"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/viewClearDate"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/viewAddTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:visibility="gone"
-                        app:cardBackgroundColor="@android:color/transparent"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/brand"
-                        app:strokeWidth="2dp"
-                        tools:visibility="visible">
+                                    <ImageView
+                                        android:id="@+id/viewClearDate"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:contentDescription="@string/desc_clear_input"
+                                        android:padding="6dp"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_remove"
+                                        tools:visibility="visible" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                                <include
+                                    layout="@layout/view_divider_vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/viewAddTime"
+                            style="@style/Widget.App.Card.Input"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content">
 
-                            <TextView
-                                android:id="@+id/textViewTimePicker"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginEnd="32dp"
-                                android:layout_marginRight="32dp"
-                                android:layout_marginBottom="8dp"
-                                android:drawablePadding="8dp"
-                                android:padding="6dp"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                                app:drawableLeftCompat="@drawable/ic_time"
-                                app:drawableStartCompat="@drawable/ic_time"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/viewClearTime"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="Add Time" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/viewClearTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="6dp"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_remove"
-                                tools:visibility="visible" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="8dp">
 
-                    </com.google.android.material.card.MaterialCardView>
+                                    <TextView
+                                        android:id="@+id/textViewTimePicker"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
 
-                </LinearLayout>
+                                        android:layout_marginEnd="16dp"
+                                        android:layout_marginRight="16dp"
+                                        android:drawablePadding="8dp"
+                                        android:hint="@string/label_add_time"
+                                        android:paddingStart="16dp"
+                                        android:paddingLeft="16dp"
+                                        android:paddingTop="16dp"
+                                        android:paddingEnd="0dp"
+                                        android:paddingRight="0dp"
+                                        android:paddingBottom="16dp"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                                        app:drawableLeftCompat="@drawable/ic_time"
+                                        app:drawableStartCompat="@drawable/ic_time"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/viewClearTime"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:id="@+id/viewContainerRepeat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/viewContainerDueDate"
-                    tools:visibility="visible">
+                                    <ImageView
+                                        android:id="@+id/viewClearTime"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:contentDescription="@string/desc_clear_input"
+                                        android:padding="6dp"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_remove"
+                                        tools:visibility="visible" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                                <include
+                                    layout="@layout/view_divider_vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
+                            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textViewLabelRepeat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/label_repeat"
-                            android:textAppearance="@style/TextAppearance.App.Subtitle2" />
+                        </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:id="@+id/textViewRepeatValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginLeft="4dp"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginBottom="8dp"
-                            android:textAppearance="@style/TextAppearance.App.Caption"
-                            android:text="@string/label_no_repeat" />
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/viewAddRepeat"
+                            style="@style/Widget.App.Card.Input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="8dp">
+
+                                    <TextView
+                                        android:id="@+id/textViewRepeat"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="16dp"
+                                        android:layout_marginRight="16dp"
+                                        android:drawablePadding="8dp"
+                                        android:focusable="false"
+                                        android:hint="@string/label_repeat_task"
+                                        android:paddingStart="16dp"
+                                        android:paddingLeft="16dp"
+                                        android:paddingTop="16dp"
+                                        android:paddingEnd="0dp"
+                                        android:paddingRight="0dp"
+                                        android:paddingBottom="16dp"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                                        app:drawableLeftCompat="@drawable/ic_repeat"
+                                        app:drawableStartCompat="@drawable/ic_repeat"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/viewClearRepeat"
+                                        app:layout_constraintHorizontal_bias="1.0"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintVertical_bias="0.375" />
+
+                                    <ImageView
+                                        android:id="@+id/viewClearRepeat"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:contentDescription="@string/desc_clear_input"
+                                        android:padding="6dp"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:srcCompat="@drawable/ic_remove"
+                                        tools:visibility="visible" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <include
+                                    layout="@layout/view_divider_vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible">
 
-                        <ImageView
-                            android:id="@+id/viewClearRepeat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            android:padding="6dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_remove"
-                            tools:visibility="visible" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/textInputRepeatNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:visibility="visible">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/editTextRepeatNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:inputType="number" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/textInputRepeatType"
-                            style="@style/Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/viewClearRepeat"
-                            app:layout_constraintStart_toEndOf="@+id/textInputRepeatNumber"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/dropDownRepeatType"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@null"
-                                android:inputType="none" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
+            <View
+                android:id="@+id/viewTransparent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/dark_trans"
+                android:visibility="gone" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
-        </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -365,12 +421,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
-        app:cardElevation="4dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/view_divider" />
+        <include layout="@layout/view_divider_vertical" />
 
 
         <com.google.android.material.checkbox.MaterialCheckBox

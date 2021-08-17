@@ -35,18 +35,18 @@ class FormEditCategoryFragment : DialogFragment() {
         builder.setView(binding.root)
 
         viewModel.category.value?.let {
-            binding.editTextListName.text = SpannableStringBuilder(it.name)
+            binding.editTextCategoryName.text = SpannableStringBuilder(it.name)
         }
         validationVM.isCategoryNameEntered.observe(this) {
             it?.let { binding.buttonSave.isEnabled = it }
         }
 
-        binding.editTextListName.textChanges().skipInitialValue().subscribe {
+        binding.editTextCategoryName.textChanges().skipInitialValue().subscribe {
             validationVM.categoryInputValidation(StringBuilder(it).toString())
         }.addTo(disposable)
 
         binding.buttonSave.setOnClickListener {
-            viewModel.editCategory(binding.editTextListName.text.toString())
+            viewModel.editCategory(binding.editTextCategoryName.text.toString())
             dismiss()
         }
 
