@@ -6,12 +6,11 @@
     android:layout_height="match_parent"
     android:clipToPadding="false">
 
-    <TextView
-        android:id="@+id/textViewState"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        tools:text="TextView" />
+    <include
+        android:id="@+id/layoutEmptyPage"
+        layout="@layout/fragment_empty_page"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

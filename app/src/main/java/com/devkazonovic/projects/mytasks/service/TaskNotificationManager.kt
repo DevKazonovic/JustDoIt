@@ -96,7 +96,7 @@ class TaskNotificationManager @Inject constructor(
     }
 
 
-    fun createAlarmNotification(
+    private fun createAlarmNotification(
         notificationID: Int, taskID: Long, title: String, detail: String, time: String,
     ): Notification {
 
@@ -104,7 +104,7 @@ class TaskNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .setSmallIcon(R.drawable.ic_round_timer)
             .setContentTitle(title)
-            .setContentText("$time, $detail")
+            .setContentText(time)
             .setPriority(PRIORITY_HIGH)
             .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE)
             .setShowWhen(false)
@@ -115,7 +115,7 @@ class TaskNotificationManager @Inject constructor(
 
     }
 
-    fun notify(notificationID: Int, notification: Notification) {
+    private fun notify(notificationID: Int, notification: Notification) {
         taskNotificationDataSource.updateNotification(
             TaskNotification(notificationID, TaskNotificationState.SHOWING)
         ).subscribeOn(ioScheduler)
@@ -146,7 +146,6 @@ class TaskNotificationManager @Inject constructor(
     }
 
     private fun pendingIntentDismissed(notificationID: Int): PendingIntent {
-        log("$notificationID")
         val intent = Intent(context, NotificationDismissedReceiver::class.java).apply {
             action = ACTION_NOTIFICATION_DISMISS
         }.putExtra(EXTRA_NOTIFICATION_ID, notificationID)

@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.databinding.FragmentTasksMenuBinding
+import com.devkazonovic.projects.mytasks.help.extension.disable
 import com.devkazonovic.projects.mytasks.help.extension.hide
 import com.devkazonovic.projects.mytasks.help.extension.show
+import com.devkazonovic.projects.mytasks.presentation.common.model.SortDirection
 import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.mytasks.presentation.tasks.form.FormUpdateCategoryFragment
+import com.devkazonovic.projects.mytasks.presentation.tasks.model.TasksSort
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +25,6 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentTasksMenuBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +39,35 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpListeners()
         observeCategory()
+        viewModel.sort.observe(viewLifecycleOwner) {
+            it?.let {
+                binding.textViewSortDetail.text = when (it) {
+                    TasksSort.DEFAULT -> getString(R.string.label_sort_default)
+                    TasksSort.DATE -> getString(R.string.label_sort_date)
+                    TasksSort.NAME -> getString(R.string.label_sort_name)
+                }
+            }
+        }
+
+        viewModel.order.observe(viewLifecycleOwner) {
+            it?.let {
+                when (it) {
+                    SortDirection.ASC -> {
+                        binding.imageViewSortOrderIcon.setImageResource(R.drawable.ic_arrow_up)
+                        binding.textViewSortOrderDetail.text = getString(R.string.label_asc)
+                    }
+                    SortDirection.DESC -> {
+                        binding.imageViewSortOrderIcon.setImageResource(R.drawable.ic_arrow_down)
+                        binding.textViewSortOrderDetail.text = getString(R.string.label_desc)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveSortValues()
     }
 
     override fun onDestroyView() {
@@ -45,6 +76,27 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
     }
 
     private fun setUpListeners() {
+        binding.itemSort.setOnClickListener {
+            val enums = TasksSort.values()
+            val enumsNames = enums.map {
+                when (it) {
+                    TasksSort.DEFAULT -> getString(R.string.label_sort_default)
+                    TasksSort.DATE -> getString(R.string.label_sort_date)
+                    TasksSort.NAME -> getString(R.string.label_sort_name)
+                }
+            }.toTypedArray()
+            val checkedItem = enums.indexOf(viewModel.sort.value)
+
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.label_sort_title))
+                .setSingleChoiceItems(enumsNames, checkedItem) { dialog, which ->
+                    viewModel.setSort(enums[which])
+                }
+                .show()
+        }
+        binding.itemSortOrder.setOnClickListener {
+            viewModel.switchOrder()
+        }
         binding.itemRenameCategory.setOnClickListener {
             FormUpdateCategoryFragment.newInstance()
                 .show(parentFragmentManager, FormUpdateCategoryFragment.TAG)
@@ -88,18 +140,31 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
                 }
             }
         }
+        viewModel.activeTasks.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it.isEmpty()) {
+                    binding.itemSort.isClickable = false
+                    binding.itemSortOrder.isClickable = false
+                    binding.imageViewSortIcon.disable()
+                    binding.imageViewSortOrderIcon.disable()
+                    binding.textViewSortTitle.disable()
+                    binding.textViewSortOrderTitle.disable()
+                    binding.textViewSortTitle.disable()
+                    binding.textViewSortOrderTitle.disable()
+                }
+            }
+        }
         viewModel.completedTasks.observe(viewLifecycleOwner) {
             it?.let {
                 if (it.isEmpty()) {
                     binding.itemDeleteCompletedTasks.isClickable = false
-                    binding.imageViewDeleteCompletedTasksIcon.isEnabled = false
-                    binding.textViewDeleteCompletedTasksTitle.isEnabled = false
-                    binding.textViewDeleteCompletedTasksDetail.isEnabled = false
+                    binding.imageViewDeleteCompletedTasksIcon.disable()
+                    binding.textViewDeleteCompletedTasksTitle.disable()
+                    binding.textViewDeleteCompletedTasksDetail.disable()
                 }
             }
         }
     }
-
 
     companion object {
         fun newInstance() = TasksMenuFragment()

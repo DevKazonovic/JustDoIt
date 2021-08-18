@@ -72,7 +72,7 @@ class TasksViewModel @Inject constructor(
 
     fun setSort(sort: TasksSort) {
         _sort.value = sort
-        updateCurrentCategory()
+        observeTasks()
     }
 
     fun switchOrder() {
@@ -84,7 +84,7 @@ class TasksViewModel @Inject constructor(
                 _order.value = SortDirection.ASC
             }
         }
-        updateCurrentCategory()
+        observeTasks()
     }
 
     fun saveSortValues() {

@@ -15,8 +15,6 @@ import com.devkazonovic.projects.mytasks.help.extension.setupSnackBar
 import com.devkazonovic.projects.mytasks.help.extension.show
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.TasksViewPagerAdapter
 import com.devkazonovic.projects.mytasks.presentation.tasks.form.FormNewTaskFragment
-import com.devkazonovic.projects.mytasks.presentation.tasks.lists.ActiveTasksFragment
-import com.devkazonovic.projects.mytasks.presentation.tasks.lists.CompletedTasksFragment
 import com.devkazonovic.projects.mytasks.presentation.tasks.menu.TasksMenuFragment
 import com.devkazonovic.projects.mytasks.presentation.tasks.menu.TasksSelectCategoryFragment
 import com.google.android.material.snackbar.Snackbar
