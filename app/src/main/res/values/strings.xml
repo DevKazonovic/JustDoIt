@@ -2,7 +2,6 @@
     <string name="app_name">MyTasks</string>
 
     <string name="unKnownError">Unknown Error! Try Again Later!</string>
-    <string name="emptyList">Empty List!</string>
     <string name="task_save_fail">Error When Saving Task, Please Try Again</string>
     <string name="task_update_fail">Error When Updating Task, Please Try Again</string>
     <string name="task_delete_fail">Error When Deleting Task, Please Try Again</string>
@@ -62,6 +61,15 @@
     <string name="label_sort_title">Sort By</string>
     <string name="desc_categories_sort_order">Categories Sort Order</string>
     <string name="label_sort_date">Date</string>
+    <string name="label_asc">Ascending</string>
+    <string name="label_desc">Descending</string>
+    <string name="label_sort_by">Sort by</string>
+    <string name="label_order">Order</string>
+    <string name="label_empty_page">Nothing to do!</string>
+    <string name="desc_no_tasks">Image Doing Tasks</string>
+    <string name="desc_sort_tasks">Icon Sort Tasks</string>
+    <string name="desc_sort_order_tasks">Icon Sort Order Tasks</string>
+    <string name="label_just_doit">Just Do It !</string>
     <plurals name="day">
         <item quantity="one"> %s day</item>
         <item quantity="other"> %s days</item>

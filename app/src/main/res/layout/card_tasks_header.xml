@@ -12,12 +12,12 @@
         android:id="@+id/textViewHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
         android:paddingLeft="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:paddingRight="16dp"
         android:paddingBottom="0dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
         tools:text="Header" />
 
 </com.google.android.material.card.MaterialCardView>

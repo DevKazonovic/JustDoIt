@@ -1,5 +1,6 @@
 package com.devkazonovic.projects.mytasks.service
 
+import com.devkazonovic.projects.mytasks.help.extension.upperFirstChar
 import org.threeten.bp.*
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class DateTimeHelper @Inject constructor(
     ): String {
 
 
-        return "${dayOfWeekName.name}, ${month.name} ${dayOfMonth}, ${year}"
+        return "${dayOfWeekName.name.upperFirstChar()}, ${month.name.upperFirstChar()} ${dayOfMonth}, $year"
     }
 
     fun showTime(hour: Int, minute: Int): String {

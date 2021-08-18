@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.presentation.tasks.lists
+package com.devkazonovic.projects.mytasks.presentation.tasks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import com.devkazonovic.projects.mytasks.databinding.FragmentTasksCompletedBindi
 import com.devkazonovic.projects.mytasks.domain.model.Task
 import com.devkazonovic.projects.mytasks.help.extension.hide
 import com.devkazonovic.projects.mytasks.help.extension.show
-import com.devkazonovic.projects.mytasks.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.CompletedTasksAdapter
 import com.devkazonovic.projects.mytasks.presentation.tasks.adapter.diff.TasksDiffCallback
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
@@ -77,10 +76,10 @@ class CompletedTasksFragment : Fragment() {
     private fun showCompletedTasks(tasks: List<Task>) {
         if (tasks.isEmpty()) {
             binding.recyclerViewTasks.hide()
-            binding.textViewState.show()
-            binding.textViewState.text = getString(R.string.emptyList)
+            binding.layoutEmptyPage.root.show()
+            binding.layoutEmptyPage.textViewState.text = getString(R.string.label_just_doit)
         } else {
-            binding.textViewState.hide()
+            binding.layoutEmptyPage.root.hide()
             binding.recyclerViewTasks.show()
             completedTasksAdapter.submitList(tasks)
 

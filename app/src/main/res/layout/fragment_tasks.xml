@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:menu="@menu/menu_main"
-                app:titleTextAppearance="@style/TextAppearance.App.Subtitle1"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 tools:title="Test" />
 
             <include layout="@layout/view_divider_vertical" />
@@ -41,8 +41,9 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                app:tabGravity="center"
+                android:background="@android:color/transparent"
+                android:paddingBottom="4dp"
+                app:tabGravity="start"
                 app:tabIndicator="@drawable/tab_indicator"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorGravity="bottom"
@@ -63,8 +64,6 @@
 
             </com.google.android.material.tabs.TabLayout>
 
-            <include layout="@layout/view_divider_vertical" />
-
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -74,6 +73,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
 
+            android:paddingTop="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include
