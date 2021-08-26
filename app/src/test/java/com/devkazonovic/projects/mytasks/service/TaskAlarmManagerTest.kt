@@ -15,10 +15,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowAlarmManager
-import org.robolectric.shadows.ShadowBroadcastReceiver
 import org.threeten.bp.Clock
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
 
 @RunWith(RobolectricTestRunner::class)
 @Config(maxSdk = Build.VERSION_CODES.P)

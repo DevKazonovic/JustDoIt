@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_time_format">
+        <item>System Default</item>
+        <item>24 Hour</item>
+        <item>12 Hour</item>
+    </string-array>
+
+    <string-array name="values_time_format">
+        <item>CLOCK_DEFAULT</item>
+        <item>CLOCK_24H</item>
+        <item>CLOCK_12H</item>
+    </string-array>
+
+
+    <string-array name="array_theme">
+        <item>System Default</item>
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+    <string-array name="values_theme">
+        <item>THEME_DEFAULT</item>
+        <item>THEME_DARK</item>
+        <item>THEME_LIGHT</item>
+    </string-array>
+</resources>

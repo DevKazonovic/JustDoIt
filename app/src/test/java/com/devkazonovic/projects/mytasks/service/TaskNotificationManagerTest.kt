@@ -1,24 +1,5 @@
 package com.devkazonovic.projects.mytasks.service
 
-import android.app.Notification
-import android.content.Context
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.data.local.source.TaskNotificationDataSource
-import com.devkazonovic.projects.mytasks.domain.IRxScheduler
-import com.devkazonovic.projects.mytasks.domain.RxScheduler
-import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.domain.model.TaskNotification
-import com.devkazonovic.projects.mytasks.domain.model.TaskNotificationState
-import io.reactivex.rxjava3.schedulers.TestScheduler
-import org.junit.After
-import org.junit.Before
-
-import org.junit.Assert.*
-import org.junit.Test
-import org.mockito.kotlin.*
-
 class TaskNotificationManagerTest {
 
 /*    private lateinit var context: Context

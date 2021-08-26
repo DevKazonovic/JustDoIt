@@ -6,9 +6,9 @@ class FakeSharedPreference : IMainSharedPreference {
 
     private var currentListID: Long = 0
 
-    override fun getCurrentTasksList(): Long = currentListID
+    override fun getCurrentCategory(): Long = currentListID
 
-    override fun saveCurrentTasksList(taskListID: Long): Boolean {
+    override fun saveCurrentCategory(taskListID: Long): Boolean {
         currentListID = taskListID
         return true
     }

@@ -17,7 +17,6 @@
         <item name="colorDisable">@color/gray</item>
         <item name="colorDivider">@color/gray_200</item>
         <item name="colorStroke">@color/gray_200</item>
-
         <item name="colorTaskCard">@color/light_blue</item>
         <item name="colorInputFill">@color/light_extra</item>
         <item name="colorInputHint">@color/light_gray</item>
@@ -31,6 +30,8 @@
         <item name="bottomSheetDialogTheme">@style/Widget.App.BottomSheetDialog</item>
         <item name="toolbarStyle">@style/Widget.App.TopToolbar</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
+
+
         <item name="textAppearanceHeadline6">@style/TextAppearance.App.Headline6</item>
         <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.App.Subtitle2</item>
@@ -38,6 +39,7 @@
         <item name="textAppearanceBody2">@style/TextAppearance.App.Body2</item>
         <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
         <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
-
+        <item name="preferenceFragmentCompatStyle">@style/ThemeOverlay.Quizzer.PreferenceFragment
+        </item>
     </style>
 </resources>

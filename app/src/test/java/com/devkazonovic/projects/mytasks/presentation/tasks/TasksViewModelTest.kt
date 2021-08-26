@@ -1,31 +1,5 @@
 package com.devkazonovic.projects.mytasks.presentation.tasks
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.devkazonovic.projects.mytasks.R
-import com.devkazonovic.projects.mytasks.data.local.preference.MySharedPreferences
-import com.devkazonovic.projects.mytasks.data.repository.TasksRepository
-import com.devkazonovic.projects.mytasks.domain.holder.Event
-import com.devkazonovic.projects.mytasks.domain.holder.InputError
-import com.devkazonovic.projects.mytasks.domain.holder.Result
-import com.devkazonovic.projects.mytasks.domain.model.Category
-import com.devkazonovic.projects.mytasks.domain.model.Task
-import com.devkazonovic.projects.mytasks.getOrAwaitValue
-import com.google.common.truth.Truth
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.internal.schedulers.TrampolineScheduler
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TestRule
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.*
-
 
 /*private val task_active = Task(0, "Task", listID = 0)
 private val task_completed = Task(0, "Task", listID = 0, isCompleted = true)

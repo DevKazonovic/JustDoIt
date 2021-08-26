@@ -30,10 +30,24 @@ fun createTimePicker(
     hour: Int,
     minute: Int,
     context: Context,
+    typeFormat: com.devkazonovic.projects.mytasks.domain.model.TimeFormat,
     onPositiveClick: (hour: Int, minute: Int) -> Unit,
 ): MaterialTimePicker {
-    val isSystem24Hour = is24HourFormat(context)
-    val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+
+    val clockFormat = when (typeFormat) {
+        com.devkazonovic.projects.mytasks.domain.model.TimeFormat.CLOCK_DEFAULT -> {
+            val isSystem24Hour = is24HourFormat(context)
+            if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        }
+
+        com.devkazonovic.projects.mytasks.domain.model.TimeFormat.CLOCK_12H -> {
+            TimeFormat.CLOCK_12H
+        }
+
+        com.devkazonovic.projects.mytasks.domain.model.TimeFormat.CLOCK_24H -> {
+            TimeFormat.CLOCK_24H
+        }
+    }
 
     return MaterialTimePicker.Builder()
         .setTitleText("Select date")

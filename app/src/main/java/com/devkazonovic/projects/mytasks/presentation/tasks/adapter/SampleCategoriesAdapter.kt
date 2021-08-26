@@ -25,8 +25,8 @@ class SampleCategoriesAdapter(
         val context: Context = binding.root.context
         fun bind(list: Category) {
             binding.textViewCategoryName.text = list.name
-            if (sharedPreferences.getCurrentTasksList() == list.id) {
-                sharedPreferences.saveCurrentTasksList(list.id)
+            if (sharedPreferences.getCurrentCategory() == list.id) {
+                sharedPreferences.saveCurrentCategory(list.id)
                 binding.cardView.setCardBackgroundColor(getThemeColor(context,
                     R.attr.colorPrimaryVariant))
             } else {

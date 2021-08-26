@@ -5,13 +5,9 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.devkazonovic.projects.mytasks.data.local.db.TasksDataBase
-import com.devkazonovic.projects.mytasks.data.local.db.dao.CategoryDao
-import com.devkazonovic.projects.mytasks.data.local.db.dao.TaskDao
 import com.devkazonovic.projects.mytasks.data.local.db.dao.TaskNotificationDao
 import com.devkazonovic.projects.mytasks.data.local.db.entity.TaskNotificationEntity
-import com.devkazonovic.projects.mytasks.domain.model.TaskNotification
 import com.devkazonovic.projects.mytasks.domain.model.TaskNotificationState
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +32,7 @@ class TaskNotificationDaoTest {
             .allowMainThreadQueries()
             .build()
 
-        taskNotificationDao= database.taskNotificationDao()
+        taskNotificationDao = database.taskNotificationDao()
     }
 
     @After
@@ -46,16 +42,17 @@ class TaskNotificationDaoTest {
 
 
     @Test
-    fun insertNotification(){
+    fun insertNotification() {
         taskNotificationDao.insert(NOTIFICATION).blockingAwait()
         taskNotificationDao.getAllTaskNotification().test()
             .assertValuesOnly(listOf(NOTIFICATION))
     }
 
     @Test
-    fun updateNotification(){
+    fun updateNotification() {
         taskNotificationDao.insert(NOTIFICATION).blockingAwait()
-        taskNotificationDao.updateState(NOTIFICATION.id,TaskNotificationState.SHOWING.name).blockingAwait()
+        taskNotificationDao.updateState(NOTIFICATION.id, TaskNotificationState.SHOWING.name)
+            .blockingAwait()
 
         taskNotificationDao.getAllTaskNotification().test()
             .assertValuesOnly(listOf(NOTIFICATION_SHOWING))
@@ -63,7 +60,7 @@ class TaskNotificationDaoTest {
 
 
     @Test
-    fun deleteNotification(){
+    fun deleteNotification() {
         taskNotificationDao.insert(NOTIFICATION).blockingAwait()
         taskNotificationDao.deleteById(NOTIFICATION.id).blockingAwait()
         taskNotificationDao.getAllTaskNotification().test()
@@ -71,15 +68,14 @@ class TaskNotificationDaoTest {
     }
 
     @Test
-    fun findNotification(){
+    fun findNotification() {
         taskNotificationDao.insert(NOTIFICATION).blockingAwait()
         taskNotificationDao.getTaskNotificationById(0).test()
             .assertResult(NOTIFICATION)
     }
 
 
-
-    companion object{
+    companion object {
         val NOTIFICATION = TaskNotificationEntity(
             0,
             TaskNotificationState.NOT_NOTIFY.name

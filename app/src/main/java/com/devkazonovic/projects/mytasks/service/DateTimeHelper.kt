@@ -1,6 +1,11 @@
 package com.devkazonovic.projects.mytasks.service
 
+import android.content.Context
+import android.text.format.DateFormat
+import com.devkazonovic.projects.mytasks.data.local.preference.ISettingSharedPreference
+import com.devkazonovic.projects.mytasks.domain.model.TimeFormat
 import com.devkazonovic.projects.mytasks.help.extension.upperFirstChar
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.threeten.bp.*
 import javax.inject.Inject
 
@@ -8,10 +13,13 @@ private const val HOUR_IN_MILLIS = 3_600_000L
 private const val MINUTE_IN_MILLIS = 60_000L
 
 class DateTimeHelper @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val clock: Clock,
+    private val mainSettingSharedPreference: ISettingSharedPreference,
 ) {
 
     private val currentUserZone = clock.zone
+
 
     fun fromLongToLocalDate(dateInMillis: Long): LocalDate {
         return Instant.ofEpochMilli(dateInMillis).atZone(ZoneOffset.UTC).toLocalDate()
@@ -28,12 +36,38 @@ class DateTimeHelper @Inject constructor(
         dayOfMonth: Int,
         year: Int,
     ): String {
-
-
         return "${dayOfWeekName.name.upperFirstChar()}, ${month.name.upperFirstChar()} ${dayOfMonth}, $year"
     }
 
     fun showTime(hour: Int, minute: Int): String {
+
+        return when (mainSettingSharedPreference.getTimeFormat()) {
+            TimeFormat.CLOCK_DEFAULT -> {
+                val isSystem24Hour = DateFormat.is24HourFormat(context)
+                if (!isSystem24Hour) {
+                    from24to12(hour, minute)
+                } else {
+                    from24(hour, minute)
+                }
+            }
+            TimeFormat.CLOCK_24H -> {
+                from24(hour, minute)
+            }
+            TimeFormat.CLOCK_12H -> {
+                from24to12(hour, minute)
+            }
+        }
+    }
+
+    private fun from24to12(oldHour: Int, minute: Int): String {
+        val newHour = if (oldHour == 0) 12 else if (oldHour in (1..12)) oldHour else (oldHour - 12)
+        val time =
+            "${if (newHour in (0..9)) "0${newHour}" else "$newHour"}:${if (minute in (0..9)) "0${minute}" else "$minute"}"
+        return if (oldHour in (0..11)) "$time AM"
+        else "$time PM"
+    }
+
+    private fun from24(hour: Int, minute: Int): String {
         return "${if (hour in (0..9)) "0${hour}" else "$hour"}:${if (minute in (0..9)) "0${minute}" else "$minute"}"
     }
 

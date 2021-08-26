@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        app:boxBackgroundColor="@color/light_blue"
+        app:boxBackgroundColor="?attr/colorInputFill"
         app:counterEnabled="true"
         app:counterMaxLength="50"
         app:errorEnabled="true"
