@@ -18,7 +18,7 @@
         <item name="colorDivider">@color/gray_200</item>
         <item name="colorStroke">@color/gray_200</item>
         <item name="colorTaskCard">@color/light_blue</item>
-        <item name="colorInputFill">@color/light_extra</item>
+        <item name="colorInputFill">@color/light_blue</item>
         <item name="colorInputHint">@color/light_gray</item>
         <item name="colorLabel">@color/gray</item>
 
