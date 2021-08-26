@@ -55,7 +55,7 @@ class TaskDaoTest {
 
         database.taskDao().getAllTasks()
             .test()
-            .assertResult(listOf(TASK_UNCOMPLETED,TASK_COMPLETED))
+            .assertResult(listOf(TASK_UNCOMPLETED, TASK_COMPLETED))
     }
 
     @Test

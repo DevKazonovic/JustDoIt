@@ -217,7 +217,8 @@ class TaskFragment : Fragment() {
             createTimePicker(
                 viewModel.time.value?.first ?: LocalTime.now().hour,
                 viewModel.time.value?.second ?: LocalTime.now().minute,
-                requireContext()
+                requireContext(),
+                viewModel.getTimeFormat()
             ) { hour, minute ->
                 log("Time => $hour : $minute")
                 viewModel.setTime(Pair(hour, minute))

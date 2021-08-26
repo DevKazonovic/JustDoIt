@@ -35,7 +35,7 @@ object DataBaseModule {
                     Timber.d("OnCreate DB")
                     db.execSQL("INSERT INTO category (id,name,isDefault,createdAt) VALUES(0,'My List',1,?)",
                         arrayOf(Instant.now().toEpochMilli()))
-                    sharedPreferences.saveCurrentTasksList(0)
+                    sharedPreferences.saveCurrentCategory(0)
                 }
             }
         )

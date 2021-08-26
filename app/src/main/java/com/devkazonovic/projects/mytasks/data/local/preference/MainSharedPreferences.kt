@@ -22,7 +22,7 @@ class MySharedPreferences @Inject constructor(
     private val preferences =
         context.getSharedPreferences(context.packageName, MODE_PRIVATE)
 
-    override fun saveCurrentTasksList(taskListID: Long): Boolean {
+    override fun saveCurrentCategory(taskListID: Long): Boolean {
         return with(preferences.edit()) {
             putLong(KEY_TASKS_LIST, taskListID)
         }.commit()
@@ -58,7 +58,7 @@ class MySharedPreferences @Inject constructor(
         }.commit()
     }
 
-    override fun getCurrentTasksList(): Long = preferences.getLong(KEY_TASKS_LIST, 0)
+    override fun getCurrentCategory(): Long = preferences.getLong(KEY_TASKS_LIST, 0)
 
     override fun getCurrentRequestCode(): Int = preferences.getInt(KEY_REQUEST_CODE, -1)
 

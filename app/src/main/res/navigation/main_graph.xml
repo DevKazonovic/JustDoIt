@@ -21,4 +21,8 @@
         android:id="@+id/categories"
         android:name="com.devkazonovic.projects.mytasks.presentation.categories.FragmentCategories"
         android:label="Categories" />
+    <fragment
+        android:id="@+id/setting"
+        android:name="com.devkazonovic.projects.mytasks.presentation.setting.MainSettingFragment"
+        android:label="Setting" />
 </navigation>

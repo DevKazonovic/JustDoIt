@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="KEY SETTING CUSTOMIZE"
+        android:title="Customize"
+        app:layout="@layout/fragment_preference_title">
+        <ListPreference
+            android:entries="@array/array_time_format"
+            android:entryValues="@array/values_time_format"
+            android:icon="@drawable/ic_time"
+            android:key="KEY SETTING TIME FORMAT"
+            android:title="Time Format"
+            app:defaultValue="CLOCK_DEFAULT"
+            app:layout="@layout/fragment_menu_item" />
+
+        <ListPreference
+            android:entries="@array/array_theme"
+            android:entryValues="@array/values_theme"
+            android:icon="@drawable/ic_theme"
+            android:key="KEY SETTING THEME"
+            android:title="Theme"
+            app:defaultValue="THEME_DEFAULT"
+            app:layout="@layout/fragment_menu_item" />
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

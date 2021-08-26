@@ -56,7 +56,6 @@ class TasksViewModel @Inject constructor(
         _order.value = sharedPreference.getTasksSortOrder()?.let {
             SortDirection.valueOf(it)
         } ?: SortDirection.ASC
-        updateCurrentCategory()
     }
 
     override fun onCleared() {
@@ -205,19 +204,6 @@ class TasksViewModel @Inject constructor(
         return result
     }
 
-    private fun nameSort(list: List<Task>): List<ActiveTask> {
-        val result = list.map { ActiveTask.ItemTask(it) }.toMutableList()
-        when (_order.value) {
-            SortDirection.ASC -> {
-                result.sortBy { it.task.title }
-            }
-
-            SortDirection.DESC -> {
-                result.sortByDescending { it.task.title }
-            }
-        }
-        return result
-    }
 
     fun deleteAllCompletedTasks() {
         tasksRepository.clearCompletedTasks()
@@ -300,7 +286,7 @@ class TasksViewModel @Inject constructor(
     }
 
     fun updateCurrentCategory(newListID: Long = 0) {
-        if (sharedPreference.saveCurrentTasksList(newListID)) {
+        if (sharedPreference.saveCurrentCategory(newListID)) {
             tasksRepository.getCategoryById(newListID)
                 .subscribeOn(ioScheduler)
                 .observeOn(mainScheduler)
@@ -353,6 +339,11 @@ class TasksViewModel @Inject constructor(
 
     private fun setSnackBarMassage(value: Int) {
         _snackBarEvent.value = Event(value)
+    }
+
+    fun start() {
+        updateCurrentCategory(sharedPreference.getCurrentCategory())
+        observeTasks()
     }
 
     val currentCategory: LiveData<Category> get() = _currentCategory

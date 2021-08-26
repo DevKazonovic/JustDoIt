@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.devkazonovic.projects.mytasks.R
+import com.devkazonovic.projects.mytasks.data.local.preference.ISettingSharedPreference
 import com.devkazonovic.projects.mytasks.data.repository.ITasksRepository
 import com.devkazonovic.projects.mytasks.domain.RxScheduler
 import com.devkazonovic.projects.mytasks.domain.holder.DataState
@@ -12,6 +13,7 @@ import com.devkazonovic.projects.mytasks.domain.holder.Event
 import com.devkazonovic.projects.mytasks.domain.model.Category
 import com.devkazonovic.projects.mytasks.domain.model.Repeat
 import com.devkazonovic.projects.mytasks.domain.model.Task
+import com.devkazonovic.projects.mytasks.domain.model.TimeFormat
 import com.devkazonovic.projects.mytasks.help.util.handleResult
 import com.devkazonovic.projects.mytasks.service.DateTimeHelper
 import com.devkazonovic.projects.mytasks.service.TaskAlarmManager
@@ -31,6 +33,7 @@ class TaskViewModel @Inject constructor(
     private val taskRepeatAlarmManager: TaskRepeatAlarmManager,
     private val taskNotificationManager: TaskNotificationManager,
     private val dateTimeHelper: DateTimeHelper,
+    private val settingSharedPreference: ISettingSharedPreference,
     rxScheduler: RxScheduler,
 ) : ViewModel() {
 
@@ -85,6 +88,10 @@ class TaskViewModel @Inject constructor(
             }
             .addTo(disposableGeneral)
     }
+
+    fun getTimeFormat(): TimeFormat =
+        settingSharedPreference.getTimeFormat()
+
 
     private fun initLiveData(task: Task) {
         _currentTask.postValue(task)

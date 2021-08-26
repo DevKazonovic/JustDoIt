@@ -47,6 +47,7 @@ class TasksFragment : Fragment() {
         observeData()
         observeErrors()
         observeToasts()
+        viewModel.start()
     }
 
     override fun onPause() {
@@ -65,6 +66,10 @@ class TasksFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.action_categories -> {
                     findNavController().navigate(R.id.categories)
+                    true
+                }
+                R.id.action_setting -> {
+                    findNavController().navigate(R.id.setting)
                     true
                 }
 
