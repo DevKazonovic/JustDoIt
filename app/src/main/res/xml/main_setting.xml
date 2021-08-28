@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceCategory
         android:key="KEY SETTING CUSTOMIZE"
         android:title="Customize"
         app:layout="@layout/fragment_preference_title">
+
         <ListPreference
             android:entries="@array/array_time_format"
             android:entryValues="@array/values_time_format"
@@ -23,6 +25,38 @@
             android:title="Theme"
             app:defaultValue="THEME_DEFAULT"
             app:layout="@layout/fragment_menu_item" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="KEY SETTING CUSTOMIZE"
+        android:title="About"
+        app:layout="@layout/fragment_preference_title">
+
+        <Preference
+            android:icon="@drawable/ic_rate"
+            android:key="KEY SETTING RATE US"
+            android:title="Rate Us"
+            app:layout="@layout/fragment_menu_item" />
+
+        <Preference
+            android:icon="@drawable/ic_share"
+            android:key="KEY SETTING SHARE"
+            android:title="Share"
+            app:layout="@layout/fragment_menu_item" />
+
+        <Preference
+            android:icon="@drawable/ic_policy"
+            android:key="KEY SETTING POLICY"
+            android:title="Privacy Policy"
+            app:layout="@layout/fragment_menu_item" />
+
+        <Preference
+            android:icon="@drawable/ic_versions"
+            android:key="KEY SETTING VERSION"
+            app:layout="@layout/fragment_menu_item"
+            tools:title="Version" />
+
     </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

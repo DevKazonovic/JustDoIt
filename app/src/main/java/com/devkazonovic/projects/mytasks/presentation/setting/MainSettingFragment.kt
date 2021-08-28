@@ -1,10 +1,10 @@
 package com.devkazonovic.projects.mytasks.presentation.setting
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
@@ -13,14 +13,21 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.devkazonovic.projects.mytasks.BuildConfig
 import com.devkazonovic.projects.mytasks.R
 import com.devkazonovic.projects.mytasks.domain.model.ThemeType
+import com.devkazonovic.projects.mytasks.help.util.log
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
 private const val KEY_SETTING_TIME_FORMAT = "KEY SETTING TIME FORMAT"
 private const val KEY_SETTING_THEME = "KEY SETTING THEME"
+private const val KEY_SETTING_RATE = "KEY SETTING RATE US"
+private const val KEY_SETTING_SHARE = "KEY SETTING SHARE"
+private const val KEY_SETTING_POLICY = "KEY SETTING POLICY"
+private const val KEY_SETTING_VERSION = "KEY SETTING VERSION"
 
 @AndroidEntryPoint
 class MainSettingFragment : PreferenceFragmentCompat(),
@@ -48,14 +55,43 @@ class MainSettingFragment : PreferenceFragmentCompat(),
                 value
             }
 
-    }
+        val ratePreference: Preference? = findPreference(KEY_SETTING_RATE)
+        val sharePreference: Preference? = findPreference(KEY_SETTING_SHARE)
+        val versionPreference: Preference? = findPreference(KEY_SETTING_VERSION)
+        val policyPreference: Preference? = findPreference(KEY_SETTING_POLICY)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        sharePreference?.setOnPreferenceClickListener {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT,
+                "Hey check out my app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+            sendIntent.type = "text/plain"
+            startActivity(sendIntent)
+            true
+        }
+        ratePreference?.setOnPreferenceClickListener {
+            val manager = ReviewManagerFactory.create(requireContext())
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    manager.launchReviewFlow(requireActivity(), reviewInfo)
+                } else {
+                    log("Error")
+                }
+            }
+            true
+        }
+        versionPreference?.title = "Version: ${BuildConfig.VERSION_CODE}"
+        policyPreference?.setOnPreferenceClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://do-it-privacy-policy.vercel.app/")
+            )
+            startActivity(intent)
+            true
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
