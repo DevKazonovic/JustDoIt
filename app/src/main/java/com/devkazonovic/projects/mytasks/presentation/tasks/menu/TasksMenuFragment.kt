@@ -148,9 +148,9 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
                     binding.imageViewSortIcon.disable()
                     binding.imageViewSortOrderIcon.disable()
                     binding.textViewSortTitle.disable()
+                    binding.textViewSortDetail.disable()
                     binding.textViewSortOrderTitle.disable()
-                    binding.textViewSortTitle.disable()
-                    binding.textViewSortOrderTitle.disable()
+                    binding.textViewSortOrderDetail.disable()
                 }
             }
         }

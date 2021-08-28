@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.mytasks.help
+package com.devkazonovic.projects.mytasks
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.ViewInteraction

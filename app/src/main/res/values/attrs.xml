@@ -4,10 +4,7 @@
     <attr name="colorStroke" format="color" />
     <attr name="colorDivider" format="color" />
     <attr name="colorTaskCard" format="color" />
-
     <attr name="colorInputFill" format="color" />
     <attr name="colorInputHint" format="color" />
-
     <attr name="colorLabel" format="color" />
-
 </resources>

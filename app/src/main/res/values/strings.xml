@@ -65,7 +65,7 @@
     <string name="label_desc">Descending</string>
     <string name="label_sort_by">Sort by</string>
     <string name="label_order">Order</string>
-    <string name="label_empty_page">Nothing to do!</string>
+    <string name="label_empty_page">Nothing to do! Click + to add new task.</string>
     <string name="desc_no_tasks">Image Doing Tasks</string>
     <string name="desc_sort_tasks">Icon Sort Tasks</string>
     <string name="desc_sort_order_tasks">Icon Sort Order Tasks</string>
