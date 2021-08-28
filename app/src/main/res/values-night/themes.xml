@@ -9,14 +9,12 @@
         <item name="colorSecondary">@color/brand</item>
         <item name="colorSecondaryVariant">@color/brande_variant</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSurface">@color/dark_extra</item>
+        <item name="colorSurface">@color/dark_surface</item>
         <item name="colorOnSurface">@color/white</item>
-
         <item name="colorDisable">@color/gray</item>
         <item name="colorDivider">@color/dark_extra_gray</item>
         <item name="colorStroke">@color/dark_extra_gray</item>
-
-        <item name="colorTaskCard">@color/dark_extra_gray</item>
+        <item name="colorTaskCard">@color/dark_surface</item>
         <item name="colorInputFill">@color/dark_extra_gray</item>
         <item name="colorInputHint">@color/dark_extra_gray</item>
         <item name="colorLabel">@color/gray</item>

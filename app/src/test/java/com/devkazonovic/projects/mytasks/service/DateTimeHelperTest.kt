@@ -1,8 +1,12 @@
 package com.devkazonovic.projects.mytasks.service
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.devkazonovic.projects.mytasks.data.local.preference.ISettingSharedPreference
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.mockito.kotlin.mock
 import org.threeten.bp.Clock
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -23,7 +27,13 @@ private const val july_22_2021_0_00_GMTplus1 =
 
 class DateTimeHelperTest {
 
-    private val dateTimeHelper = DateTimeHelper(Clock.system(ZoneId.systemDefault()))
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val mainSettingPreference : ISettingSharedPreference = mock()
+    private val dateTimeHelper = DateTimeHelper(
+        context,
+        Clock.system(ZoneId.systemDefault()),
+        mainSettingPreference
+    )
 
     /** BASE RULE:
      * groupDateTime return TimeStamp
@@ -66,10 +76,12 @@ class DateTimeHelperTest {
     fun isNow() {
         val now = july_22_2021_9_00_GMTplus1
         val dateTimeHelper = DateTimeHelper(
+            context,
             Clock.fixed(
                 Instant.ofEpochMilli(now),
                 ZoneId.systemDefault()
-            )
+            ),
+            mainSettingPreference
         )
 
         assertThat(dateTimeHelper.isNow(july_22_2021_9_00_GMTplus1)).isTrue()
@@ -79,10 +91,12 @@ class DateTimeHelperTest {
     fun isNotAfter_isBefore_now() {
         val now = july_22_2021_9_00_01_GMTplus1
         val dateTimeHelper = DateTimeHelper(
+            context,
             Clock.fixed(
                 Instant.ofEpochMilli(now),
                 ZoneId.systemDefault()
-            )
+            ),
+            mainSettingPreference
         )
 
         val actual1 = dateTimeHelper.isAfterNow(july_22_2021_9_00_GMTplus1)
@@ -96,10 +110,12 @@ class DateTimeHelperTest {
     fun isAfter_isNotBefore_now() {
         val now = july_22_2021_9_00_GMTplus1
         val dateTimeHelper = DateTimeHelper(
+            context,
             Clock.fixed(
                 Instant.ofEpochMilli(now),
                 ZoneId.systemDefault()
-            )
+            ),
+            mainSettingPreference
         )
 
 
