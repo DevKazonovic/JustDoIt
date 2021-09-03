@@ -7,11 +7,11 @@
 
     <fragment
         android:id="@+id/taskDetail"
-        android:name="com.devkazonovic.projects.mytasks.presentation.task.ui.TaskFragment"
+        android:name="com.devkazonovic.projects.justdoit.presentation.task.ui.TaskFragment"
         tools:layout="@layout/fragment_task" />
     <fragment
         android:id="@+id/tasks"
-        android:name="com.devkazonovic.projects.mytasks.presentation.tasks.TasksFragment"
+        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.TasksFragment"
         tools:layout="@layout/fragment_tasks">
         <action
             android:id="@+id/action_tasks_to_taskDetail"
@@ -19,10 +19,10 @@
     </fragment>
     <fragment
         android:id="@+id/categories"
-        android:name="com.devkazonovic.projects.mytasks.presentation.categories.FragmentCategories"
+        android:name="com.devkazonovic.projects.justdoit.presentation.categories.FragmentCategories"
         android:label="Categories" />
     <fragment
         android:id="@+id/setting"
-        android:name="com.devkazonovic.projects.mytasks.presentation.setting.MainSettingFragment"
+        android:name="com.devkazonovic.projects.justdoit.presentation.setting.MainSettingFragment"
         android:label="Setting" />
 </navigation>

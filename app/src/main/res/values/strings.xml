@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyTasks</string>
+    <string name="app_name">Just Do It</string>
 
     <string name="unKnownError">Unknown Error! Try Again Later!</string>
     <string name="task_save_fail">Error When Saving Task, Please Try Again</string>
