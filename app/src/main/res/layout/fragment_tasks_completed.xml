@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.devkazonovic.projects.mytasks.presentation.common.view.NestedScrollableHost
+        <com.devkazonovic.projects.justdoit.presentation.common.view.NestedScrollableHost
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
@@ -36,6 +36,6 @@
                 android:scrollbars="vertical"
                 tools:listitem="@layout/card_task" />
 
-        </com.devkazonovic.projects.mytasks.presentation.common.view.NestedScrollableHost>
+        </com.devkazonovic.projects.justdoit.presentation.common.view.NestedScrollableHost>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

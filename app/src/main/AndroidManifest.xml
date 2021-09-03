@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.devkazonovic.projects.mytasks">
+    package="com.devkazonovic.projects.justdoit">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 
     <application
-        android:name=".MyTasksApplication"
+        android:name="com.devkazonovic.projects.justdoit.MyTasksApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyTasks">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.devkazonovic.projects.justdoit.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,14 +23,14 @@
         </activity>
 
         <receiver
-            android:name=".receiver.DueDateBroadcastReceiver"
+            android:name="com.devkazonovic.projects.justdoit.receiver.DueDateBroadcastReceiver"
             android:exported="false" />
         <receiver
-            android:name=".receiver.NotificationDismissedReceiver"
+            android:name="com.devkazonovic.projects.justdoit.receiver.NotificationDismissedReceiver"
             android:exported="false" />
 
         <receiver
-            android:name=".receiver.BootBroadcastReceiver"
+            android:name="com.devkazonovic.projects.justdoit.receiver.BootBroadcastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
