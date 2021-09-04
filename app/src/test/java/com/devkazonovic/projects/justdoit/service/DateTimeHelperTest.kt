@@ -28,7 +28,7 @@ private const val july_22_2021_0_00_GMTplus1 =
 class DateTimeHelperTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val mainSettingPreference : ISettingSharedPreference = mock()
+    private val mainSettingPreference: ISettingSharedPreference = mock()
     private val dateTimeHelper = DateTimeHelper(
         context,
         Clock.system(ZoneId.systemDefault()),
