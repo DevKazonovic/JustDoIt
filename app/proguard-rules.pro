@@ -22,3 +22,9 @@
 
 #-keep class io.reactivex.rxjava3.plugins.RxJavaPlugins { *; }
 #-keep class io.reactivex.rxjava3.disposables.CompositeDisposable { *; }
+
+-assumenosideeffects class timber.log.Timber* {
+    public static *** v(...);
+    public static *** d(...);
+    public static *** i(...);
+}
