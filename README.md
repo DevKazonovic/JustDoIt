@@ -1,7 +1,8 @@
-# JustDoIt
+# Just Do It : Simple To-Do List with Reminders
 
-<img src='https://github.com/DevKazonovic/JustDoIt/blob/653e246c2b8d0e8daf7c96e1a9ae678b9dfe54d5/app/src/main/ic_launcher-playstore.png' alt='Just Do It : Simple To-Do List with Reminders' height='45' /> 
-
+<div style="display:flex;">
+  <img src='https://github.com/DevKazonovic/JustDoIt/blob/main/app/src/main/ic_launcher-playstore.png' alt='Just Do It : Simple To-Do List with Reminders' height='45' width="5%"  /> 
+</div>
 
 <a href='https://play.google.com/store/apps/details?id=com.devkazonovic.projects.doit'>
    <img src='https://simplemobiletools.com/assets/images/google-play.png' alt='Get it on Google Play' height='45' />
