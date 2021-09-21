@@ -65,7 +65,7 @@ class MainSettingFragment :
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT,
-                "Hey check out my app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+                "Hey, check out my app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
             true
@@ -87,7 +87,7 @@ class MainSettingFragment :
         policyPreference?.setOnPreferenceClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://do-it-privacy-policy.vercel.app/")
+                Uri.parse("https://justdoit-privacy-policy.vercel.app/")
             )
             startActivity(intent)
             true
