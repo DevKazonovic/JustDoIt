@@ -16,12 +16,13 @@ android {
         applicationId "com.devkazonovic.projects.doit"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.1"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "com.devkazonovic.projects.mytasks.HiltTestRunner"
     }
+
     buildFeatures {
         viewBinding true
     }
