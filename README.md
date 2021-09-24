@@ -32,3 +32,4 @@ JustDoIt is a simple To-Do List built using Android Studio, JustDoIt has a simpl
 * View, Edit and manage all your tasks
 * Manage all your to-do lists (Shopping, Workout, Studying, ....)
 * Organize your tasks by date or name.
+* Dark Theme Support.
