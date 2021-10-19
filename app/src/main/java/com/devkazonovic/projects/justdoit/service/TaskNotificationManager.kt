@@ -102,7 +102,7 @@ class TaskNotificationManager @Inject constructor(
 
         return Builder(context, CHANNEL_ID)
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.ic_round_timer)
+            .setSmallIcon(R.drawable.ic_app)
             .setContentTitle(title)
             .setContentText(time)
             .setPriority(PRIORITY_HIGH)

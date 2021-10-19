@@ -11,7 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.databinding.FragmentCategoriesBinding
 import com.devkazonovic.projects.justdoit.domain.model.Category
@@ -124,6 +126,9 @@ class FragmentCategories : Fragment() {
             showMenu(view, category)
         }
         binding.recyclerViewCategories.adapter = adapter
+        val decorator = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+        binding.recyclerViewCategories.addItemDecoration(decorator)
+
     }
 
     private fun showMenu(v: View, category: Category) {

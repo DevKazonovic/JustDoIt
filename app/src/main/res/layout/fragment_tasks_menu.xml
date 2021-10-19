@@ -98,7 +98,7 @@
 
     </LinearLayout>
 
-    <include layout="@layout/view_divider_vertical" />
+    <include layout="@layout/view_surface_divider_vertical" />
 
     <LinearLayout
         android:id="@+id/itemRenameCategory"

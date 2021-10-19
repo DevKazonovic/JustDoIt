@@ -25,6 +25,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/view_surface_divider_vertical" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTaskCategories"
         android:layout_width="match_parent"

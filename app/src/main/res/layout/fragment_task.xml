@@ -28,7 +28,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:menu="@menu/menu_task" />
 
-            <include layout="@layout/view_divider_vertical" />
+            <include layout="@layout/view_surface_divider_vertical" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -92,16 +92,6 @@
                             android:textAppearance="@style/TextAppearance.App.Subtitle2" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <include
-                        android:id="@+id/include"
-                        layout="@layout/view_divider_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="1dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
-
                     <LinearLayout
                         android:id="@+id/viewContainerDueDate"
                         android:layout_width="0dp"
@@ -109,20 +99,29 @@
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/include">
+                        app:layout_constraintStart_toStartOf="parent">
 
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/viewTaskCategory"
                             style="@style/Widget.App.Card.Input"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical">
+
+                                <include
+                                    layout="@layout/view_surface_divider_vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textInputTaskDetail" />
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
@@ -155,7 +154,6 @@
                                         android:id="@+id/imageViewDropDown"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:padding="6dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
@@ -165,7 +163,7 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <include
-                                    layout="@layout/view_divider_vertical"
+                                    layout="@layout/view_surface_divider_vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="1dp"
                                     app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
@@ -177,34 +175,12 @@
 
                         </com.google.android.material.card.MaterialCardView>
 
-
-                        <!--<com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputTaskListCategory"
-                        style="@style/Widget.App.TextInputLayout.Dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:endIconDrawable="@drawable/ic_dropdown"
-                        app:endIconMode="custom">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/dropDownTaskCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:hint="@null"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                            android:inputType="none"
-                            android:textStyle="bold"
-                            tools:text="MyList" />
-
-                    </com.google.android.material.textfield.TextInputLayout>-->
-
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/viewAddDate"
                             style="@style/Widget.App.Card.Input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp"
                             android:focusable="true">
 
                             <LinearLayout
@@ -255,7 +231,7 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <include
-                                    layout="@layout/view_divider_vertical"
+                                    layout="@layout/view_surface_divider_vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="1dp"
                                     app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
@@ -270,7 +246,8 @@
                             android:id="@+id/viewAddTime"
                             style="@style/Widget.App.Card.Input"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -320,7 +297,7 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <include
-                                    layout="@layout/view_divider_vertical"
+                                    layout="@layout/view_surface_divider_vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="1dp"
                                     app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
@@ -330,6 +307,29 @@
                             </LinearLayout>
 
                         </com.google.android.material.card.MaterialCardView>
+
+
+                        <!--<com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputTaskListCategory"
+                        style="@style/Widget.App.TextInputLayout.Dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconDrawable="@drawable/ic_dropdown"
+                        app:endIconMode="custom">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/dropDownTaskCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@null"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                            android:inputType="none"
+                            android:textStyle="bold"
+                            tools:text="MyList" />
+
+                    </com.google.android.material.textfield.TextInputLayout>-->
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/viewAddRepeat"
@@ -387,7 +387,7 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <include
-                                    layout="@layout/view_divider_vertical"
+                                    layout="@layout/view_surface_divider_vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="1dp"
                                     app:layout_constraintBottom_toBottomOf="@+id/textInputTaskDetail"
@@ -397,20 +397,13 @@
                             </LinearLayout>
 
                         </com.google.android.material.card.MaterialCardView>
+
                     </LinearLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             </androidx.core.widget.NestedScrollView>
-
-            <View
-                android:id="@+id/viewTransparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/dark_trans"
-                android:visibility="gone" />
 
         </FrameLayout>
 
@@ -427,7 +420,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/view_divider_vertical" />
+        <include layout="@layout/view_surface_divider_vertical" />
 
 
         <com.google.android.material.checkbox.MaterialCheckBox

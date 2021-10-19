@@ -18,7 +18,7 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         app:drawableStartCompat="@drawable/ic_add" />
 
-    <include layout="@layout/view_divider_vertical" />
+    <include layout="@layout/view_surface_divider_vertical" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTasksCategories"

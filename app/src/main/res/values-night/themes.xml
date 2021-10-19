@@ -3,26 +3,26 @@
     <style name="Theme.MyTasks" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="backgroundColor">@color/dark</item>
-        <item name="colorPrimary">@color/brand</item>
-        <item name="colorPrimaryVariant">@color/brand</item>
+        <item name="android:colorBackground">@color/dark</item>
+        <item name="colorPrimary">@color/blue_400</item>
+        <item name="colorPrimaryVariant">@color/blue_300</item>
+        <item name="colorSecondary">@color/blue_400</item>
+        <item name="colorSecondaryVariant">@color/blue_300</item>
+        <item name="colorSurface">@color/extra_dark_gray</item>
+
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/brand</item>
-        <item name="colorSecondaryVariant">@color/brande_variant</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSurface">@color/dark_surface</item>
         <item name="colorOnSurface">@color/white</item>
-        <item name="colorDisable">@color/gray</item>
-        <item name="colorDivider">@color/dark_extra_gray</item>
-        <item name="colorStroke">@color/dark_extra_gray</item>
-        <item name="colorTaskCard">@color/dark_surface</item>
-        <item name="colorInputFill">@color/dark_extra_gray</item>
-        <item name="colorInputHint">@color/dark_extra_gray</item>
-        <item name="colorLabel">@color/gray</item>
+        <item name="colorOnBackground">@color/white</item>
 
-        <!-- Status bar color. -->
+        <item name="colorDisable">@color/dark_gray</item>
+        <item name="colorDivider">@color/white_trans10</item>
+        <item name="colorTaskCard">@color/extra_dark_gray</item>
+        <item name="colorInputFill">@color/dark_gray</item>
+        <item name="colorInputHint">@color/light_gray</item>
+
+        <item name="elevationOverlayEnabled">false</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSurface</item>
-
-        <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/Widget.App.BottomSheetDialog</item>
         <item name="toolbarStyle">@style/Widget.App.TopToolbar</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
@@ -35,5 +35,6 @@
         <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
         <item name="preferenceFragmentCompatStyle">@style/ThemeOverlay.Quizzer.PreferenceFragment
         </item>
+
     </style>
 </resources>

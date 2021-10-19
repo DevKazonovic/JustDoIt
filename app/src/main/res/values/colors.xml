@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="brand">#FF1DA1F2</color>
-    <color name="brande_variant">#FF87CEFA</color>
+    <color name="blue">#FF1DA1F2</color>
+    <color name="blue_200">#FF76CCF5</color>
+    <color name="blue_300">#FF49BCF5</color>
+    <color name="blue_400">#FF55B8F5</color>
 
-    <color name="light">#FFFDFEFE</color>
-    <color name="light_extra">#FFFBFCFC</color>
-    <color name="light_blue">#FFEBF5FB</color>
-    <color name="light_gray">#FFEBEDEF</color>
+    <color name="extra_extra_light_gray">#FFF5F8FA</color>
+    <color name="extra_light_gray">#FFE1E8ED</color>
+    <color name="light_gray">#FFAAB8C2</color>
+    <color name="dark_gray">#FF657786</color>
+    <color name="extra_dark_gray">#FF1C2833</color>
+    <color name="extra_extra_dark_gray">#FF383E42</color>
 
-    <color name="gray">#FF999999</color>
-    <color name="gray_200">#FFDDDDDD</color>
-
-    <color name="dark">#FF14171A</color>
-    <color name="dark_extra_gray">#FF212F3C</color>
-    <color name="dark_surface">#FF3D5061</color>
-
-    <color name="dark_trans">#1A000000</color>
-
-    <color name="light_red">#FFDC143C</color>
-
+    <color name="light">#FFFCFEFF</color>
+    <color name="dark">#FF121212</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black_trans38">#61000000</color>
+    <color name="white_trans38">#61FFFFFF</color>
+    <color name="white_trans10">#1AFFFFFF</color>
+
+    <color name="semantic_red">#FFE34850</color>
+    <color name="semantic_green">#FF2D9D78</color>
+    <color name="semantic_orange">#FFE68619</color>
+    <color name="semantic_blue">#FF2680EB</color>
 
 </resources>

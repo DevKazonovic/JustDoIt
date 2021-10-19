@@ -35,7 +35,7 @@
                 app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 tools:title="Test" />
 
-            <include layout="@layout/view_divider_vertical" />
+            <include layout="@layout/view_surface_divider_vertical" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
@@ -104,7 +104,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:elevation="6dp"
             app:fabAlignmentMode="center"
             app:fabAnimationMode="slide"
             app:fabCradleMargin="6dp"
