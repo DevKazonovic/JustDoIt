@@ -60,7 +60,6 @@ class ActiveTasksFragment : Fragment() {
         _binding = null
     }
 
-
     private fun setUpRecyclerView() {
         binding.recyclerViewTasks.layoutManager = LinearLayoutManager(requireContext())
         tasksAdapter = ActiveTasksAdapter(

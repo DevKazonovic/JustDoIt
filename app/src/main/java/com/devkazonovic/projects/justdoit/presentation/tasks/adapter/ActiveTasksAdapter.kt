@@ -138,9 +138,6 @@ class ActiveTasksAdapter(
         }
     }
 
-    fun submit(list: List<ActiveTask>) {
-        submitList(list)
-    }
 }
 
 
