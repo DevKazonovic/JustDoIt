@@ -60,6 +60,14 @@ class FakeTasksRepositoryTaskTest @Inject constructor() : ITasksRepository {
         return Completable.complete()
     }
 
+    override fun deleteTaskById(taskID: Long): Completable {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteTasks(tasks: List<Long>): Completable {
+        TODO("Not yet implemented")
+    }
+
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable {
         val index = tasks.findIndex(taskID)
         return tasks.findTask(taskID)?.let {
@@ -81,6 +89,10 @@ class FakeTasksRepositoryTaskTest @Inject constructor() : ITasksRepository {
 
     override fun getAllTasks(): Single<Result<List<Task>>> {
         return Single.just(Result.Success(tasks))
+    }
+
+    override fun getCategoryTasks(listID: Long): Flowable<Result<List<Task>>> {
+        TODO("Not yet implemented")
     }
 
     override fun getCompletedTasks(listID: Long): Flowable<Result<List<Task>>> {

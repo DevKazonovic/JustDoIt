@@ -2,6 +2,7 @@ package com.devkazonovic.projects.justdoit.presentation.tasks.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
@@ -10,9 +11,14 @@ import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.databinding.CardTaskBinding
 import com.devkazonovic.projects.justdoit.databinding.CardTasksHeaderBinding
 import com.devkazonovic.projects.justdoit.domain.model.Task
+import com.devkazonovic.projects.justdoit.help.extension.hide
+import com.devkazonovic.projects.justdoit.help.extension.show
 import com.devkazonovic.projects.justdoit.help.util.getThemeColor
+import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.ActiveTasksDiffCallback
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
+import com.devkazonovic.projects.justdoit.presentation.tasks.util.selectTaskCard
+import com.devkazonovic.projects.justdoit.presentation.tasks.util.unSelectTaskCard
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
@@ -20,21 +26,38 @@ private const val ITEM_VIEW_TYPE_ITEM = 1
 
 class ActiveTasksAdapter(
     diffCallback: ActiveTasksDiffCallback,
-    private val onCheck: (task: Task) -> Unit,
-    private val onClick: (taskID: Long) -> Unit,
     private val dateTimeHelper: DateTimeHelper,
+    private val onCheck: (task: Task) -> Unit,
+    private val onClick: (view: View, taskID: Long) -> Unit,
+    private val onLongClick: (view: View, taskID: Long) -> Unit,
+    private val viewModel: TasksViewModel,
+    private val isSelectionMode: Boolean = false,
 ) : ListAdapter<ActiveTask, RecyclerView.ViewHolder>(diffCallback) {
 
     class TaskViewHolder(
         private val binding: CardTaskBinding,
-        private val onCheck: (task: Task) -> Unit,
-        private val onClick: (taskID: Long) -> Unit,
         private val dateTimeHelper: DateTimeHelper,
+        private val onCheck: (task: Task) -> Unit,
+        private val onClick: (view: View, taskID: Long) -> Unit,
+        private val onLongClick: (view: View, taskID: Long) -> Unit,
+        private val viewModel: TasksViewModel,
+        private val isSelectionMode: Boolean,
     ) : RecyclerView.ViewHolder(binding.root) {
         private val context: Context = binding.root.context
-
         fun bind(task: Task) {
-            binding.checkbox.isChecked = task.isCompleted
+            if (isSelectionMode) {
+                binding.checkbox.hide()
+                viewModel.selectedTasks.value?.let {
+                    if (it.contains(task.id)) {
+                        binding.root.selectTaskCard(context)
+                    } else {
+                        binding.root.unSelectTaskCard(context)
+                    }
+                }
+            } else {
+                binding.checkbox.show()
+            }
+            binding.checkbox.isChecked = false
             binding.textViewTaskTitle.text = task.title
             binding.textViewReminder.text = ""
             binding.imageViewRepeatIcon.isVisible =
@@ -72,8 +95,12 @@ class ActiveTasksAdapter(
                 onCheck(task)
                 binding.checkbox.isChecked = !isChecked
             }
-            binding.viewTask.setOnClickListener {
-                onClick(task.id)
+            binding.viewTask.setOnClickListener { v ->
+                onClick(binding.root, task.id)
+            }
+            binding.viewTask.setOnLongClickListener { v ->
+                onLongClick(binding.root, task.id)
+                true
             }
         }
     }
@@ -106,7 +133,13 @@ class ActiveTasksAdapter(
             ITEM_VIEW_TYPE_ITEM -> {
                 val binding =
                     CardTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                TaskViewHolder(binding, { onCheck(it) }, { onClick(it) }, dateTimeHelper)
+                TaskViewHolder(binding,
+                    dateTimeHelper,
+                    onCheck,
+                    onClick,
+                    onLongClick,
+                    viewModel,
+                    isSelectionMode)
             }
             ITEM_VIEW_TYPE_HEADER -> {
                 val binding = CardTasksHeaderBinding
@@ -121,6 +154,7 @@ class ActiveTasksAdapter(
         return when (getItem(position)) {
             is ActiveTask.ItemTask -> ITEM_VIEW_TYPE_ITEM
             is ActiveTask.ItemHeader -> ITEM_VIEW_TYPE_HEADER
+            else -> -1
         }
     }
 

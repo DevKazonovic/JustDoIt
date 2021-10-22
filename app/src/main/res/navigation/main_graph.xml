@@ -15,7 +15,14 @@
         tools:layout="@layout/fragment_tasks">
         <action
             android:id="@+id/action_tasks_to_taskDetail"
-            app:destination="@id/taskDetail" />
+            app:destination="@id/taskDetail"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_tasks_to_tasksSelection"
+            app:destination="@id/tasksSelection"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/categories"
@@ -25,4 +32,7 @@
         android:id="@+id/setting"
         android:name="com.devkazonovic.projects.justdoit.presentation.setting.MainSettingFragment"
         android:label="Setting" />
+    <fragment
+        android:id="@+id/tasksSelection"
+        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.TasksSelectionFragment" />
 </navigation>

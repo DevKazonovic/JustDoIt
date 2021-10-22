@@ -25,6 +25,9 @@
         <item name="colorInputHint">@color/light_gray</item>
 
         <item name="elevationOverlayEnabled">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/Widget.App.ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_back</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="bottomSheetDialogTheme">@style/Widget.App.BottomSheetDialog</item>

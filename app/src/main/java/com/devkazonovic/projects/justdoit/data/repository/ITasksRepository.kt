@@ -19,6 +19,8 @@ interface ITasksRepository {
     fun addNewTask(task: Task): Completable
     fun updateTask(task: Task): Completable
     fun deleteTask(task: Task): Completable
+    fun deleteTaskById(taskID: Long): Completable
+    fun deleteTasks(tasks: List<Long>): Completable
     fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable
     fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable
 

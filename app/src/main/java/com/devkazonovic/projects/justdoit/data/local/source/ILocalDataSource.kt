@@ -17,6 +17,8 @@ interface ILocalDataSource {
     fun insertTask(task: TaskEntity): Completable
     fun updateTask(task: TaskEntity): Completable
     fun deleteTask(task: TaskEntity): Completable
+    fun deleteTaskById(taskID: Long): Completable
+    fun deleteTasks(tasks: List<Long>): Completable
     fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable
     fun updateTaskNextAlarm(taskID: Long, repeatNextDueDate: Long?): Completable
 

@@ -58,6 +58,19 @@ class LocalDataSource @Inject constructor(
         return taskDao.delete(task)
     }
 
+    override fun deleteTaskById(taskID: Long): Completable {
+        return taskDao.deleteTaskById(taskID)
+    }
+
+    override fun deleteTasks(tasks: List<Long>): Completable {
+        return try {
+            taskDao.deleteTasks(tasks)
+            Completable.complete()
+        } catch (e: Exception) {
+            Completable.error(Exception(""))
+        }
+    }
+
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable {
         return taskDao.updateTaskDueDate(taskID, reminderDate)
     }

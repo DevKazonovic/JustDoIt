@@ -20,7 +20,9 @@ android {
         versionName "1.0.1"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "com.devkazonovic.projects.mytasks.HiltTestRunner"
+        //testInstrumentationRunner "com.devkazonovic.projects.mytasks.HiltTestRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
 
     buildFeatures {

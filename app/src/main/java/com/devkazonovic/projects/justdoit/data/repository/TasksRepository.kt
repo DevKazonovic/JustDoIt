@@ -54,6 +54,13 @@ class TasksRepository @Inject constructor(
     override fun deleteTask(task: Task): Completable =
         localDataSource.deleteTask(mappers.taskMapper().map(task))
 
+    override fun deleteTaskById(taskID: Long): Completable =
+        localDataSource.deleteTaskById(taskID)
+
+    override fun deleteTasks(tasks: List<Long>): Completable =
+        localDataSource.deleteTasks(tasks)
+
+
     override fun updateTaskReminder(taskID: Long, reminderDate: Long?): Completable =
         localDataSource.updateTaskReminder(taskID, reminderDate)
 

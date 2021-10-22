@@ -127,8 +127,6 @@ class TasksFragment : Fragment() {
         viewModel.currentCategory.observe(viewLifecycleOwner) {
             onCurrentCategoryChange(it)
         }
-
-
     }
 
     private fun observeToasts() {
@@ -169,7 +167,13 @@ class TasksFragment : Fragment() {
             binding.toolbar.title = it.name
             binding.viewError.root.hide()
             binding.viewData.show()
-            viewModel.observeTasks()
+        }
+    }
+
+    companion object {
+        const val TAG = "TasksFragment"
+        fun newInstance(): TasksFragment {
+            return TasksFragment()
         }
     }
 

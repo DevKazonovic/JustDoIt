@@ -137,13 +137,13 @@ class TaskFragment : Fragment() {
 
     private fun setUpTaskCategory() {
         binding.textViewTaskCategory.setOnClickListener {
-            CategoriesDialogFragment.newInstance()
-                .show(childFragmentManager, CategoriesDialogFragment.TAG)
+            TaskCategoriesDialogFragment.newInstance()
+                .show(childFragmentManager, TaskCategoriesDialogFragment.TAG)
         }
 
         binding.imageViewDropDown.setOnClickListener {
-            CategoriesDialogFragment.newInstance()
-                .show(childFragmentManager, CategoriesDialogFragment.TAG)
+            TaskCategoriesDialogFragment.newInstance()
+                .show(childFragmentManager, TaskCategoriesDialogFragment.TAG)
         }
 
         viewModel.currentTaskCategory.observe(viewLifecycleOwner, { list ->

@@ -2,6 +2,7 @@
     <string name="app_name">JustDoIt</string>
 
     <string name="unKnownError">Unknown Error! Try Again Later!</string>
+    <string name="error_operation_failed">Operation Failed, Please Try Again!</string>
     <string name="task_save_fail">Error When Saving Task, Please Try Again</string>
     <string name="task_update_fail">Error When Updating Task, Please Try Again</string>
     <string name="task_delete_fail">Error When Deleting Task, Please Try Again</string>
@@ -70,6 +71,11 @@
     <string name="desc_sort_tasks">Icon Sort Tasks</string>
     <string name="desc_sort_order_tasks">Icon Sort Order Tasks</string>
     <string name="label_just_doit">Just Do It !</string>
+    <string name="label_delete_all">Delete All</string>
+    <string name="label_move_to">Move To</string>
+    <string name="desc_delete_all">Delete All Selected Tasks</string>
+    <string name="desc_move_to">Move All Selected Tasks to another category</string>
+    <string name="success_delete_all_operation">All Selected Task Deleted Successefuly</string>
     <plurals name="day">
         <item quantity="one"> %s day</item>
         <item quantity="other"> %s days</item>

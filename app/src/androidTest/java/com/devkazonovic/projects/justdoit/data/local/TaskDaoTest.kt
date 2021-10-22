@@ -18,8 +18,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TaskDaoTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @Rule
+    @JvmField
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: TasksDataBase
     private lateinit var taskDao: TaskDao
@@ -100,7 +101,6 @@ class TaskDaoTest {
 
     @Test
     fun deleteTask() {
-
         taskDao.insertAndReturnId(TASK_UNCOMPLETED)
             .blockingSubscribe { id ->
                 taskDao.getTask(id).blockingSubscribe {
@@ -111,6 +111,19 @@ class TaskDaoTest {
         taskDao.getAllTasks().test()
             .assertValue { it.isEmpty() }
     }
+
+    /* @Test
+     fun deleteTasks(){
+         taskDao.insert(TASK_COMPLETED)
+         taskDao.insert(TASK_UNCOMPLETED)
+
+         taskDao.deleteTasks(listOf(
+             TASK_COMPLETED.id, TASK_UNCOMPLETED.id
+         ))
+
+         taskDao.getAllTasks().test()
+             .assertValue { it.isEmpty() }
+     }*/
 
     @Test
     fun clearAllCompletedTasks() {
@@ -127,9 +140,7 @@ class TaskDaoTest {
 
 
     companion object {
-        private val DEFAULT_LIST = CategoryEntity("MyList").apply {
-            this.id = 0
-        }
+        private val DEFAULT_LIST = CategoryEntity("MyList", 1, 0)
         private val TASK_UNCOMPLETED = TaskEntity(
             categoryId = DEFAULT_LIST.id,
             title = "Task1",

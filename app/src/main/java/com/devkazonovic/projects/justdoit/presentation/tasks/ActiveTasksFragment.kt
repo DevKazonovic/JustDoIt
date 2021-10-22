@@ -21,6 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 private const val KEY_TASK_ID = "Task ID"
+private const val KEY_SELECTED_TASK_ID = "SelectedTask ID"
+
 
 @AndroidEntryPoint
 class ActiveTasksFragment : Fragment() {
@@ -52,7 +54,6 @@ class ActiveTasksFragment : Fragment() {
         viewModel.activeTasks.observe(viewLifecycleOwner) {
             showActiveTasks(it)
         }
-
     }
 
     override fun onDestroyView() {
@@ -64,12 +65,15 @@ class ActiveTasksFragment : Fragment() {
         binding.recyclerViewTasks.layoutManager = LinearLayoutManager(requireContext())
         tasksAdapter = ActiveTasksAdapter(
             ActiveTasksDiffCallback(),
+            dateTimeHelper,
             { viewModel.markTaskAsCompleted(it.id, true) },
-            {
-                findNavController()
-                    .navigate(R.id.action_tasks_to_taskDetail, bundleOf(KEY_TASK_ID to it))
+            { view, id ->
+                onItemClick(view, id)
+            }, { view, id ->
+                onLongItemClick(view, id)
             },
-            dateTimeHelper
+            viewModel,
+            false
         )
         binding.recyclerViewTasks.adapter = tasksAdapter
     }
@@ -87,4 +91,15 @@ class ActiveTasksFragment : Fragment() {
         }
     }
 
+    private fun onItemClick(view: View, taskId: Long) {
+        findNavController()
+            .navigate(R.id.action_tasks_to_taskDetail, bundleOf(KEY_TASK_ID to taskId))
+    }
+
+    private fun onLongItemClick(view: View, taskId: Long) {
+        findNavController().navigate(R.id.action_tasks_to_tasksSelection,
+            bundleOf(
+                KEY_SELECTED_TASK_ID to taskId
+            ))
+    }
 }

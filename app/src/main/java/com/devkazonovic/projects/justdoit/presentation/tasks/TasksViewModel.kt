@@ -17,7 +17,9 @@ import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.TasksSort
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import org.threeten.bp.Instant
@@ -32,21 +34,23 @@ class TasksViewModel @Inject constructor(
     rxScheduler: IRxScheduler,
 ) : ViewModel() {
 
-    /**RxJava Tools*/
     private val mainScheduler = rxScheduler.mainScheduler()
     private val ioScheduler = rxScheduler.ioScheduler()
     private val disposableGeneral = CompositeDisposable()
     private val disposableTasksObservables = CompositeDisposable()
 
-    private val _snackBarEvent = MutableLiveData<Event<Int>>()
     private val _mainViewErrorEvent = MutableLiveData<Event<Int>>()
+    private val _snackBarEvent = MutableLiveData<Event<Int>>()
     private val _snackBarErrorEvent = MutableLiveData<Event<Int>>()
+    private val _navigateToMainFragment = MutableLiveData<Event<Boolean>>()
+
     private val _categories = MutableLiveData<List<Category>>()
     private val _currentCategory = MutableLiveData<Category>()
     private val _sort = MutableLiveData<TasksSort>()
     private val _order = MutableLiveData<SortDirection>()
     private val _activeTasks = MutableLiveData<List<ActiveTask>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
+    private val _selectedTasks = MutableLiveData<Set<Long>>(setOf())
 
     init {
         _sort.value = sharedPreference.getTasksSort()?.let {
@@ -259,6 +263,49 @@ class TasksViewModel @Inject constructor(
             ).addTo(disposableGeneral)
     }
 
+    fun deleteSelectedTasks() {
+        _selectedTasks.value?.let {
+            Observable.fromIterable(it)
+                .flatMapCompletable { id ->
+                    tasksRepository.deleteTaskById(id).subscribeOn(ioScheduler)
+                }
+                .observeOn(mainScheduler)
+                .subscribe(
+                    { _navigateToMainFragment.value = Event(true) },
+                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
+                ).addTo(disposableGeneral)
+        }
+    }
+
+    fun moveSelectedTasks(categoryId: Long) {
+        _selectedTasks.value?.let {
+            Observable.fromIterable(it)
+                .flatMapCompletable { id ->
+                    tasksRepository.getTask(id)
+                        .flatMapCompletable { result ->
+                            when (result) {
+                                is Result.Success -> {
+                                    tasksRepository.updateTask(
+                                        result.value.copy(categoryId = categoryId)
+                                    )
+                                }
+                                is Result.Failure -> {
+                                    Completable.error(Exception(""))
+                                }
+                            }
+                        }
+                        .subscribeOn(ioScheduler)
+                }
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe(
+                    { _navigateToMainFragment.value = Event(true) },
+                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
+                ).addTo(disposableGeneral)
+
+        }
+    }
+
     fun getCategories() {
         tasksRepository.getCategories()
             .subscribeOn(ioScheduler)
@@ -292,7 +339,10 @@ class TasksViewModel @Inject constructor(
                 .observeOn(mainScheduler)
                 .subscribe { result ->
                     handleResult(result,
-                        { _currentCategory.value = it },
+                        {
+                            _currentCategory.value = it
+                            observeTasks()
+                        },
                         { setSnackBarMassage(R.string.category_update_fail) }
                     )
                 }
@@ -343,7 +393,27 @@ class TasksViewModel @Inject constructor(
 
     fun start() {
         updateCurrentCategory(sharedPreference.getCurrentCategory())
-        observeTasks()
+    }
+
+    fun addItem(id: Long) {
+        _selectedTasks.value?.let {
+            val tasks = it.toMutableSet()
+            tasks.add(id)
+            _selectedTasks.value = tasks
+        }
+
+    }
+
+    fun removeItem(id: Long) {
+        _selectedTasks.value?.let {
+            val tasks = it.toMutableSet()
+            tasks.remove(id)
+            _selectedTasks.value = tasks
+        }
+    }
+
+    fun clearSelectedItems() {
+        _selectedTasks.postValue(setOf())
     }
 
     val currentCategory: LiveData<Category> get() = _currentCategory
@@ -355,4 +425,6 @@ class TasksViewModel @Inject constructor(
     val mainViewErrorEvent: LiveData<Event<Int>> get() = _mainViewErrorEvent
     val snackBarErrorEvent: LiveData<Event<Int>> get() = _snackBarErrorEvent
     val snackBarEvent: LiveData<Event<Int>> get() = _snackBarEvent
+    val selectedTasks: LiveData<Set<Long>> get() = _selectedTasks
+    val navigateToMainFragment: LiveData<Event<Boolean>> get() = _navigateToMainFragment
 }
