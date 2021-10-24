@@ -20,6 +20,9 @@ import com.devkazonovic.projects.justdoit.help.util.log
 import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.content.ActivityNotFoundException
+import android.os.Build
+import com.devkazonovic.projects.justdoit.help.util.showToast
 
 
 private const val KEY_SETTING_TIME_FORMAT = "KEY SETTING TIME FORMAT"
@@ -71,15 +74,10 @@ class MainSettingFragment :
             true
         }
         ratePreference?.setOnPreferenceClickListener {
-            val manager = ReviewManagerFactory.create(requireContext())
-            val request = manager.requestReviewFlow()
-            request.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val reviewInfo = task.result
-                    manager.launchReviewFlow(requireActivity(), reviewInfo)
-                } else {
-                    log("Error")
-                }
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+                rateUsInApp()
+            } else {
+                rateUsInPlayStore()
             }
             true
         }
@@ -134,4 +132,30 @@ class MainSettingFragment :
         preferenceScreen.sharedPreferences
             .unregisterOnSharedPreferenceChangeListener(this)
     }
+
+    private fun rateUsInApp(){
+        val manager = ReviewManagerFactory.create(requireContext())
+        val request = manager.requestReviewFlow()
+
+        request.addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                val reviewInfo = task.result
+                val flow = manager.launchReviewFlow(requireActivity(), reviewInfo)
+                flow.addOnCompleteListener { _ -> }
+            } else {
+                rateUsInPlayStore()
+            }
+        }
+    }
+
+    private fun rateUsInPlayStore(){
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=" + requireActivity().packageName)))
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://play.google.com/store/apps/details?id=" + requireActivity().packageName)))
+        }
+    }
+
 }

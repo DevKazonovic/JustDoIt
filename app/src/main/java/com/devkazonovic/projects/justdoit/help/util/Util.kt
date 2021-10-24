@@ -11,6 +11,7 @@ fun booleanToInt(boolean: Boolean): Int {
     return if (boolean) 1 else 0
 }
 
+
 fun log(s: String) {
     Timber.d(s)
 }

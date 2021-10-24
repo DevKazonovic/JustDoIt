@@ -76,6 +76,8 @@
     <string name="desc_delete_all">Delete All Selected Tasks</string>
     <string name="desc_move_to">Move All Selected Tasks to another category</string>
     <string name="success_delete_all_operation">All Selected Task Deleted Successefuly</string>
+    <string name="error_review">Please Try Again!</string>
+    <string name="success_review">Thank You for reviewing the app.</string>
     <plurals name="day">
         <item quantity="one"> %s day</item>
         <item quantity="other"> %s days</item>
