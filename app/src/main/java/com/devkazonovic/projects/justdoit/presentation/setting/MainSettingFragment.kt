@@ -1,8 +1,10 @@
 package com.devkazonovic.projects.justdoit.presentation.setting
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,13 +18,9 @@ import androidx.preference.PreferenceFragmentCompat
 import com.devkazonovic.projects.justdoit.BuildConfig
 import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.domain.model.ThemeType
-import com.devkazonovic.projects.justdoit.help.util.log
 import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import android.content.ActivityNotFoundException
-import android.os.Build
-import com.devkazonovic.projects.justdoit.help.util.showToast
 
 
 private const val KEY_SETTING_TIME_FORMAT = "KEY SETTING TIME FORMAT"
@@ -74,7 +72,7 @@ class MainSettingFragment :
             true
         }
         ratePreference?.setOnPreferenceClickListener {
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 rateUsInApp()
             } else {
                 rateUsInPlayStore()
@@ -133,12 +131,12 @@ class MainSettingFragment :
             .unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    private fun rateUsInApp(){
+    private fun rateUsInApp() {
         val manager = ReviewManagerFactory.create(requireContext())
         val request = manager.requestReviewFlow()
 
         request.addOnCompleteListener { task ->
-            if(task.isSuccessful) {
+            if (task.isSuccessful) {
                 val reviewInfo = task.result
                 val flow = manager.launchReviewFlow(requireActivity(), reviewInfo)
                 flow.addOnCompleteListener { _ -> }
@@ -148,7 +146,7 @@ class MainSettingFragment :
         }
     }
 
-    private fun rateUsInPlayStore(){
+    private fun rateUsInPlayStore() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=" + requireActivity().packageName)))
