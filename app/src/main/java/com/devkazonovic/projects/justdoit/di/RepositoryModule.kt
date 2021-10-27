@@ -17,6 +17,7 @@ abstract class RepositoryModule {
     @Binds
     abstract fun provideTasksRepository(repository: TasksRepository): ITasksRepository
 
+
     @Singleton
     @Binds
     abstract fun provideMappers(mappers: Mappers): IMappers

@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,8 +14,9 @@ import com.devkazonovic.projects.justdoit.databinding.FragmentTasksCompletedBind
 import com.devkazonovic.projects.justdoit.domain.model.Task
 import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.show
+import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.CompletedTasksAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.TasksDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.TasksDiffCallback
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

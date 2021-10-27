@@ -17,7 +17,7 @@ import com.devkazonovic.projects.justdoit.presentation.common.util.InputFilterMi
 import com.devkazonovic.projects.justdoit.presentation.task.TaskViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class RepeatDialogFragment : DialogFragment() {
+class RepeatInputFragment : DialogFragment() {
 
     private val viewModel by viewModels<TaskViewModel>({ requireParentFragment() })
 
@@ -107,7 +107,7 @@ class RepeatDialogFragment : DialogFragment() {
 
 
     companion object {
-        fun newInstance() = RepeatDialogFragment()
+        fun newInstance() = RepeatInputFragment()
         const val TAG = "RepeatDialog"
     }
 

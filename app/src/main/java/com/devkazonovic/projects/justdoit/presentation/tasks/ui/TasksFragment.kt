@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,10 +13,8 @@ import com.devkazonovic.projects.justdoit.domain.model.Category
 import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.setupSnackBar
 import com.devkazonovic.projects.justdoit.help.extension.show
+import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.TasksViewPagerAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.form.FormNewTaskFragment
-import com.devkazonovic.projects.justdoit.presentation.tasks.menu.TasksMenuFragment
-import com.devkazonovic.projects.justdoit.presentation.tasks.menu.TasksSelectCategoryFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +37,10 @@ class TasksFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setUpToolbar()
         setUpTabs()
@@ -102,8 +103,8 @@ class TasksFragment : Fragment() {
                 .show(childFragmentManager, FormNewTaskFragment.TAG)
         }
         binding.bottomAppBar.setNavigationOnClickListener {
-            TasksSelectCategoryFragment.newInstance()
-                .show(childFragmentManager, TasksSelectCategoryFragment.TAG)
+            ChangeCategoryFragment.newInstance()
+                .show(childFragmentManager, ChangeCategoryFragment.TAG)
         }
         binding.bottomAppBar.setOnMenuItemClickListener { menu ->
             when (menu.itemId) {

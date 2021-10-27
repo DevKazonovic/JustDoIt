@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,8 +13,9 @@ import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.databinding.FragmentTasksActiveBinding
 import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.show
+import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.ActiveTasksAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.ActiveTasksDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.ActiveTasksDiffCallback
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
 import dagger.hilt.android.AndroidEntryPoint

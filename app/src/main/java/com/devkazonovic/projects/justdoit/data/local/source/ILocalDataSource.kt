@@ -15,6 +15,7 @@ interface ILocalDataSource {
     fun getCategories(): Flowable<List<CategoryEntity>>
 
     fun insertTask(task: TaskEntity): Completable
+    fun insertTaskAndReturn(task: TaskEntity): Single<Long>
     fun updateTask(task: TaskEntity): Completable
     fun deleteTask(task: TaskEntity): Completable
     fun deleteTaskById(taskID: Long): Completable

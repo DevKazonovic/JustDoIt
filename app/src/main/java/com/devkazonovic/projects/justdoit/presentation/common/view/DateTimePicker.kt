@@ -2,6 +2,7 @@ package com.devkazonovic.projects.justdoit.presentation.common.view
 
 import android.content.Context
 import android.text.format.DateFormat.is24HourFormat
+import com.devkazonovic.projects.justdoit.R
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -12,11 +13,12 @@ private val constraintsBuilder = CalendarConstraints.Builder()
     .setValidator(DateValidatorPointForward.now())
 
 fun createDatePicker(
+    context: Context,
     todayInUtcMilliseconds: Long,
     onPositiveClick: (date: Long) -> Unit,
 ): MaterialDatePicker<Long> {
     return MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select date")
+        .setTitleText(context.getString(R.string.lable_selectdate))
         .setSelection(todayInUtcMilliseconds)
         .build().also {
             it.addOnPositiveButtonClickListener { date ->
@@ -32,6 +34,7 @@ fun createTimePicker(
     context: Context,
     typeFormat: com.devkazonovic.projects.justdoit.domain.model.TimeFormat,
     onPositiveClick: (hour: Int, minute: Int) -> Unit,
+    onCancelClick: () -> Unit,
 ): MaterialTimePicker {
 
     val clockFormat = when (typeFormat) {
@@ -50,13 +53,18 @@ fun createTimePicker(
     }
 
     return MaterialTimePicker.Builder()
-        .setTitleText("Select date")
+        .setTitleText(context.getString(R.string.label_selecttime))
         .setHour(hour)
         .setMinute(minute)
         .setTimeFormat(clockFormat)
         .build().also { timePicker ->
             timePicker.addOnPositiveButtonClickListener {
                 onPositiveClick(timePicker.hour, timePicker.minute)
+            }
+
+
+            timePicker.addOnNegativeButtonClickListener {
+                onCancelClick()
             }
         }
 }

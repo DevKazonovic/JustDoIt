@@ -10,7 +10,6 @@ import com.devkazonovic.projects.justdoit.data.local.preference.MySharedPreferen
 import com.devkazonovic.projects.justdoit.databinding.CardSampleCategoryBinding
 import com.devkazonovic.projects.justdoit.domain.model.Category
 import com.devkazonovic.projects.justdoit.help.util.getThemeColor
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.CategoriesDiffCallback
 
 class SampleCategoriesAdapter(
     private val sharedPreferences: MySharedPreferences,

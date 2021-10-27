@@ -13,7 +13,6 @@ abstract class TaskDao : BaseCrudDao<TaskEntity> {
     @Query("DELETE FROM task WHERE id = :taskID")
     abstract fun deleteTaskById(taskID: Long): Completable
 
-
     fun deleteTasks(tasks: List<Long>) {
         tasks.forEach { deleteTaskById(it) }
     }

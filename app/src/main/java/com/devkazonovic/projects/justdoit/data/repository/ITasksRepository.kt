@@ -17,6 +17,7 @@ interface ITasksRepository {
     fun getCategories(): Flowable<Result<List<Category>>>
 
     fun addNewTask(task: Task): Completable
+    fun addNewTaskAndReturn(task: Task): Single<Result<Long>>
     fun updateTask(task: Task): Completable
     fun deleteTask(task: Task): Completable
     fun deleteTaskById(taskID: Long): Completable

@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.*
@@ -10,8 +10,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.databinding.FragmentTasksSelectionBinding
+import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.ActiveTasksAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.ActiveTasksDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.ActiveTasksDiffCallback
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.justdoit.presentation.tasks.util.selectTaskCard
 import com.devkazonovic.projects.justdoit.presentation.tasks.util.unSelectTaskCard
@@ -177,8 +178,8 @@ class TasksSelectionFragment : Fragment() {
                     }
 
                     R.id.moveTo -> {
-                        TasksCategoriesDialogFragment.newInstance()
-                            .show(childFragmentManager, TasksCategoriesDialogFragment.TAG)
+                        MoveToCategoryFragment.newInstance()
+                            .show(childFragmentManager, MoveToCategoryFragment.TAG)
                         true
                     }
 

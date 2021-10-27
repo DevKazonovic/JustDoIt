@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks.menu
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,14 +10,13 @@ import com.devkazonovic.projects.justdoit.data.local.preference.MySharedPreferen
 import com.devkazonovic.projects.justdoit.databinding.FragmentTasksSelectCategoryBinding
 import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
 import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.SampleCategoriesAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.form.FormNewCategoryFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class TasksSelectCategoryFragment : BottomSheetDialogFragment() {
+class ChangeCategoryFragment : BottomSheetDialogFragment() {
 
     private val viewModel by viewModels<TasksViewModel>({ requireParentFragment() })
 
@@ -66,7 +65,7 @@ class TasksSelectCategoryFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun newInstance() = TasksSelectCategoryFragment()
+        fun newInstance() = ChangeCategoryFragment()
         const val TAG = "Menu of User Categories To Change The Current Category"
     }
 }

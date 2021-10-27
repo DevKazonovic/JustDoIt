@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks
+package com.devkazonovic.projects.justdoit.presentation.task.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devkazonovic.projects.justdoit.databinding.FragmentTaskSelectCategoryBinding
+import com.devkazonovic.projects.justdoit.presentation.task.TaskViewModel
 import com.devkazonovic.projects.justdoit.presentation.task.adapter.TaskCategoriesAdapter
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.CategoriesDiffCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TasksCategoriesDialogFragment : BottomSheetDialogFragment() {
+class MoveToCategoryFragment : BottomSheetDialogFragment() {
 
-    private val viewModel by viewModels<TasksViewModel>({ requireParentFragment() })
+    private val viewModel by viewModels<TaskViewModel>({ requireParentFragment() })
 
     private var _binding: FragmentTaskSelectCategoryBinding? = null
     private val binding get() = _binding!!
@@ -33,7 +34,7 @@ class TasksCategoriesDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.currentCategory.observe(viewLifecycleOwner, { list ->
+        viewModel.currentTaskCategory.observe(viewLifecycleOwner, { list ->
             viewModel.getCategories()
             viewModel.categories.observe(viewLifecycleOwner, { lists ->
                 setUpRecyclerView(list.id)
@@ -45,13 +46,13 @@ class TasksCategoriesDialogFragment : BottomSheetDialogFragment() {
     private fun setUpRecyclerView(longID: Long) {
         binding.recyclerViewTaskCategories.layoutManager = LinearLayoutManager(requireContext())
         adapter = TaskCategoriesAdapter(longID, CategoriesDiffCallback()) { taskList ->
-            viewModel.moveSelectedTasks(taskList.id)
+            viewModel.updateTaskCategory(taskList.id)
         }
         binding.recyclerViewTaskCategories.adapter = adapter
     }
 
     companion object {
-        fun newInstance() = TasksCategoriesDialogFragment()
-        const val TAG = "TasksCategoriesDialogFragment"
+        fun newInstance() = MoveToCategoryFragment()
+        const val TAG = "Menu To Change Current Task Category"
     }
 }

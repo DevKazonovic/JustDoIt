@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_task" />
     <fragment
         android:id="@+id/tasks"
-        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.TasksFragment"
+        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.ui.TasksFragment"
         tools:layout="@layout/fragment_tasks">
         <action
             android:id="@+id/action_tasks_to_taskDetail"
@@ -34,5 +34,5 @@
         android:label="Setting" />
     <fragment
         android:id="@+id/tasksSelection"
-        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.TasksSelectionFragment" />
+        android:name="com.devkazonovic.projects.justdoit.presentation.tasks.ui.TasksSelectionFragment" />
 </navigation>

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devkazonovic.projects.justdoit.databinding.CardTaskBinding
 import com.devkazonovic.projects.justdoit.domain.model.Task
 import com.devkazonovic.projects.justdoit.help.extension.disable
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.TasksDiffCallback
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
 import java.util.*
 

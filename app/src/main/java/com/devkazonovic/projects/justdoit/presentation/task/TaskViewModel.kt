@@ -37,12 +37,9 @@ class TaskViewModel @Inject constructor(
     rxScheduler: RxScheduler,
 ) : ViewModel() {
 
-    /**RxJava Tools*/
     private val mainScheduler: Scheduler = rxScheduler.mainScheduler()
     private val ioScheduler: Scheduler = rxScheduler.ioScheduler()
     private val disposableGeneral = CompositeDisposable()
-
-    /**LiveData*/
     private val _currentTask = MutableLiveData<Task>()
     private val _currentCategory = MutableLiveData<Category>()
     private val _categories = MutableLiveData<List<Category>>()
@@ -62,7 +59,6 @@ class TaskViewModel @Inject constructor(
         } ?: MutableLiveData<String>().apply { this.value = null }
 
     }
-
     private val _navigateBack = MutableLiveData<Event<Boolean>>()
     private val _dataState = MutableLiveData<Event<DataState<Int>>>()
 
@@ -261,7 +257,6 @@ class TaskViewModel @Inject constructor(
     val date: LiveData<Long?> get() = _date
     val time: LiveData<Pair<Int, Int>?> get() = _time
     val repeat: LiveData<Repeat?> get() = _repeat
-
     val dataState: LiveData<Event<DataState<Int>>> get() = _dataState
     val navigateBack: LiveData<Event<Boolean>> get() = _navigateBack
 }

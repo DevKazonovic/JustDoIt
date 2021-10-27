@@ -15,7 +15,6 @@ import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.show
 import com.devkazonovic.projects.justdoit.help.util.getThemeColor
 import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.ActiveTasksDiffCallback
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.justdoit.presentation.tasks.util.selectTaskCard
 import com.devkazonovic.projects.justdoit.presentation.tasks.util.unSelectTaskCard

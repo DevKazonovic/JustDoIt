@@ -2,24 +2,29 @@ package com.devkazonovic.projects.justdoit.presentation.tasks
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.data.local.preference.IMainSharedPreference
+import com.devkazonovic.projects.justdoit.data.local.preference.ISettingSharedPreference
 import com.devkazonovic.projects.justdoit.data.repository.ITasksRepository
 import com.devkazonovic.projects.justdoit.domain.IRxScheduler
 import com.devkazonovic.projects.justdoit.domain.holder.Event
 import com.devkazonovic.projects.justdoit.domain.holder.Result
 import com.devkazonovic.projects.justdoit.domain.model.Category
 import com.devkazonovic.projects.justdoit.domain.model.Task
+import com.devkazonovic.projects.justdoit.domain.model.TimeFormat
 import com.devkazonovic.projects.justdoit.help.util.handleResult
 import com.devkazonovic.projects.justdoit.presentation.common.model.SortDirection
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.ActiveTask
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.TasksSort
 import com.devkazonovic.projects.justdoit.service.DateTimeHelper
+import com.devkazonovic.projects.justdoit.service.TaskAlarmManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import org.threeten.bp.Instant
@@ -31,6 +36,8 @@ class TasksViewModel @Inject constructor(
     private val dateTimeHelper: DateTimeHelper,
     private val tasksRepository: ITasksRepository,
     private val sharedPreference: IMainSharedPreference,
+    private val taskAlarmManager: TaskAlarmManager,
+    private val settingSharedPreference: ISettingSharedPreference,
     rxScheduler: IRxScheduler,
 ) : ViewModel() {
 
@@ -51,6 +58,21 @@ class TasksViewModel @Inject constructor(
     private val _activeTasks = MutableLiveData<List<ActiveTask>>()
     private val _completedTasks = MutableLiveData<List<Task>>()
     private val _selectedTasks = MutableLiveData<Set<Long>>(setOf())
+    private val _date = MutableLiveData<Long?>()
+    private val _time = MutableLiveData<Pair<Int, Int>?>()
+    val dateStr = Transformations.switchMap(_date) { dateInMillis ->
+        dateInMillis?.let {
+            MutableLiveData<String>().apply { this.value = dateTimeHelper.showDate(it) }
+        } ?: MutableLiveData<String>().apply { this.value = null }
+    }
+    val timeStr = Transformations.switchMap(_time) { pair ->
+        pair?.let {
+            MutableLiveData<String>().apply {
+                this.value = dateTimeHelper.showTime(it.first, it.second)
+            }
+        } ?: MutableLiveData<String>().apply { this.value = null }
+
+    }
 
     init {
         _sort.value = sharedPreference.getTasksSort()?.let {
@@ -68,31 +90,42 @@ class TasksViewModel @Inject constructor(
         disposableGeneral.clear()
     }
 
+    fun saveTask(title: String) {
+        _currentCategory.value?.id?.let { currentTasksListId ->
+            val dueDateInMillis = calcDueDate()
+            val newTask = Task(
+                title = title,
+                dueDate = dueDateInMillis,
+                isAllDay = isAllDay(),
+                categoryId = currentTasksListId,
+            )
+            tasksRepository.addNewTaskAndReturn(newTask)
+                .flatMap { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            tasksRepository.getTask(result.value)
+                        }
+                        is Result.Failure -> {
+                            Single.just(Result.Failure(result.throwable))
+                        }
+                    }
+                }
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { result ->
+                    handleResult(
+                        result,
+                        { task -> dueDateInMillis?.let { setAlarm(it, task) } },
+                        { setSnackBarErrorMassage(R.string.task_save_fail) }
+                    )
+                }
+                .addTo(disposableGeneral)
+        }
+    }
+
     fun observeTasks() {
         getActiveTasks()
         getCompletedTasks()
-    }
-
-    fun setSort(sort: TasksSort) {
-        _sort.value = sort
-        observeTasks()
-    }
-
-    fun switchOrder() {
-        when (_order.value) {
-            SortDirection.ASC -> {
-                _order.value = SortDirection.DESC
-            }
-            SortDirection.DESC -> {
-                _order.value = SortDirection.ASC
-            }
-        }
-        observeTasks()
-    }
-
-    fun saveSortValues() {
-        sharedPreference.saveTasksSort(_sort.value?.name ?: TasksSort.DEFAULT.name)
-        sharedPreference.saveTasksSortOrder(_order.value?.name ?: SortDirection.ASC.name)
     }
 
     private fun getCompletedTasks() {
@@ -140,6 +173,28 @@ class TasksViewModel @Inject constructor(
                 }
                 .addTo(disposableTasksObservables)
         }
+    }
+
+    fun setSort(sort: TasksSort) {
+        _sort.value = sort
+        observeTasks()
+    }
+
+    fun switchOrder() {
+        when (_order.value) {
+            SortDirection.ASC -> {
+                _order.value = SortDirection.DESC
+            }
+            SortDirection.DESC -> {
+                _order.value = SortDirection.ASC
+            }
+        }
+        observeTasks()
+    }
+
+    fun saveSortValues() {
+        sharedPreference.saveTasksSort(_sort.value?.name ?: TasksSort.DEFAULT.name)
+        sharedPreference.saveTasksSortOrder(_order.value?.name ?: SortDirection.ASC.name)
     }
 
     private fun defaultSort(list: List<Task>): List<ActiveTask> {
@@ -200,14 +255,12 @@ class TasksViewModel @Inject constructor(
             SortDirection.ASC -> {
                 result.sortBy(selector)
             }
-
             SortDirection.DESC -> {
                 result.sortByDescending(selector)
             }
         }
         return result
     }
-
 
     fun deleteAllCompletedTasks() {
         tasksRepository.clearCompletedTasks()
@@ -217,25 +270,6 @@ class TasksViewModel @Inject constructor(
                 { setSnackBarMassage(R.string.completed_tasks_delete_success) },
                 { setSnackBarErrorMassage(R.string.completed_tasks_delete_fail) }
             ).addTo(disposableGeneral)
-    }
-
-    fun saveTask(title: String, detail: String) {
-        _currentCategory.value?.id?.let { currentTasksListId ->
-            tasksRepository.addNewTask(
-                Task(
-                    title = title,
-                    detail = detail,
-                    categoryId = currentTasksListId,
-                    date = OffsetDateTime.now()
-                )
-            )
-                .subscribeOn(ioScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(
-                    { },
-                    { setSnackBarErrorMassage(R.string.task_save_fail) }
-                ).addTo(disposableGeneral)
-        }
     }
 
     fun markTaskAsCompleted(taskID: Long, isCompleted: Boolean) {
@@ -261,49 +295,6 @@ class TasksViewModel @Inject constructor(
                 { },
                 { setSnackBarErrorMassage(R.string.unKnownError) }
             ).addTo(disposableGeneral)
-    }
-
-    fun deleteSelectedTasks() {
-        _selectedTasks.value?.let {
-            Observable.fromIterable(it)
-                .flatMapCompletable { id ->
-                    tasksRepository.deleteTaskById(id).subscribeOn(ioScheduler)
-                }
-                .observeOn(mainScheduler)
-                .subscribe(
-                    { _navigateToMainFragment.value = Event(true) },
-                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
-                ).addTo(disposableGeneral)
-        }
-    }
-
-    fun moveSelectedTasks(categoryId: Long) {
-        _selectedTasks.value?.let {
-            Observable.fromIterable(it)
-                .flatMapCompletable { id ->
-                    tasksRepository.getTask(id)
-                        .flatMapCompletable { result ->
-                            when (result) {
-                                is Result.Success -> {
-                                    tasksRepository.updateTask(
-                                        result.value.copy(categoryId = categoryId)
-                                    )
-                                }
-                                is Result.Failure -> {
-                                    Completable.error(Exception(""))
-                                }
-                            }
-                        }
-                        .subscribeOn(ioScheduler)
-                }
-                .subscribeOn(ioScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(
-                    { _navigateToMainFragment.value = Event(true) },
-                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
-                ).addTo(disposableGeneral)
-
-        }
     }
 
     fun getCategories() {
@@ -379,18 +370,6 @@ class TasksViewModel @Inject constructor(
         }
     }
 
-    private fun setMainViewMassage(value: Int) {
-        _mainViewErrorEvent.value = Event(value)
-    }
-
-    private fun setSnackBarErrorMassage(value: Int) {
-        _snackBarErrorEvent.value = Event(value)
-    }
-
-    private fun setSnackBarMassage(value: Int) {
-        _snackBarEvent.value = Event(value)
-    }
-
     fun start() {
         updateCurrentCategory(sharedPreference.getCurrentCategory())
     }
@@ -412,10 +391,99 @@ class TasksViewModel @Inject constructor(
         }
     }
 
+    fun deleteSelectedTasks() {
+        _selectedTasks.value?.let {
+            Observable.fromIterable(it)
+                .flatMapCompletable { id ->
+                    tasksRepository.deleteTaskById(id).subscribeOn(ioScheduler)
+                }
+                .observeOn(mainScheduler)
+                .subscribe(
+                    { _navigateToMainFragment.value = Event(true) },
+                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
+                ).addTo(disposableGeneral)
+        }
+    }
+
     fun clearSelectedItems() {
         _selectedTasks.postValue(setOf())
     }
 
+    fun moveSelectedTasks(categoryId: Long) {
+        _selectedTasks.value?.let {
+            Observable.fromIterable(it)
+                .flatMapCompletable { id ->
+                    tasksRepository.getTask(id)
+                        .flatMapCompletable { result ->
+                            when (result) {
+                                is Result.Success -> {
+                                    tasksRepository.updateTask(
+                                        result.value.copy(categoryId = categoryId)
+                                    )
+                                }
+                                is Result.Failure -> {
+                                    Completable.error(Exception(""))
+                                }
+                            }
+                        }
+                        .subscribeOn(ioScheduler)
+                }
+                .subscribeOn(ioScheduler)
+                .observeOn(mainScheduler)
+                .subscribe(
+                    { _navigateToMainFragment.value = Event(true) },
+                    { setSnackBarErrorMassage(R.string.error_operation_failed) }
+                ).addTo(disposableGeneral)
+
+        }
+    }
+
+    fun setDate(utc: Long?) {
+        _date.value = utc
+    }
+
+    fun setTime(pair: Pair<Int, Int>?) {
+        _time.value = pair
+    }
+
+    fun getTimeFormat(): TimeFormat = settingSharedPreference.getTimeFormat()
+
+    private fun calcDueDate(): Long? {
+        return if (_date.value != null) {
+            if (_time.value == null) {
+                dateTimeHelper.groupDateTime(_date.value!!, 8, 0)
+            } else {
+                dateTimeHelper.groupDateTime(_date.value!!,
+                    _time.value?.first!!,
+                    _time.value?.second!!)
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun isAllDay(): Boolean {
+        return _time.value == null || _date.value == null
+    }
+
+    private fun setAlarm(dateTimeInMillis: Long, task: Task) {
+        taskAlarmManager.setDueDateAlarm(dateTimeInMillis, task)
+    }
+
+    private fun setMainViewMassage(value: Int) {
+        _mainViewErrorEvent.value = Event(value)
+    }
+
+    private fun setSnackBarErrorMassage(value: Int) {
+        _snackBarErrorEvent.value = Event(value)
+    }
+
+    private fun setSnackBarMassage(value: Int) {
+        _snackBarEvent.value = Event(value)
+    }
+
+    val date: LiveData<Long?> get() = _date
+    val time: LiveData<Pair<Int, Int>?> get() = _time
     val currentCategory: LiveData<Category> get() = _currentCategory
     val categories: LiveData<List<Category>> get() = _categories
     val activeTasks: LiveData<List<ActiveTask>> get() = _activeTasks

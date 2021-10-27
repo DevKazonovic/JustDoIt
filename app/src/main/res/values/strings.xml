@@ -78,6 +78,11 @@
     <string name="success_delete_all_operation">All Selected Task Deleted Successefuly</string>
     <string name="error_review">Please Try Again!</string>
     <string name="success_review">Thank You for reviewing the app.</string>
+    <string name="desc_icon_add_date">Add Date</string>
+    <string name="desc_icon_add_time">Add Time</string>
+    <string name="desc_clear_datetime">Clear Date and Time</string>
+    <string name="lable_selectdate">Select Date</string>
+    <string name="label_selecttime">Select Time</string>
     <plurals name="day">
         <item quantity="one"> %s day</item>
         <item quantity="other"> %s days</item>

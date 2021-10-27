@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks.menu
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,6 @@ import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.show
 import com.devkazonovic.projects.justdoit.presentation.common.model.SortDirection
 import com.devkazonovic.projects.justdoit.presentation.tasks.TasksViewModel
-import com.devkazonovic.projects.justdoit.presentation.tasks.form.FormUpdateCategoryFragment
 import com.devkazonovic.projects.justdoit.presentation.tasks.model.TasksSort
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

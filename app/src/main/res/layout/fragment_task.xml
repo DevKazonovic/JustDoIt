@@ -407,7 +407,6 @@
 
         </FrameLayout>
 
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -421,7 +420,6 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <include layout="@layout/view_surface_divider_vertical" />
-
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkboxTaskIsCompleted"

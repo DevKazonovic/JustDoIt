@@ -8,7 +8,7 @@ import com.devkazonovic.projects.justdoit.R
 import com.devkazonovic.projects.justdoit.databinding.CardSampleCategoryBinding
 import com.devkazonovic.projects.justdoit.domain.model.Category
 import com.devkazonovic.projects.justdoit.help.util.getThemeColor
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.CategoriesDiffCallback
 
 class TaskCategoriesAdapter(
     private var _listID: Long? = null,

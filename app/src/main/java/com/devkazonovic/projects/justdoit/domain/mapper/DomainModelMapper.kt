@@ -25,7 +25,9 @@ class TaskMapper @Inject constructor() : Mapper<Task, TaskEntity> {
             alarmId = input.alarmId,
             repeat = Repeat(input.repeatType?.name, input.repeatValue, input.nextDueDate)
         ).also { taskEntity ->
-            taskEntity.id = input.id
+            if (input.id != -1L) {
+                taskEntity.id = input.id
+            }
         }
 }
 

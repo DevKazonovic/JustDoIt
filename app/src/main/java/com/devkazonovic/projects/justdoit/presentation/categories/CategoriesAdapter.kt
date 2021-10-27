@@ -11,7 +11,7 @@ import com.devkazonovic.projects.justdoit.databinding.CardCategoryBinding
 import com.devkazonovic.projects.justdoit.domain.model.Category
 import com.devkazonovic.projects.justdoit.help.extension.hide
 import com.devkazonovic.projects.justdoit.help.extension.show
-import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff.CategoriesDiffCallback
+import com.devkazonovic.projects.justdoit.presentation.tasks.adapter.CategoriesDiffCallback
 
 class CategoriesAdapter(
     private val onClick: (view: View, category: Category) -> Unit,

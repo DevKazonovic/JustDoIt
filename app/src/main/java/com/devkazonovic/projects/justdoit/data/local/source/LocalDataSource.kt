@@ -5,7 +5,6 @@ import com.devkazonovic.projects.justdoit.data.local.db.dao.CategoryDao
 import com.devkazonovic.projects.justdoit.data.local.db.dao.TaskDao
 import com.devkazonovic.projects.justdoit.data.local.db.entity.CategoryEntity
 import com.devkazonovic.projects.justdoit.data.local.db.entity.TaskEntity
-import com.devkazonovic.projects.justdoit.data.local.preference.IMainSharedPreference
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
@@ -14,7 +13,6 @@ import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
     dataBase: TasksDataBase,
-    private val sharedPreference: IMainSharedPreference,
 ) : ILocalDataSource {
 
     private val taskDao: TaskDao = dataBase.taskDao()
@@ -41,14 +39,13 @@ class LocalDataSource @Inject constructor(
         return categoryDao.getCategories()
     }
 
-    override fun insertTask(task: TaskEntity): Completable {
-        val requestCode = sharedPreference.getCurrentRequestCode()
-        val newRequestCode = requestCode + 1
-        return if (sharedPreference.saveRequestCode(newRequestCode)) {
-            taskDao.insert(task.copy(alarmId = newRequestCode))
-        } else Completable.error(Exception("We can't save Task, Please Try Again"))
+    override fun insertTask(task: TaskEntity): Completable =
+        taskDao.insert(task)
 
-    }
+
+    override fun insertTaskAndReturn(task: TaskEntity): Single<Long> =
+        taskDao.insertAndReturnId(task)
+
 
     override fun updateTask(task: TaskEntity): Completable {
         return taskDao.update(task)

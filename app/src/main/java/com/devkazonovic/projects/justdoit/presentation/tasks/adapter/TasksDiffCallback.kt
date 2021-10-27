@@ -1,4 +1,4 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks.adapter.diff
+package com.devkazonovic.projects.justdoit.presentation.tasks.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.devkazonovic.projects.justdoit.domain.model.Task

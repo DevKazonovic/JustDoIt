@@ -137,13 +137,13 @@ class TaskFragment : Fragment() {
 
     private fun setUpTaskCategory() {
         binding.textViewTaskCategory.setOnClickListener {
-            TaskCategoriesDialogFragment.newInstance()
-                .show(childFragmentManager, TaskCategoriesDialogFragment.TAG)
+            MoveToCategoryFragment.newInstance()
+                .show(childFragmentManager, MoveToCategoryFragment.TAG)
         }
 
         binding.imageViewDropDown.setOnClickListener {
-            TaskCategoriesDialogFragment.newInstance()
-                .show(childFragmentManager, TaskCategoriesDialogFragment.TAG)
+            MoveToCategoryFragment.newInstance()
+                .show(childFragmentManager, MoveToCategoryFragment.TAG)
         }
 
         viewModel.currentTaskCategory.observe(viewLifecycleOwner, { list ->
@@ -207,6 +207,7 @@ class TaskFragment : Fragment() {
     private fun dueDateInputListeners() {
         binding.textViewDatePicker.setOnClickListener {
             createDatePicker(
+                requireContext(),
                 viewModel.date.value ?: MaterialDatePicker.todayInUtcMilliseconds()
             ) { dateInMillis ->
                 log("Date In Millis => $dateInMillis")
@@ -218,14 +219,16 @@ class TaskFragment : Fragment() {
                 viewModel.time.value?.first ?: LocalTime.now().hour,
                 viewModel.time.value?.second ?: LocalTime.now().minute,
                 requireContext(),
-                viewModel.getTimeFormat()
-            ) { hour, minute ->
-                log("Time => $hour : $minute")
-                viewModel.setTime(Pair(hour, minute))
-            }.show(childFragmentManager, ViewTag.TAG_TIME_PICKER_DIALOGUE)
+                viewModel.getTimeFormat(),
+                { hour, minute ->
+                    log("Time => $hour : $minute")
+                    viewModel.setTime(Pair(hour, minute))
+                }, {
+                    viewModel.setTime(null)
+                }).show(childFragmentManager, ViewTag.TAG_TIME_PICKER_DIALOGUE)
         }
         binding.textViewRepeat.setOnClickListener {
-            RepeatDialogFragment.newInstance().show(childFragmentManager, RepeatDialogFragment.TAG)
+            RepeatInputFragment.newInstance().show(childFragmentManager, RepeatInputFragment.TAG)
         }
         binding.viewClearDate.setOnClickListener {
             viewModel.setDate(null)

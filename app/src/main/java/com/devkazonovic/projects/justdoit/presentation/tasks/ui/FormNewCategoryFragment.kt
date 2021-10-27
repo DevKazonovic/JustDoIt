@@ -1,9 +1,8 @@
-package com.devkazonovic.projects.justdoit.presentation.tasks.form
+package com.devkazonovic.projects.justdoit.presentation.tasks.ui
 
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.devkazonovic.projects.justdoit.R
@@ -17,15 +16,18 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 
 @AndroidEntryPoint
-class FormUpdateCategoryFragment : DialogFragment() {
+class FormNewCategoryFragment : DialogFragment() {
 
-    private val disposable = CompositeDisposable()
+    private val viewModel by
+    viewModels<TasksViewModel>({ requireParentFragment() })
 
-    private val viewModel by viewModels<TasksViewModel>({ requireParentFragment() })
-    private val validationVM by viewModels<ValidationViewModel>()
+    private val validationVM by
+    viewModels<ValidationViewModel>()
 
     private var _binding: FragmentFormCategoryBinding? = null
     private val binding get() = _binding!!
+
+    private val disposable = CompositeDisposable()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -33,10 +35,12 @@ class FormUpdateCategoryFragment : DialogFragment() {
         _binding = FragmentFormCategoryBinding.inflate(layoutInflater)
         builder.setView(binding.root)
 
-        viewModel.currentCategory.value?.let {
-            binding.editTextCategoryName.text =
-                SpannableStringBuilder(it.name)
+        validationVM.isCategoryNameEntered.observe(this) {
+            it?.let {
+                binding.buttonSave.isEnabled = it
+            }
         }
+
         validationVM.isCategoryLengthMax.observe(this) {
             it?.let {
                 if (it) {
@@ -47,16 +51,12 @@ class FormUpdateCategoryFragment : DialogFragment() {
             }
         }
 
-        validationVM.isCategoryNameEntered.observe(this) {
-            it?.let { binding.buttonSave.isEnabled = it }
-        }
-
         binding.editTextCategoryName.textChanges().skipInitialValue().subscribe {
             validationVM.categoryInputValidation(StringBuilder(it).toString())
         }.addTo(disposable)
 
         binding.buttonSave.setOnClickListener {
-            viewModel.updateCurrentCategoryName(binding.editTextCategoryName.text.toString())
+            viewModel.createNewCategory(binding.editTextCategoryName.text.toString())
             dismiss()
         }
 
@@ -71,7 +71,7 @@ class FormUpdateCategoryFragment : DialogFragment() {
     }
 
     companion object {
-        fun newInstance() = FormUpdateCategoryFragment()
-        const val TAG = "Form To Update Current Category Name"
+        fun newInstance() = FormNewCategoryFragment()
+        const val TAG = "Form To Create a New Category"
     }
 }

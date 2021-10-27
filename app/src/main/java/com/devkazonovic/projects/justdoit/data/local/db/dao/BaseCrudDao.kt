@@ -13,7 +13,7 @@ interface BaseCrudDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(obj: T): Completable
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAndReturnId(obj: T): Single<Long>
 
     @Insert
