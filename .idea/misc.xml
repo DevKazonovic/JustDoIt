@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable-xhdpi/style_header.xml" value="0.18552631578947368" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable/ic_account.xml" value="0.2203125" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable/ic_add.xml" value="0.2203125" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable/ic_arrow_down.xml" value="0.2203125" />
@@ -36,6 +37,7 @@
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/drawable/style_chip.xml" value="0.18552631578947368" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/card_category.xml" value="0.15462962962962962" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/card_task.xml" value="0.33" />
+        <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/card_tasks_header.xml" value="0.67" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/fragment_categories.xml" value="0.67" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/fragment_form_task.xml" value="0.33" />
         <entry key="..\:/Users/hp/Projects/AndroidStudioProjects/MyProjects/JustDoIt/app/src/main/res/layout/fragment_main_setting.xml" value="0.20416666666666666" />

@@ -72,6 +72,13 @@
         <item name="cardElevation">0dp</item>
     </style>
 
+    <style name="Widget.App.Card.Header" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">?attr/colorSecondaryVariant</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.Rounded.Header</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardCornerRadius">0dp</item>
+    </style>
+
     <style name="Widget.App.ActionMode" parent="Widget.AppCompat.ActionMode">
         <item name="titleTextStyle">@style/TextAppearance.MaterialComponents.Headline6</item>
         <item name="subtitleTextStyle">@style/TextAppearance.MaterialComponents.Caption</item>
@@ -155,5 +162,11 @@
         <item name="cornerSize">18dp</item>
     </style>
 
+    <style name="ShapeAppearance.App.Rounded.Header" parent="">
+        <item name="cornerSizeTopRight">28dp</item>
+        <item name="cornerSizeBottomRight">28dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+    </style>
 
 </resources>

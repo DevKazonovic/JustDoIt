@@ -20,6 +20,7 @@
         <item name="colorTaskCard">@color/extra_dark_gray</item>
         <item name="colorInputFill">@color/dark_gray</item>
         <item name="colorInputHint">@color/light_gray</item>
+        <item name="colorTasksHeader">@color/extra_extra_dark_gray</item>
 
         <item name="elevationOverlayEnabled">false</item>
         <item name="android:windowActionModeOverlay">true</item>

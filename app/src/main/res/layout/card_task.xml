@@ -11,7 +11,7 @@
     android:layout_marginBottom="4dp"
     app:cardBackgroundColor="?attr/colorTaskCard"
     app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -5,5 +5,5 @@
     <attr name="colorTaskCard" format="color" />
     <attr name="colorInputFill" format="color" />
     <attr name="colorInputHint" format="color" />
-    <attr name="colorLabel" format="color" />
+    <attr name="colorTasksHeader" format="color" />
 </resources>
