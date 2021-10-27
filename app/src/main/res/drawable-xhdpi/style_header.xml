@@ -4,14 +4,13 @@
 
 
     <corners
-        android:bottomRightRadius="28dp"
         android:bottomLeftRadius="0dp"
-        android:topRightRadius="28dp"
+        android:bottomRightRadius="28dp"
         android:topLeftRadius="0dp"
-        />
+        android:topRightRadius="28dp" />
 
     <gradient
         android:endColor="?attr/colorTasksHeader"
-        android:startColor="?attr/colorTasksHeader"/>
+        android:startColor="?attr/colorTasksHeader" />
 
 </shape>
