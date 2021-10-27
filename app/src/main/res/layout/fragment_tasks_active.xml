@@ -41,9 +41,11 @@
                     android:paddingBottom="92dp"
                     android:scrollbars="vertical"
                     tools:listitem="@layout/card_task" />
+
             </LinearLayout>
 
         </com.devkazonovic.projects.justdoit.presentation.common.view.NestedScrollableHost>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

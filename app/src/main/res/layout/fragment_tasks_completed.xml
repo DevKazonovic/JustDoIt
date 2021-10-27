@@ -37,5 +37,7 @@
                 tools:listitem="@layout/card_task" />
 
         </com.devkazonovic.projects.justdoit.presentation.common.view.NestedScrollableHost>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

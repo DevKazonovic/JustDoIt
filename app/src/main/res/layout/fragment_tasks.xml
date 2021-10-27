@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 app:tabGravity="start"
                 app:tabIndicator="@drawable/tab_indicator"
                 app:tabIndicatorFullWidth="false"
@@ -64,6 +64,8 @@
 
             </com.google.android.material.tabs.TabLayout>
 
+            <include layout="@layout/view_surface_divider_vertical" />
+
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -72,7 +74,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-
             android:paddingTop="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -95,6 +96,7 @@
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
             </LinearLayout>
 
         </LinearLayout>

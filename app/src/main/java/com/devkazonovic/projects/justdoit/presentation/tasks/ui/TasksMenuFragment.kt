@@ -41,7 +41,7 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
         viewModel.sort.observe(viewLifecycleOwner) {
             it?.let {
                 binding.textViewSortDetail.text = when (it) {
-                    TasksSort.DEFAULT -> getString(R.string.label_sort_default)
+                    TasksSort.STATUS -> getString(R.string.label_sort_default)
                     TasksSort.DATE -> getString(R.string.label_sort_date)
                     TasksSort.NAME -> getString(R.string.label_sort_name)
                 }
@@ -79,7 +79,7 @@ class TasksMenuFragment : BottomSheetDialogFragment() {
             val enums = TasksSort.values()
             val enumsNames = enums.map {
                 when (it) {
-                    TasksSort.DEFAULT -> getString(R.string.label_sort_default)
+                    TasksSort.STATUS -> getString(R.string.label_sort_default)
                     TasksSort.DATE -> getString(R.string.label_sort_date)
                     TasksSort.NAME -> getString(R.string.label_sort_name)
                 }

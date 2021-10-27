@@ -77,7 +77,7 @@ class TasksViewModel @Inject constructor(
     init {
         _sort.value = sharedPreference.getTasksSort()?.let {
             TasksSort.valueOf(it)
-        } ?: TasksSort.DEFAULT
+        } ?: TasksSort.STATUS
 
         _order.value = sharedPreference.getTasksSortOrder()?.let {
             SortDirection.valueOf(it)
@@ -150,7 +150,7 @@ class TasksViewModel @Inject constructor(
                     when (input) {
                         is Result.Success -> {
                             val result = when (_sort.value) {
-                                TasksSort.DEFAULT -> defaultSort(input.value)
+                                TasksSort.STATUS -> defaultSort(input.value)
                                 TasksSort.DATE -> sortTasksBy(input.value) { it.task.dueDate }
                                 TasksSort.NAME -> sortTasksBy(input.value) { it.task.title }
                                 else -> input.value.map { ActiveTask.ItemTask(it) }
@@ -193,7 +193,7 @@ class TasksViewModel @Inject constructor(
     }
 
     fun saveSortValues() {
-        sharedPreference.saveTasksSort(_sort.value?.name ?: TasksSort.DEFAULT.name)
+        sharedPreference.saveTasksSort(_sort.value?.name ?: TasksSort.STATUS.name)
         sharedPreference.saveTasksSortOrder(_order.value?.name ?: SortDirection.ASC.name)
     }
 

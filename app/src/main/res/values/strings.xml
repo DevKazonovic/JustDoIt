@@ -57,7 +57,7 @@
     <string name="label_add_date">Due Date</string>
     <string name="label_add_time">Time</string>
     <string name="label_repeat_task">Repeat Task</string>
-    <string name="label_sort_default">Default</string>
+    <string name="label_sort_default">Status</string>
     <string name="label_sort_name">Name</string>
     <string name="label_sort_title">Sort By</string>
     <string name="desc_categories_sort_order">Categories Sort Order</string>

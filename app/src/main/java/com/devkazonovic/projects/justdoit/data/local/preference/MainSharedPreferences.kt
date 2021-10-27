@@ -73,7 +73,7 @@ class MySharedPreferences @Inject constructor(
 
     override fun getTasksSort(): String? = preferences.getString(
         KEY_TASKS_SORT,
-        TasksSort.DEFAULT.name
+        TasksSort.STATUS.name
     )
 
     override fun getTasksSortOrder(): String? = preferences.getString(
