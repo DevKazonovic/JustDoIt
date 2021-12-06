@@ -16,6 +16,7 @@
         android:theme="@style/Theme.MyTasks">
         <activity
             android:name="com.devkazonovic.projects.justdoit.MainActivity"
+            android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +33,7 @@
 
         <receiver
             android:name="com.devkazonovic.projects.justdoit.receiver.BootBroadcastReceiver"
+            android:exported="false"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
